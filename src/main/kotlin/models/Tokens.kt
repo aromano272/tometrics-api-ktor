@@ -1,0 +1,9 @@
+package com.sproutscout.api.models
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Tokens(
+    val access: String,
+    val refresh: String,
+)

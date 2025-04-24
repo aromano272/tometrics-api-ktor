@@ -1,0 +1,50 @@
+@accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkZXZqb2Jib2FyZC11c2VycyIsImlzcyI6ImRldmpvYmJvYXJkLmNvbSIsInVzZXJJZCI6MSwidXNlcm5hbWUiOiJqb2huIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzQ3Njk0MTQ2fQ.oQBiif0_mdVwhvZ9XU8Z5G6O2xhwUeg5IMlbYZnn9E4"
+@refreshToken = 9d3ddd80-5ca3-4bf8-bd3a-4362a9e55ca1
+
+### Register a new admin
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "username": "john",
+  "email": "some@email.com",
+  "password": "supersecret",
+  "isAdmin": true
+}
+
+### Register a new user
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "username": "johnu",
+  "email": "some@email.com",
+  "password": "supersecret",
+  "isAdmin": false
+}
+
+### Login to get tokens
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "john",
+  "password": "supersecret"
+}
+
+### Refresh tokens (update tokens after login)
+POST http://localhost:8080/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Logout (update tokens after login)
+POST http://localhost:8080/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
