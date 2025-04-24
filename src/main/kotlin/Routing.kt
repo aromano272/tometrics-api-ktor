@@ -20,6 +20,8 @@ import io.ktor.server.plugins.requestvalidation.RequestValidation
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
@@ -68,6 +70,9 @@ fun Application.configureRouting() {
 
     routing {
         route("/api/v1") {
+            get("/home") {
+                call.respondText("Home")
+            }
             authRoutes(authService)
             jobRoutes(jobService)
         }
