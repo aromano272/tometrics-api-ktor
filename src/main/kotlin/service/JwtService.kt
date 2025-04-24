@@ -2,6 +2,7 @@ package com.sproutscout.api.service
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import io.github.cdimascio.dotenv.Dotenv
 import io.ktor.server.config.ApplicationConfig
 import java.time.Instant
 
@@ -18,11 +19,12 @@ class DefaultJwtService(
 
     constructor(
         config: ApplicationConfig,
+        dotenv: Dotenv,
         developmentMode: Boolean,
     ) : this(
         jwtAudience = config.property("jwt.audience").getString(),
         jwtDomain = config.property("jwt.domain").getString(),
-        jwtSecret = config.property("jwt.secret").getString(),
+        jwtSecret = dotenv["JWT_SECRET"],
         developmentMode = developmentMode,
     )
 

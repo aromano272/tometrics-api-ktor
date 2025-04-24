@@ -2,16 +2,19 @@ package com.sproutscout.api.database
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.application.*
+import io.github.cdimascio.dotenv.Dotenv
+import io.ktor.server.application.Application
 import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 
-fun Application.createHikariDataSource(): HikariDataSource {
+fun Application.createHikariDataSource(
+    dotenv: Dotenv,
+): HikariDataSource {
     val hikariConfig = HikariConfig().apply {
-        jdbcUrl = environment.config.property("postgres.url").getString()
-        username = environment.config.property("postgres.user").getString()
-        password = environment.config.property("postgres.password").getString()
+        jdbcUrl = dotenv["POSTGRES_URL"]
+        username = dotenv["POSTGRES_USER"]
+        password = dotenv["POSTGRES_PASSWORD"]
         maximumPoolSize = environment.config.propertyOrNull("maxPoolSize")?.getString()?.toInt() ?: 10
         isAutoCommit = true
         transactionIsolation = "TRANSACTION_REPEATABLE_READ"

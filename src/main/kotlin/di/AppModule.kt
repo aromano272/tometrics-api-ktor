@@ -67,8 +67,9 @@ val appModule = module {
 
 fun databaseModule(application: Application) = module {
     single<Jdbi> {
-        application.createHikariDataSource()
-            .runMigrations()
+        application.createHikariDataSource(
+            dotenv = get(),
+        ).runMigrations()
             .createJdbi()
     }
 
@@ -101,6 +102,7 @@ fun serviceModule(application: Application) = module {
     single<JwtService> {
         DefaultJwtService(
             config = application.environment.config,
+            dotenv = get(),
             developmentMode = application.developmentMode,
         )
     }
