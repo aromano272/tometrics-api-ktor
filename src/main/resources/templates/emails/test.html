@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script>
+        function handleGoogleAuth(credential, csrf) {
+            console.log("payload: ", credential, csrf);
+            fetch("http://localhost:8080/api/v1/auth/google/login", {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(credential),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Google Auth Response:", data);
+            })
+            .catch(error => {
+                console.error("Error during Google Auth:", error);
+            });
+        }
+    </script>
+</head>
+<body>
+<!--    <div id="g_id_onload"-->
+<!--         data-client_id="201477670303-t3qm85ov000hfk3konc95jjp36ds1i3k.apps.googleusercontent.com"-->
+<!--         data-context="signin"-->
+<!--         data-ux_mode="popup"-->
+<!--         data-callback="handleGoogleAuth"-->
+<!--         data-auto_prompt="false">-->
+<!--    </div>-->
+<!--    <div class="g_id_signin"-->
+<!--         data-type="standard"-->
+<!--         data-shape="rectangular"-->
+<!--         data-theme="outline"-->
+<!--         data-text="signin_with"-->
+<!--         data-size="large"-->
+<!--         data-logo_alignment="left">-->
+<!--    </div>-->
+    <div id="g_id_onload"
+         data-client_id="201477670303-t3qm85ov000hfk3konc95jjp36ds1i3k.apps.googleusercontent.com"
+         data-context="signin"
+         data-ux_mode="popup"
+         data-login_uri="http://localhost:8080/api/v1/auth/google/login"
+         data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_signin"
+         data-type="standard"
+         data-shape="rectangular"
+         data-theme="outline"
+         data-text="signin_with"
+         data-size="large"
+         data-logo_alignment="left">
+    </div>
+</body>
+</html>

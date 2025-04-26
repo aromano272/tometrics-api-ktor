@@ -226,7 +226,7 @@ class JobApplicationServiceTest {
 
         private val TEST_USER_ENTITY = UserEntity(
             id = 1,
-            username = "testuser",
+            name = "testuser",
             email = "test@example.com",
             passwordHash = "hashed_password",
             isAdmin = false,

@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.openapi.generator)
     implementation(libs.swagger.ui)
     implementation(libs.schema.kenerator.swagger)
+    implementation(libs.google.api.client)
 
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.ktor.client.mock)

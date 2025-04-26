@@ -40,7 +40,7 @@ fun Application.configureSecurity() {
         oauth("auth-oauth-google") {
             val redirects = mutableMapOf<String, String>()
 
-            urlProvider = { "http://localhost:8080/callback" }
+            urlProvider = { "http://localhost:8080/api/v1/auth/google/callback" }
             providerLookup = {
                 OAuthServerSettings.OAuth2ServerSettings(
                     name = "google",

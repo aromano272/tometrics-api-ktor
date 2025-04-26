@@ -15,6 +15,7 @@ mustache = "0.9.10"
 openapi-generator = "5.0.2"
 schema-kenerator-swagger = "2.1.2"
 mockk = "1.13.5"
+google-api-client = "2.4.0"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
@@ -53,6 +54,7 @@ openapi-generator = { module = "io.github.smiley4:ktor-openapi", version.ref = "
 schema-kenerator-swagger = { module = "io.github.smiley4:schema-kenerator-swagger", version.ref = "schema-kenerator-swagger" }
 swagger-ui = { module = "io.github.smiley4:ktor-swagger-ui", version.ref = "openapi-generator" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "google-api-client" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }

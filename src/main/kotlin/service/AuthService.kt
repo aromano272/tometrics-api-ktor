@@ -2,69 +2,63 @@ package com.sproutscout.api.service
 
 import com.sproutscout.api.database.RefreshTokenDao
 import com.sproutscout.api.database.UserDao
-import com.sproutscout.api.models.ConflictException
+import com.sproutscout.api.database.models.toDomain
+import com.sproutscout.api.models.IdProviderType
 import com.sproutscout.api.models.NotFoundException
 import com.sproutscout.api.models.Tokens
 import com.sproutscout.api.models.UnauthorizedException
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.bearerAuth
-import io.ktor.client.request.get
-import io.ktor.server.auth.OAuthAccessTokenResponse
+import com.sproutscout.api.models.User
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.util.*
 
 interface AuthService {
-    suspend fun registerAndLogin(
-        username: String,
-        email: String,
-        password: String,
-        isAdmin: Boolean
-    ): Tokens
-    suspend fun login(username: String, password: String): Tokens
+    suspend fun registerAnon(): Tokens
+    suspend fun login(user: User): Tokens
+    suspend fun loginWithGoogle(credential: String): Tokens
     suspend fun refreshToken(refreshToken: String): Tokens
     suspend fun logout(username: String, refreshToken: String)
-
-    suspend fun handleGoogleCallback(principal: OAuthAccessTokenResponse.OAuth2)
 }
 
 class DefaultAuthService(
-    private val httpClient: HttpClient,
     private val jwtService: JwtService,
+    private val googleAuthService: GoogleAuthService,
     private val userDao: UserDao,
     private val refreshTokenDao: RefreshTokenDao,
 ) : AuthService {
 
-    override suspend fun registerAndLogin(
-        username: String,
-        email: String,
-        password: String,
-        isAdmin: Boolean
-    ): Tokens {
-        if (userDao.findByUsername(username) != null) throw ConflictException("username already exists")
-
-//        val hashedPassword = passwordService.hash(password)
-        userDao.insert(username, email, isAdmin, "")
-
-        return login(username, password)
+    override suspend fun registerAnon(): Tokens {
+        val userId = userDao.insert("", "", null, anon = true)
+        val user = userDao.findById(userId)!!.toDomain()
+        return login(user)
     }
 
-    override suspend fun login(username: String, password: String): Tokens {
-        val user = userDao.findByUsername(username) ?: throw NotFoundException("couldn't find user")
-        val storedPassHash = user.passwordHash
-//        val isValid = passwordService.verify(password, storedPassHash)
+    override suspend fun login(user: User): Tokens {
+        val access = jwtService.create(user.id, user.email)
+        val refresh = UUID.randomUUID().toString()
 
-        return if (true) {
-            val access = jwtService.create(user.id, username)
-            val refresh = UUID.randomUUID().toString()
+        val expiry = getNewRefreshTokenExpiry()
+        refreshTokenDao.insert(user.id, refresh, expiry)
 
-            val expiry = getNewRefreshTokenExpiry()
-            refreshTokenDao.insert(user.id, refresh, expiry)
+        return Tokens(access, refresh)
+    }
 
-            Tokens(access, refresh)
+    override suspend fun loginWithGoogle(credential: String): Tokens {
+        val payload = googleAuthService.verify(credential)
+        val user = userDao.findByEmailAndIdProviderType(payload.email, IdProviderType.GOOGLE)?.toDomain()
+
+        return if (user != null) {
+            userDao.updateAnon(user.id, IdProviderType.GOOGLE, false)
+            login(user)
         } else {
-            throw UnauthorizedException("wrong password")
+            val userId = userDao.insert(
+                name = payload.name.orEmpty(),
+                email = payload.email,
+                idProviderType = IdProviderType.GOOGLE,
+                anon = false,
+            )
+            val user = userDao.findById(userId)!!.toDomain()
+            login(user)
         }
     }
 
@@ -81,7 +75,7 @@ class DefaultAuthService(
         val expiry = getNewRefreshTokenExpiry()
         refreshTokenDao.insert(user.id, newRefreshToken, expiry)
 
-        val newAccessToken = jwtService.create(user.id, user.username)
+        val newAccessToken = jwtService.create(user.id, user.name)
 
         return Tokens(newAccessToken, newRefreshToken)
     }
@@ -91,17 +85,9 @@ class DefaultAuthService(
             refreshTokenDao.findByToken(refreshToken) ?: throw UnauthorizedException("couldn't find refresh token")
 
         val user = userDao.findById(stored.userId) ?: throw NotFoundException("couldn't find user")
-        if (user.username != username) throw UnauthorizedException("username doesn't match refreshToken's username")
+        if (user.name != username) throw UnauthorizedException("username doesn't match refreshToken's username")
 
         refreshTokenDao.delete(refreshToken)
-    }
-
-    override suspend fun handleGoogleCallback(principal: OAuthAccessTokenResponse.OAuth2) {
-        val userInfo: GoogleUserInfo = httpClient.get("https://www.googleapis.com/oauth2/v2/userinfo") {
-            bearerAuth(principal.accessToken)
-        }.body()
-
-
     }
 
     private fun getNewRefreshTokenExpiry() = Instant.ofEpochMilli(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000)
@@ -109,11 +95,11 @@ class DefaultAuthService(
 
 @Serializable
 data class GoogleUserInfo(
-    val id: String,
-    val email: String,
-    val verified_email: Boolean,
-    val name: String,
-    val picture: String,
-    val locale: String
+    val id: String?,
+    val email: String?,
+    val verified_email: Boolean?,
+    val name: String?,
+    val picture: String?,
+    val locale: String?,
 )
 

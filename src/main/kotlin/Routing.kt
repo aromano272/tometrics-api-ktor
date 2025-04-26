@@ -24,6 +24,7 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import io.ktor.util.logging.Logger
 import kotlinx.serialization.json.Json
 import org.koin.ktor.ext.inject
 
@@ -66,6 +67,7 @@ fun Application.configureRouting() {
 
     val authService: AuthService by inject()
     val jobService: JobService by inject()
+    val logger: Logger by inject()
 
 
     routing {
@@ -73,7 +75,7 @@ fun Application.configureRouting() {
             get("/home") {
                 call.respondText("Home")
             }
-            authRoutes(authService)
+            authRoutes(authService, logger)
             jobRoutes(jobService)
         }
     }

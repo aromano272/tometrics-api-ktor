@@ -1,16 +1,9 @@
-@accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkZXZqb2Jib2FyZC11c2VycyIsImlzcyI6ImRldmpvYmJvYXJkLmNvbSIsInVzZXJJZCI6MSwidXNlcm5hbWUiOiJqb2huIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzQ3Njk0MTQ2fQ.oQBiif0_mdVwhvZ9XU8Z5G6O2xhwUeg5IMlbYZnn9E4"
-@refreshToken = 9d3ddd80-5ca3-4bf8-bd3a-4362a9e55ca1
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzcHJvdXRzY291dC11c2VycyIsImlzcyI6InNwcm91dHNjb3V0LmNvbSIsInVzZXJJZCI6MSwidXNlcm5hbWUiOiIiLCJleHAiOjE3NDgyMTE3MjR9.dxq0getFGQJSzUNWLWyk7cR6chqtXx7vAzZsDbujAVU
+@refreshToken = 03b9beeb-f0fb-48ee-a1c5-69c57c5611dd
 
-### Register a new admin
-POST http://localhost:8080/auth/register
+### Register anon
+POST http://localhost:8080/api/v1/auth/anon/register
 Content-Type: application/json
-
-{
-  "username": "john",
-  "email": "some@email.com",
-  "password": "supersecret",
-  "isAdmin": true
-}
 
 ### Register a new user
 POST http://localhost:8080/auth/register
@@ -48,3 +41,8 @@ Authorization: Bearer {{accessToken}}
 {
   "refreshToken": "{{refreshToken}}"
 }
+
+### Initiate Google Auth
+GET http://localhost:8080/api/v1/auth/google/initiate
+Authorization: Bearer {{accessToken}}
+

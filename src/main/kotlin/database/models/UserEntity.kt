@@ -1,18 +1,21 @@
 package com.sproutscout.api.database.models
 
-import com.sproutscout.api.models.models.User
+import com.sproutscout.api.models.IdProviderType
+import com.sproutscout.api.models.User
 
 
 data class UserEntity(
     val id: Int,
-    val username: String,
+    val name: String,
     val email: String,
-    val isAdmin: Boolean,
-    val passwordHash: String,
+    val idProviderType: IdProviderType?,
+    val anon: Boolean,
 )
 
 fun UserEntity.toDomain(): User = User(
     id = id,
-    username = username,
+    name = name,
     email = email,
+    idProviderType = idProviderType,
+    anon = anon,
 )

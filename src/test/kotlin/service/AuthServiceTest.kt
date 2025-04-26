@@ -160,7 +160,7 @@ class AuthServiceTest {
         coEvery { userDao.findById(user.id) } returns user
         coEvery { refreshTokenDao.delete(refreshToken) } returns Unit
         coEvery { refreshTokenDao.insert(user.id, any(), any()) } returns Unit
-        coEvery { jwtService.create(user.id, user.username, user.isAdmin) } returns newAccessToken
+        coEvery { jwtService.create(user.id, user.name, user.isAdmin) } returns newAccessToken
 
         val tokens = authService.refreshToken(refreshToken)
 
@@ -192,7 +192,7 @@ class AuthServiceTest {
             expiresAt = Instant.now().plusSeconds(3600),
             createdAt = Instant.now().plusSeconds(3600),
         )
-        val user = TEST_USER_ENTITY.copy(username = "correct_user")
+        val user = TEST_USER_ENTITY.copy(name = "correct_user")
 
         coEvery { refreshTokenDao.findByToken(refreshToken) } returns tokenEntity
         coEvery { userDao.findById(tokenEntity.userId) } returns user
@@ -213,7 +213,7 @@ class AuthServiceTest {
             expiresAt = Instant.now().plusSeconds(3600),
             createdAt = Instant.now().plusSeconds(3600),
         )
-        val user = TEST_USER_ENTITY.copy(username = username)
+        val user = TEST_USER_ENTITY.copy(name = username)
 
         coEvery { refreshTokenDao.findByToken(refreshToken) } returns tokenEntity
         coEvery { userDao.findById(tokenEntity.userId) } returns user
@@ -227,7 +227,7 @@ class AuthServiceTest {
     companion object {
         private val TEST_USER_ENTITY = UserEntity(
             id = 1,
-            username = "testuser",
+            name = "testuser",
             email = "test@example.com",
             passwordHash = "\$2a\$12\$1234567890123456789012",
             isAdmin = false
