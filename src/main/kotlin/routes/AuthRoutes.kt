@@ -2,30 +2,54 @@ package com.sproutscout.api.routes
 
 import com.sproutscout.api.models.BadRequestException
 import com.sproutscout.api.models.requester
+import com.sproutscout.api.routes.models.AuthGoogleLoginRequest
+import com.sproutscout.api.routes.models.TokensResponse
 import com.sproutscout.api.service.AuthService
-import io.ktor.server.auth.authenticate
-import io.ktor.server.request.receive
-import io.ktor.server.request.receiveParameters
-import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.post
-import io.ktor.server.routing.route
-import io.ktor.util.logging.Logger
-import kotlinx.serialization.Serializable
+import io.github.smiley4.ktoropenapi.post
+import io.ktor.http.*
+import io.ktor.server.auth.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.util.logging.*
 
 fun Route.authRoutes(
     authService: AuthService,
     logger: Logger,
 ) {
     route("/auth") {
-        post("/anon/register") {
+        post("/anon/register", {
+            description = "Register an anonymous user"
+            response {
+                HttpStatusCode.OK to {
+                    description = "Tokens for the newly registered anonymous user"
+                    body<TokensResponse>()
+                }
+            }
+        }) {
             val tokens = authService.registerAnon()
             call.respond(tokens)
         }
 
         route("/google") {
             authenticate(optional = true) {
-                post("/login") {
+                post("/login", {
+                    description = "Login using Google authentication"
+                    request {
+                        body<AuthGoogleLoginRequest> {
+                            description = "Google login request containing CSRF token and ID token"
+                        }
+                    }
+                    response {
+                        HttpStatusCode.OK to {
+                            description = "Tokens for the authenticated user"
+                            body<TokensResponse>()
+                        }
+                        HttpStatusCode.BadRequest to {
+                            description = "Invalid CSRF token or other bad request"
+                        }
+                    }
+                }) {
                     val requester = call.requester()
                     val csrfCookie = call.request.cookies["g_csrf_token"]
                         ?: throw BadRequestException("No CSRF token in Cookie")
@@ -43,8 +67,3 @@ fun Route.authRoutes(
     }
 }
 
-@Serializable
-data class AuthGoogleLoginRequest(
-    val csrfToken: String,
-    val idToken: String
-)

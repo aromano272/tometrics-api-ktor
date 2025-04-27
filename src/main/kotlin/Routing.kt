@@ -72,9 +72,6 @@ fun Application.configureRouting() {
 
     routing {
         route("/api/v1") {
-            get("/home") {
-                call.respondText("Home")
-            }
             authRoutes(authService, logger)
             plantRoutes(plantService)
         }

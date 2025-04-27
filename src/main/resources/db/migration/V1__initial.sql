@@ -2,7 +2,7 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     email TEXT NOT NULL,
-    id_provider_type TEXT,
+    id_provider_types TEXT[] NOT NULL,
     anon BOOLEAN NOT NULL
 );
 

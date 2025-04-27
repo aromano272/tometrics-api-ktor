@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Blocking
 interface UserDb {
 
     @Blocking
-    @SqlUpdate("INSERT INTO users (name, email, id_provider_type, anon) VALUES (:name, :email, :idProviderType, :anon)")
+    @SqlUpdate("INSERT INTO users (name, email, id_provider_types, anon) VALUES (:name, :email, ARRAY[:idProviderType], :anon)")
     @GetGeneratedKeys
     fun insert(
         @Bind("name") name: String,
@@ -23,7 +23,7 @@ interface UserDb {
     ): Int
 
     @Blocking
-    @SqlUpdate("UPDATE users SET id_provider_type = :idProviderType, anon = :anon WHERE id = :id")
+    @SqlUpdate("UPDATE users SET id_provider_types = ARRAY[:idProviderType], anon = :anon WHERE id = :id")
     fun updateAnon(
         @Bind("id") id: Int,
         @Bind("idProviderType") idProviderType: IdProviderType?,
@@ -35,7 +35,7 @@ interface UserDb {
     fun getAllByIds(@Bind("ids") ids: List<Int>): List<UserEntity>
 
     @Blocking
-    @SqlQuery("SELECT * FROM users WHERE email = :email AND id_provider_type = :idProviderType")
+    @SqlQuery("SELECT * FROM users WHERE email = :email AND :idProviderType = ANY(id_provider_types)")
     fun findByEmailAndIdProviderType(
         email: String,
         idProviderType: IdProviderType,
