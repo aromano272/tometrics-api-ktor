@@ -14,7 +14,7 @@ My Garden
 GET /garden RES: {garden: List<Planting>}
 DELETE /planting/{id}
 PATCH /planting/{id} REQ: {newQuantity: Int} RES: {planting: Planting}
-POST /garden/addvegetable
+POST /garden/addplant
     REQ: { plantId: Int, quantity: Int }
 
 type CropCalendarEntry

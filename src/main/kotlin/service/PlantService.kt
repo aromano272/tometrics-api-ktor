@@ -2,7 +2,7 @@ package com.sproutscout.api.service
 
 import com.sproutscout.api.model.Plant
 import com.sproutscout.api.model.PlantId
-import com.sproutscout.api.model.Vegetable
+import com.sproutscout.api.model.plants
 
 interface PlantService {
     suspend fun getAll(): List<Plant>
@@ -12,8 +12,6 @@ interface PlantService {
 class DefaultPlantService(
 
 ) : PlantService {
-    private val plants = Vegetable.entries.map { it.plant }
-
     override suspend fun getAll(): List<Plant> {
         return plants
     }

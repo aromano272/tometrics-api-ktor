@@ -1,7 +1,7 @@
 package com.sproutscout.api.model
 
-val vegetables = listOf(
-	Vegetable(
+val plants = listOf(
+	Plant(
 		id = 1,
 		name = "Tomatoes",
 		timeToHarvest = 80,
@@ -29,7 +29,7 @@ val vegetables = listOf(
 			GrowingTip.CROP_ROTATION,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 2,
 		name = "Potatoes",
 		timeToHarvest = 90,
@@ -57,7 +57,7 @@ val vegetables = listOf(
 			GrowingTip.COOL_STORAGE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 3,
 		name = "Carrots",
 		timeToHarvest = 75,
@@ -85,7 +85,7 @@ val vegetables = listOf(
 			GrowingTip.PREVENT_GREENING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 4,
 		name = "Onions",
 		timeToHarvest = 100,
@@ -119,7 +119,7 @@ val vegetables = listOf(
 			GrowingTip.DAY_LENGTH_SENSITIVE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 5,
 		name = "Bell Peppers",
 		timeToHarvest = 70,
@@ -147,7 +147,7 @@ val vegetables = listOf(
 			GrowingTip.PRODUCES_UNTIL_FROST,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 6,
 		name = "Cucumbers",
 		timeToHarvest = 60,
@@ -175,7 +175,7 @@ val vegetables = listOf(
 			GrowingTip.AVOID_OVERHEAD_WATERING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 7,
 		name = "Lettuce",
 		timeToHarvest = 45,
@@ -209,7 +209,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_WHEN_FIRM,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 8,
 		name = "Broccoli",
 		timeToHarvest = 85,
@@ -237,7 +237,7 @@ val vegetables = listOf(
 			GrowingTip.HEAT_SENSITIVE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 9,
 		name = "Spinach",
 		timeToHarvest = 40,
@@ -271,7 +271,7 @@ val vegetables = listOf(
 			GrowingTip.DIRECT_SOW,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 10,
 		name = "Zucchini",
 		timeToHarvest = 50,
@@ -299,7 +299,7 @@ val vegetables = listOf(
 			GrowingTip.MULCH_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 11,
 		name = "Cabbage",
 		timeToHarvest = 90,
@@ -327,7 +327,7 @@ val vegetables = listOf(
 			GrowingTip.MULCH_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 12,
 		name = "Eggplant",
 		timeToHarvest = 75,
@@ -355,7 +355,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_WHEN_FIRM,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 13,
 		name = "Sweet Corn",
 		timeToHarvest = 80,
@@ -383,7 +383,7 @@ val vegetables = listOf(
 			GrowingTip.HEAT_TOLERANT,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 14,
 		name = "Green Beans",
 		timeToHarvest = 55,
@@ -411,7 +411,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_REGULARLY,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 15,
 		name = "Cauliflower",
 		timeToHarvest = 70,
@@ -439,7 +439,7 @@ val vegetables = listOf(
 			GrowingTip.COLD_HARDY,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 16,
 		name = "Radishes",
 		timeToHarvest = 25,
@@ -467,7 +467,7 @@ val vegetables = listOf(
 			GrowingTip.COLD_HARDY,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 17,
 		name = "Kale",
 		timeToHarvest = 60,
@@ -495,7 +495,7 @@ val vegetables = listOf(
 			GrowingTip.CROP_ROTATION,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 18,
 		name = "Garlic",
 		timeToHarvest = 240,
@@ -523,7 +523,7 @@ val vegetables = listOf(
 			GrowingTip.CURE_AFTER_HARVEST,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 19,
 		name = "Beets",
 		timeToHarvest = 65,
@@ -551,7 +551,7 @@ val vegetables = listOf(
 			GrowingTip.SUCCESSION_PLANTING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 20,
 		name = "Peas",
 		timeToHarvest = 60,
@@ -579,7 +579,7 @@ val vegetables = listOf(
 			GrowingTip.HEAT_SENSITIVE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 21,
 		name = "Asparagus",
 		timeToHarvest = 730, // 2 years for first harvest
@@ -607,7 +607,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_SELECTIVELY,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 22,
 		name = "Brussels Sprouts",
 		timeToHarvest = 100,
@@ -635,7 +635,7 @@ val vegetables = listOf(
 			GrowingTip.HEAT_SENSITIVE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 23,
 		name = "Celery",
 		timeToHarvest = 100,
@@ -663,7 +663,7 @@ val vegetables = listOf(
 			GrowingTip.MULCH_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 24,
 		name = "Swiss Chard",
 		timeToHarvest = 55,
@@ -691,7 +691,7 @@ val vegetables = listOf(
 			GrowingTip.SUCCESSION_PLANTING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 25,
 		name = "Turnips",
 		timeToHarvest = 50,
@@ -719,7 +719,7 @@ val vegetables = listOf(
 			GrowingTip.SUCCESSION_PLANTING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 26,
 		name = "Okra",
 		timeToHarvest = 60,
@@ -747,7 +747,7 @@ val vegetables = listOf(
 			GrowingTip.SOAK_SEEDS,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 27,
 		name = "Leeks",
 		timeToHarvest = 120,
@@ -781,7 +781,7 @@ val vegetables = listOf(
 			GrowingTip.HILL_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 28,
 		name = "Arugula",
 		timeToHarvest = 30,
@@ -809,7 +809,7 @@ val vegetables = listOf(
 			GrowingTip.CUT_AND_COME_AGAIN,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 29,
 		name = "Sweet Potatoes",
 		timeToHarvest = 120,
@@ -837,7 +837,7 @@ val vegetables = listOf(
 			GrowingTip.LOOSE_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 30,
 		name = "Parsnips",
 		timeToHarvest = 120,
@@ -865,7 +865,7 @@ val vegetables = listOf(
 			GrowingTip.OVERWINTER,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 31,
 		name = "Artichokes",
 		timeToHarvest = 180,
@@ -893,7 +893,7 @@ val vegetables = listOf(
 			GrowingTip.DROUGHT_RESISTANT,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 32,
 		name = "Kohlrabi",
 		timeToHarvest = 60,
@@ -921,7 +921,7 @@ val vegetables = listOf(
 			GrowingTip.THIN_SEEDLINGS,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 33,
 		name = "Rutabaga",
 		timeToHarvest = 90,
@@ -949,7 +949,7 @@ val vegetables = listOf(
 			GrowingTip.COOL_STORAGE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 34,
 		name = "Bok Choy",
 		timeToHarvest = 45,
@@ -977,7 +977,7 @@ val vegetables = listOf(
 			GrowingTip.HEAT_SENSITIVE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 35,
 		name = "Fennel",
 		timeToHarvest = 90,
@@ -1005,7 +1005,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_SELECTIVELY,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 36,
 		name = "Endive",
 		timeToHarvest = 90,
@@ -1033,7 +1033,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_WHEN_FIRM,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 37,
 		name = "Collard Greens",
 		timeToHarvest = 70,
@@ -1061,7 +1061,7 @@ val vegetables = listOf(
 			GrowingTip.CROP_ROTATION,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 38,
 		name = "Mustard Greens",
 		timeToHarvest = 45,
@@ -1089,7 +1089,7 @@ val vegetables = listOf(
 			GrowingTip.CONSISTENT_MOISTURE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 39,
 		name = "Radicchio",
 		timeToHarvest = 90,
@@ -1117,7 +1117,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_WHEN_FIRM,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 40,
 		name = "Rhubarb",
 		timeToHarvest = 365, // 1 year for first harvest
@@ -1145,7 +1145,7 @@ val vegetables = listOf(
 			GrowingTip.DIVIDE_EVERY_FEW_YEARS,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 41,
 		name = "Shallots",
 		timeToHarvest = 100,
@@ -1173,7 +1173,7 @@ val vegetables = listOf(
 			GrowingTip.MULCH_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 42,
 		name = "Watercress",
 		timeToHarvest = 50,
@@ -1207,7 +1207,7 @@ val vegetables = listOf(
 			GrowingTip.AQUATIC_FRIENDLY,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 43,
 		name = "Jerusalem Artichokes",
 		timeToHarvest = 150,
@@ -1235,7 +1235,7 @@ val vegetables = listOf(
 			GrowingTip.CONTAIN_SPREAD,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 44,
 		name = "Pumpkins",
 		timeToHarvest = 100,
@@ -1269,7 +1269,7 @@ val vegetables = listOf(
 			GrowingTip.CURE_AFTER_HARVEST,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 45,
 		name = "Winter Squash",
 		timeToHarvest = 95,
@@ -1303,7 +1303,7 @@ val vegetables = listOf(
 			GrowingTip.FULL_MATURITY_FOR_STORAGE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 46,
 		name = "Summer Squash",
 		timeToHarvest = 50,
@@ -1331,7 +1331,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_WHEN_SMALL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 47,
 		name = "Horseradish",
 		timeToHarvest = 365, // 1 year
@@ -1365,7 +1365,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_IN_FALL_OR_SPRING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 48,
 		name = "Ginger",
 		timeToHarvest = 300,
@@ -1399,7 +1399,7 @@ val vegetables = listOf(
 			GrowingTip.MULCH_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 49,
 		name = "Turmeric",
 		timeToHarvest = 300,
@@ -1433,7 +1433,7 @@ val vegetables = listOf(
 			GrowingTip.MULCH_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 50,
 		name = "Yams",
 		timeToHarvest = 180,
@@ -1461,7 +1461,7 @@ val vegetables = listOf(
 			GrowingTip.LOOSE_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 51,
 		name = "Taro",
 		timeToHarvest = 200,
@@ -1489,7 +1489,7 @@ val vegetables = listOf(
 			GrowingTip.SHADE_TOLERANT,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 52,
 		name = "Cassava",
 		timeToHarvest = 300,
@@ -1517,7 +1517,7 @@ val vegetables = listOf(
 			GrowingTip.PROPER_PROCESSING_REQUIRED,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 53,
 		name = "Lotus Root",
 		timeToHarvest = 240,
@@ -1551,7 +1551,7 @@ val vegetables = listOf(
 			GrowingTip.CONTAIN_SPREAD,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 54,
 		name = "Water Chestnuts",
 		timeToHarvest = 240,
@@ -1585,7 +1585,7 @@ val vegetables = listOf(
 			GrowingTip.CONTAIN_SPREAD,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 55,
 		name = "Wasabi",
 		timeToHarvest = 730, // 2 years
@@ -1613,7 +1613,7 @@ val vegetables = listOf(
 			GrowingTip.SLOW_GROWING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 56,
 		name = "Daikon Radish",
 		timeToHarvest = 60,
@@ -1641,7 +1641,7 @@ val vegetables = listOf(
 			GrowingTip.AVOID_ROCKY_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 57,
 		name = "Fava Beans",
 		timeToHarvest = 80,
@@ -1669,7 +1669,7 @@ val vegetables = listOf(
 			GrowingTip.EARLY_SPRING_CROP,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 58,
 		name = "Lima Beans",
 		timeToHarvest = 90,
@@ -1703,7 +1703,7 @@ val vegetables = listOf(
 			GrowingTip.DIRECT_SOW,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 59,
 		name = "Chickpeas",
 		timeToHarvest = 100,
@@ -1737,7 +1737,7 @@ val vegetables = listOf(
 			GrowingTip.HEAT_TOLERANT,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 60,
 		name = "Lentils",
 		timeToHarvest = 90,
@@ -1765,7 +1765,7 @@ val vegetables = listOf(
 			GrowingTip.COOL_WEATHER_CROP,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 61,
 		name = "Mung Beans",
 		timeToHarvest = 90,
@@ -1799,7 +1799,7 @@ val vegetables = listOf(
 			GrowingTip.DROUGHT_RESISTANT,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 62,
 		name = "Adzuki Beans",
 		timeToHarvest = 90,
@@ -1833,7 +1833,7 @@ val vegetables = listOf(
 			GrowingTip.SHALLOW_PLANTING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 63,
 		name = "Black-eyed Peas",
 		timeToHarvest = 70,
@@ -1867,7 +1867,7 @@ val vegetables = listOf(
 			GrowingTip.DIRECT_SOW,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 64,
 		name = "Jicama",
 		timeToHarvest = 150,
@@ -1895,7 +1895,7 @@ val vegetables = listOf(
 			GrowingTip.WAIT_FOR_WARM_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 65,
 		name = "Salsify",
 		timeToHarvest = 120,
@@ -1923,7 +1923,7 @@ val vegetables = listOf(
 			GrowingTip.FROST_IMPROVES_FLAVOR,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 66,
 		name = "Celeriac",
 		timeToHarvest = 110,
@@ -1951,7 +1951,7 @@ val vegetables = listOf(
 			GrowingTip.LONG_GROWING_SEASON,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 67,
 		name = "Cardoon",
 		timeToHarvest = 180,
@@ -1979,7 +1979,7 @@ val vegetables = listOf(
 			GrowingTip.FERTILE_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 68,
 		name = "Romanesco",
 		timeToHarvest = 90,
@@ -2007,7 +2007,7 @@ val vegetables = listOf(
 			GrowingTip.CROP_ROTATION,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 69,
 		name = "Amaranth",
 		timeToHarvest = 45, // For leaves
@@ -2035,7 +2035,7 @@ val vegetables = listOf(
 			GrowingTip.WAIT_FOR_WARM_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 70,
 		name = "Mizuna",
 		timeToHarvest = 40,
@@ -2063,7 +2063,7 @@ val vegetables = listOf(
 			GrowingTip.HEAT_SENSITIVE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 71,
 		name = "Tatsoi",
 		timeToHarvest = 45,
@@ -2091,7 +2091,7 @@ val vegetables = listOf(
 			GrowingTip.SUCCESSION_PLANTING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 72,
 		name = "Mache",
 		timeToHarvest = 60,
@@ -2119,7 +2119,7 @@ val vegetables = listOf(
 			GrowingTip.OVERWINTER,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 73,
 		name = "Purslane",
 		timeToHarvest = 45,
@@ -2147,7 +2147,7 @@ val vegetables = listOf(
 			GrowingTip.CONTAIN_SPREAD,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 74,
 		name = "Sorrel",
 		timeToHarvest = 60,
@@ -2175,7 +2175,7 @@ val vegetables = listOf(
 			GrowingTip.CONTAIN_SPREAD,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 75,
 		name = "Lovage",
 		timeToHarvest = 90,
@@ -2203,7 +2203,7 @@ val vegetables = listOf(
 			GrowingTip.CUT_AND_COME_AGAIN,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 76,
 		name = "Sunchokes",
 		timeToHarvest = 150,
@@ -2231,7 +2231,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_AFTER_FROST,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 77,
 		name = "Yacon",
 		timeToHarvest = 240,
@@ -2257,7 +2257,7 @@ val vegetables = listOf(
 			GrowingTip.CURE_AFTER_HARVEST,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 78,
 		name = "Oca",
 		timeToHarvest = 210,
@@ -2283,7 +2283,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_AFTER_FROST,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 79,
 		name = "Mashua",
 		timeToHarvest = 210,
@@ -2310,7 +2310,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_AFTER_FROST,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 80,
 		name = "Ulluco",
 		timeToHarvest = 210,
@@ -2337,7 +2337,7 @@ val vegetables = listOf(
 			GrowingTip.HARVEST_AFTER_FROST,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 81,
 		name = "Chayote",
 		timeToHarvest = 120,
@@ -2364,7 +2364,7 @@ val vegetables = listOf(
 			GrowingTip.PERENNIAL_IN_TROPICS,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 82,
 		name = "Bitter Melon",
 		timeToHarvest = 70,
@@ -2390,7 +2390,7 @@ val vegetables = listOf(
 			GrowingTip.SOAK_SEEDS,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 83,
 		name = "Luffa",
 		timeToHarvest = 120,
@@ -2416,7 +2416,7 @@ val vegetables = listOf(
 			GrowingTip.NEEDS_LONG_SEASON,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 84,
 		name = "Winged Beans",
 		timeToHarvest = 80,
@@ -2448,7 +2448,7 @@ val vegetables = listOf(
 			GrowingTip.NITROGEN_FIXING,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 85,
 		name = "Moringa",
 		timeToHarvest = 90, // For leaves
@@ -2475,7 +2475,7 @@ val vegetables = listOf(
 			GrowingTip.PERENNIAL_IN_TROPICS,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 86,
 		name = "Tomatillos",
 		timeToHarvest = 70,
@@ -2497,7 +2497,7 @@ val vegetables = listOf(
 		growthHabit = PlantGrowthHabit.BUSH,
 		growingTips = listOf(GrowingTip.SUPPORT_WHEN_FRUITING, GrowingTip.HEAT_TOLERANT),
 	),
-	Vegetable(
+	Plant(
 		id = 87,
 		name = "Quinoa",
 		timeToHarvest = 100,
@@ -2524,7 +2524,7 @@ val vegetables = listOf(
 			GrowingTip.BIRD_PROTECTION,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 88,
 		name = "Amaranth Grain",
 		timeToHarvest = 90,
@@ -2550,7 +2550,7 @@ val vegetables = listOf(
 			GrowingTip.HEAT_TOLERANT,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 89,
 		name = "Buckwheat",
 		timeToHarvest = 80,
@@ -2572,7 +2572,7 @@ val vegetables = listOf(
 		growthHabit = PlantGrowthHabit.UPRIGHT,
 		growingTips = listOf(GrowingTip.QUICK_GROWING, GrowingTip.DIRECT_SOW),
 	),
-	Vegetable(
+	Plant(
 		id = 90,
 		name = "Millet",
 		timeToHarvest = 90,
@@ -2598,7 +2598,7 @@ val vegetables = listOf(
 			GrowingTip.HEAT_TOLERANT,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 91,
 		name = "Flax",
 		timeToHarvest = 100,
@@ -2626,7 +2626,7 @@ val vegetables = listOf(
 		growthHabit = PlantGrowthHabit.UPRIGHT,
 		growingTips = listOf(GrowingTip.DIRECT_SOW, GrowingTip.COOL_WEATHER_CROP),
 	),
-	Vegetable(
+	Plant(
 		id = 92,
 		name = "Chicory",
 		timeToHarvest = 85,
@@ -2652,7 +2652,7 @@ val vegetables = listOf(
 			GrowingTip.DIRECT_SOW,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 93,
 		name = "Skirret",
 		timeToHarvest = 150,
@@ -2674,7 +2674,7 @@ val vegetables = listOf(
 		growthHabit = PlantGrowthHabit.UPRIGHT,
 		growingTips = listOf(GrowingTip.PERENNIAL_CROP, GrowingTip.DIVIDE_EVERY_FEW_YEARS),
 	),
-	Vegetable(
+	Plant(
 		id = 94,
 		name = "Good King Henry",
 		timeToHarvest = 60, // For leaves
@@ -2707,7 +2707,7 @@ val vegetables = listOf(
 			GrowingTip.SLOW_TO_ESTABLISH,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 95,
 		name = "Sea Kale",
 		timeToHarvest = 90, // For leaves, longer for roots
@@ -2735,7 +2735,7 @@ val vegetables = listOf(
 			GrowingTip.DROUGHT_RESISTANT,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 96,
 		name = "Chinese Broccoli",
 		timeToHarvest = 60,
@@ -2763,7 +2763,7 @@ val vegetables = listOf(
 			GrowingTip.FERTILE_SOIL,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 97,
 		name = "Chives",
 		timeToHarvest = 60,
@@ -2791,7 +2791,7 @@ val vegetables = listOf(
 			GrowingTip.EDIBLE_FLOWERS,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 98,
 		name = "New Zealand Spinach",
 		timeToHarvest = 60,
@@ -2818,7 +2818,7 @@ val vegetables = listOf(
 			GrowingTip.SOAK_SEEDS,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 99,
 		name = "Orach",
 		timeToHarvest = 45,
@@ -2846,7 +2846,7 @@ val vegetables = listOf(
 			GrowingTip.SPINACH_SUBSTITUTE,
 		),
 	),
-	Vegetable(
+	Plant(
 		id = 100,
 		name = "Malabar Spinach",
 		timeToHarvest = 55,

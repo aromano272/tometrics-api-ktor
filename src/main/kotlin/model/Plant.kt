@@ -212,6 +212,8 @@ data class PlantYield(
     val unit: YieldUnit,
 )
 
+typealias PlantId = Int
+
 @Serializable
 data class PlantRef(
     val id: PlantId,
@@ -219,7 +221,7 @@ data class PlantRef(
 )
 
 @Serializable
-data class Vegetable(
+data class Plant(
     val id: PlantId,
     val name: String,
     val timeToHarvest: Int,
