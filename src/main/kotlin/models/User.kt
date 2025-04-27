@@ -7,6 +7,6 @@ data class User(
     val id: Int,
     val name: String,
     val email: String,
-    val idProviderType: IdProviderType?,
+    val idProviderTypes: List<IdProviderType>,
     val anon: Boolean,
 )

@@ -17,12 +17,12 @@ import com.sproutscout.api.database.runMigrations
 import com.sproutscout.api.service.AuthService
 import com.sproutscout.api.service.DefaultAuthService
 import com.sproutscout.api.service.DefaultGoogleAuthService
-import com.sproutscout.api.service.DefaultJobService
+import com.sproutscout.api.service.DefaultPlantService
 import com.sproutscout.api.service.DefaultJwtService
 import com.sproutscout.api.service.EmailService
 import com.sproutscout.api.service.EmailTemplateRenderer
 import com.sproutscout.api.service.GoogleAuthService
-import com.sproutscout.api.service.JobService
+import com.sproutscout.api.service.PlantService
 import com.sproutscout.api.service.JwtService
 import com.sproutscout.api.service.MailgunEmailService
 import com.sproutscout.api.service.MustacheEmailTemplateRenderer
@@ -142,8 +142,8 @@ fun serviceModule(application: Application) = module {
         )
     }
 
-    single<JobService> {
-        DefaultJobService(
+    single<PlantService> {
+        DefaultPlantService(
         )
     }
 

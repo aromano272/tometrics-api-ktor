@@ -3,8 +3,10 @@ package com.sproutscout.api.service
 import com.sproutscout.api.database.RefreshTokenDao
 import com.sproutscout.api.database.UserDao
 import com.sproutscout.api.database.models.toDomain
+import com.sproutscout.api.models.BadRequestException
 import com.sproutscout.api.models.IdProviderType
 import com.sproutscout.api.models.NotFoundException
+import com.sproutscout.api.models.Requester
 import com.sproutscout.api.models.Tokens
 import com.sproutscout.api.models.UnauthorizedException
 import com.sproutscout.api.models.User
@@ -15,7 +17,7 @@ import java.util.*
 interface AuthService {
     suspend fun registerAnon(): Tokens
     suspend fun login(user: User): Tokens
-    suspend fun loginWithGoogle(credential: String): Tokens
+    suspend fun loginWithGoogle(requester: Requester?, idToken: String): Tokens
     suspend fun refreshToken(refreshToken: String): Tokens
     suspend fun logout(username: String, refreshToken: String)
 }
@@ -43,14 +45,29 @@ class DefaultAuthService(
         return Tokens(access, refresh)
     }
 
-    override suspend fun loginWithGoogle(credential: String): Tokens {
-        val payload = googleAuthService.verify(credential)
-        val user = userDao.findByEmailAndIdProviderType(payload.email, IdProviderType.GOOGLE)?.toDomain()
+    override suspend fun loginWithGoogle(requester: Requester?, idToken: String): Tokens {
+        val payload = googleAuthService.verify(idToken)
+        val requesterUser = requester?.userId?.let {
+            userDao.findById(it) ?: throw NotFoundException("User id not found")
+        }?.toDomain()
 
-        return if (user != null) {
-            userDao.updateAnon(user.id, IdProviderType.GOOGLE, false)
-            login(user)
-        } else {
+        val userGoogle = userDao.findByEmailAndIdProviderType(payload.email, IdProviderType.GOOGLE)?.toDomain()
+
+        // todo this seems terrible login, take a look
+        return if (requesterUser != null) {
+            if (requesterUser.anon) {
+                // todo merge accs
+                userDao.updateAnon(requesterUser.id, IdProviderType.GOOGLE, false)
+                login(requesterUser)
+            } else if (requesterUser.idProviderTypes.contains(IdProviderType.GOOGLE)) {
+                login(requesterUser)
+            } else if (userGoogle == null) {
+                // todo add provider type
+                login(requesterUser)
+            } else {
+                throw BadRequestException("This Google Email is already registered to a different account")
+            }
+        } else if (userGoogle == null) {
             val userId = userDao.insert(
                 name = payload.name.orEmpty(),
                 email = payload.email,
@@ -59,6 +76,8 @@ class DefaultAuthService(
             )
             val user = userDao.findById(userId)!!.toDomain()
             login(user)
+        } else {
+            login(userGoogle)
         }
     }
 

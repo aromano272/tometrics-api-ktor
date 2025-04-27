@@ -31,7 +31,7 @@ class JobServiceTest {
     private val jobDao: JobDao = mockk()
     private val jobFavoriteDao: JobFavoriteDao = mockk()
     private val jobApplicationDao: JobApplicationDao = mockk()
-    private val jobService: DefaultJobService = DefaultJobService(jobDao, jobFavoriteDao, jobApplicationDao)
+    private val jobService: DefaultPlantService = DefaultPlantService(jobDao, jobFavoriteDao, jobApplicationDao)
 
     @Test
     fun `insert should throw ForbiddenException when user is not admin`(): Unit = runTest {

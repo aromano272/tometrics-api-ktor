@@ -5,15 +5,15 @@ import com.sproutscout.api.models.BadRequestException
 import com.sproutscout.api.models.IdProviderPayload
 
 interface GoogleAuthService {
-    suspend fun verify(credential: String): IdProviderPayload
+    suspend fun verify(idToken: String): IdProviderPayload
 }
 
 class DefaultGoogleAuthService(
     private val verifier: GoogleIdTokenVerifier,
 ) : GoogleAuthService {
 
-    override suspend fun verify(credential: String): IdProviderPayload {
-        val idToken = verifier.verify(credential)
+    override suspend fun verify(idToken: String): IdProviderPayload {
+        val idToken = verifier.verify(idToken)
             ?: throw BadRequestException("Invalid Id token")
 
         val name = idToken.payload["name"] as? String

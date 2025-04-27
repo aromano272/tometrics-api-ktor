@@ -16,6 +16,6 @@ fun UserEntity.toDomain(): User = User(
     id = id,
     name = name,
     email = email,
-    idProviderType = idProviderType,
+    idProviderTypes = idProviderType,
     anon = anon,
 )

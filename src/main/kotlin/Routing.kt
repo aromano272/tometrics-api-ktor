@@ -8,9 +8,9 @@ import com.sproutscout.api.models.ForbiddenException
 import com.sproutscout.api.models.NotFoundException
 import com.sproutscout.api.models.UnauthorizedException
 import com.sproutscout.api.routes.authRoutes
-import com.sproutscout.api.routes.jobRoutes
+import com.sproutscout.api.routes.plantRoutes
 import com.sproutscout.api.service.AuthService
-import com.sproutscout.api.service.JobService
+import com.sproutscout.api.service.PlantService
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -66,7 +66,7 @@ fun Application.configureRouting() {
     }
 
     val authService: AuthService by inject()
-    val jobService: JobService by inject()
+    val plantService: PlantService by inject()
     val logger: Logger by inject()
 
 
@@ -76,7 +76,7 @@ fun Application.configureRouting() {
                 call.respondText("Home")
             }
             authRoutes(authService, logger)
-            jobRoutes(jobService)
+            plantRoutes(plantService)
         }
     }
 }
