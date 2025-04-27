@@ -30,8 +30,8 @@ enum class YieldUnit {
 
 @Serializable
 data class PlantYield(
-    val from: Int,
-    val to: Int,
+    val from: Float,
+    val to: Float,
     val unit: YieldUnit,
 )
 
