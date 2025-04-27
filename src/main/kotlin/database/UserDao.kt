@@ -1,7 +1,7 @@
 package com.sproutscout.api.database
 
 import com.sproutscout.api.database.models.UserEntity
-import com.sproutscout.api.models.IdProviderType
+import com.sproutscout.api.domain.models.IdProviderType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

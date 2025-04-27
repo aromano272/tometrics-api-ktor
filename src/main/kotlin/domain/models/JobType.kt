@@ -1,4 +1,4 @@
-package com.sproutscout.api.models
+package com.sproutscout.api.domain.models
 
 enum class JobType {
     FULL_TIME, PART_TIME, CONTRACTOR, INTERNSHIP

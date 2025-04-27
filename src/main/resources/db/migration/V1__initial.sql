@@ -14,3 +14,11 @@ CREATE TABLE refresh_tokens (
     created_at TIMESTAMP DEFAULT now()
 );
 
+CREATE TABLE plantings (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    plant_id INT NOT NULL,
+    quantity INT NOT NULL,
+    created_at TIMESTAMP DEFAULT now()
+);
+

@@ -1,7 +1,7 @@
 package com.sproutscout.api.routes
 
 import com.sproutscout.api.model.Plant
-import com.sproutscout.api.models.NotFoundException
+import com.sproutscout.api.domain.models.NotFoundException
 import com.sproutscout.api.routes.models.GetAllPlantsResponse
 import com.sproutscout.api.service.PlantService
 import io.github.smiley4.ktoropenapi.get

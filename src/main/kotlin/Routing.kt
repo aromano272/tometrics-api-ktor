@@ -1,30 +1,21 @@
 package com.sproutscout.api
 
-import com.sproutscout.api.models.ApiException
-import com.sproutscout.api.models.BadRequestException
-import com.sproutscout.api.models.ConflictException
-import com.sproutscout.api.models.ErrorResponse
-import com.sproutscout.api.models.ForbiddenException
-import com.sproutscout.api.models.NotFoundException
-import com.sproutscout.api.models.UnauthorizedException
+import com.sproutscout.api.domain.models.*
 import com.sproutscout.api.routes.authRoutes
 import com.sproutscout.api.routes.plantRoutes
+import com.sproutscout.api.routes.plantingRoutes
 import com.sproutscout.api.service.AuthService
+import com.sproutscout.api.service.GardenService
 import com.sproutscout.api.service.PlantService
-import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.application.Application
-import io.ktor.server.application.install
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.plugins.requestvalidation.RequestValidation
-import io.ktor.server.plugins.requestvalidation.ValidationResult
-import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.response.respond
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.get
-import io.ktor.server.routing.route
-import io.ktor.server.routing.routing
-import io.ktor.util.logging.Logger
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.requestvalidation.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.util.logging.*
 import kotlinx.serialization.json.Json
 import org.koin.ktor.ext.inject
 
@@ -67,6 +58,7 @@ fun Application.configureRouting() {
 
     val authService: AuthService by inject()
     val plantService: PlantService by inject()
+    val gardenService: GardenService by inject()
     val logger: Logger by inject()
 
 
@@ -74,6 +66,7 @@ fun Application.configureRouting() {
         route("/api/v1") {
             authRoutes(authService, logger)
             plantRoutes(plantService)
+            plantingRoutes(gardenService)
         }
     }
 }

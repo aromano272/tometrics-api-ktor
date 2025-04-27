@@ -1,7 +1,7 @@
 package com.sproutscout.api.database.models
 
-import com.sproutscout.api.models.IdProviderType
-import com.sproutscout.api.models.User
+import com.sproutscout.api.domain.models.IdProviderType
+import com.sproutscout.api.domain.models.User
 
 
 data class UserEntity(

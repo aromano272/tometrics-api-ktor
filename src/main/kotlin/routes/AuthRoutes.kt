@@ -1,7 +1,7 @@
 package com.sproutscout.api.routes
 
-import com.sproutscout.api.models.BadRequestException
-import com.sproutscout.api.models.requester
+import com.sproutscout.api.domain.models.BadRequestException
+import com.sproutscout.api.domain.models.requester
 import com.sproutscout.api.routes.models.AuthGoogleLoginRequest
 import com.sproutscout.api.routes.models.TokensResponse
 import com.sproutscout.api.service.AuthService

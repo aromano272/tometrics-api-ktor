@@ -11,10 +11,10 @@ import com.sproutscout.api.database.models.JobListingEntity
 import com.sproutscout.api.database.models.JobTypeEntity
 import com.sproutscout.api.database.models.RemoteOptionEntity
 import com.sproutscout.api.database.models.UserEntity
-import com.sproutscout.api.models.ConflictException
-import com.sproutscout.api.models.ForbiddenException
-import com.sproutscout.api.models.NotFoundException
-import com.sproutscout.api.models.Requester
+import com.sproutscout.api.domain.models.ConflictException
+import com.sproutscout.api.domain.models.ForbiddenException
+import com.sproutscout.api.domain.models.NotFoundException
+import com.sproutscout.api.domain.models.Requester
 import io.ktor.util.logging.Logger
 import io.mockk.coEvery
 import io.mockk.coVerify

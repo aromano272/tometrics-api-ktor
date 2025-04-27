@@ -4,9 +4,9 @@ import com.sproutscout.api.database.RefreshTokenDao
 import com.sproutscout.api.database.UserDao
 import com.sproutscout.api.database.models.RefreshTokenEntity
 import com.sproutscout.api.database.models.UserEntity
-import com.sproutscout.api.models.ConflictException
-import com.sproutscout.api.models.NotFoundException
-import com.sproutscout.api.models.UnauthorizedException
+import com.sproutscout.api.domain.models.ConflictException
+import com.sproutscout.api.domain.models.NotFoundException
+import com.sproutscout.api.domain.models.UnauthorizedException
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

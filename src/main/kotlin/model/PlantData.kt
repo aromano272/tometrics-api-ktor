@@ -2874,3 +2874,5 @@ val plants = listOf(
 		),
 	),
 )
+
+val plantsMap = plants.associateBy { it.name.uppercase() }

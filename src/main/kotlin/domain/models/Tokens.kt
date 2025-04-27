@@ -1,4 +1,4 @@
-package com.sproutscout.api.models
+package com.sproutscout.api.domain.models
 
 import kotlinx.serialization.Serializable
 

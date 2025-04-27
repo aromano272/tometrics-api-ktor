@@ -5,40 +5,18 @@ import com.github.mustachejava.MustacheFactory
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.v2.ApacheHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import com.sproutscout.api.database.DefaultRefreshTokenDao
-import com.sproutscout.api.database.DefaultUserDao
-import com.sproutscout.api.database.RefreshTokenDao
-import com.sproutscout.api.database.RefreshTokenDb
-import com.sproutscout.api.database.UserDao
-import com.sproutscout.api.database.UserDb
-import com.sproutscout.api.database.createHikariDataSource
-import com.sproutscout.api.database.createJdbi
-import com.sproutscout.api.database.runMigrations
-import com.sproutscout.api.service.AuthService
-import com.sproutscout.api.service.DefaultAuthService
-import com.sproutscout.api.service.DefaultGoogleAuthService
-import com.sproutscout.api.service.DefaultPlantService
-import com.sproutscout.api.service.DefaultJwtService
-import com.sproutscout.api.service.EmailService
-import com.sproutscout.api.service.EmailTemplateRenderer
-import com.sproutscout.api.service.GoogleAuthService
-import com.sproutscout.api.service.PlantService
-import com.sproutscout.api.service.JwtService
-import com.sproutscout.api.service.MailgunEmailService
-import com.sproutscout.api.service.MustacheEmailTemplateRenderer
+import com.sproutscout.api.database.*
+import com.sproutscout.api.service.*
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.application.Application
-import io.ktor.server.application.install
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
 import io.ktor.util.logging.Logger
 import org.jdbi.v3.core.Jdbi
 import org.koin.dsl.module
@@ -104,6 +82,17 @@ fun databaseModule(application: Application) = module {
         )
     }
 
+    single<GardenDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(GardenDb::class.java)
+    }
+
+    single<GardenDao> {
+        DefaultGardenDao(
+            db = get()
+        )
+    }
+
     single<RefreshTokenDb> {
         val jdbi: Jdbi = get()
         jdbi.onDemand(RefreshTokenDb::class.java)
@@ -144,6 +133,12 @@ fun serviceModule(application: Application) = module {
 
     single<PlantService> {
         DefaultPlantService(
+        )
+    }
+
+    single<GardenService> {
+        DefaultGardenService(
+            gardenDao = get()
         )
     }
 

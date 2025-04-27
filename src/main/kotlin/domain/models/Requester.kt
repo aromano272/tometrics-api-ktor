@@ -1,4 +1,4 @@
-package com.sproutscout.api.models
+package com.sproutscout.api.domain.models
 
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal

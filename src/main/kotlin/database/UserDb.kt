@@ -1,7 +1,7 @@
 package com.sproutscout.api.database
 
 import com.sproutscout.api.database.models.UserEntity
-import com.sproutscout.api.models.IdProviderType
+import com.sproutscout.api.domain.models.IdProviderType
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
