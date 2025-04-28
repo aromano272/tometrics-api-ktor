@@ -138,7 +138,8 @@ fun serviceModule(application: Application) = module {
 
     single<GardenService> {
         DefaultGardenService(
-            gardenDao = get()
+            gardenDao = get(),
+            plantService = get(),
         )
     }
 

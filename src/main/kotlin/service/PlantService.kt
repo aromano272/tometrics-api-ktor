@@ -2896,4 +2896,4 @@ private val plants = listOf(
     ),
 )
 
-private val plantsMap = plants.associateBy { it.name.uppercase() }
+val plantsMap = plants.associateBy { it.name.uppercase() }

@@ -1,6 +1,7 @@
 package com.sproutscout.api.model
 
 import com.sproutscout.api.domain.models.Planting
+import com.sproutscout.api.service.plantsMap
 import java.time.Instant
 
 val plantings = listOfNotNull(
