@@ -3,13 +3,7 @@ package com.sproutscout.api.service
 import com.sproutscout.api.database.RefreshTokenDao
 import com.sproutscout.api.database.UserDao
 import com.sproutscout.api.database.models.toDomain
-import com.sproutscout.api.domain.models.BadRequestException
-import com.sproutscout.api.domain.models.IdProviderType
-import com.sproutscout.api.domain.models.NotFoundException
-import com.sproutscout.api.domain.models.Requester
-import com.sproutscout.api.domain.models.Tokens
-import com.sproutscout.api.domain.models.UnauthorizedException
-import com.sproutscout.api.domain.models.User
+import com.sproutscout.api.domain.models.*
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.util.*
@@ -51,34 +45,74 @@ class DefaultAuthService(
             userDao.findById(it) ?: throw NotFoundException("User id not found")
         }?.toDomain()
 
-        val userGoogle = userDao.findByEmailAndIdProviderType(payload.email, IdProviderType.GOOGLE)?.toDomain()
+        val googleUser = userDao.findByGoogleEmail(payload.email)?.toDomain()
 
-        // todo this seems terrible login, take a look
-        return if (requesterUser != null) {
-            if (requesterUser.anon) {
-                // todo merge accs
-                userDao.updateAnon(requesterUser.id, IdProviderType.GOOGLE, false)
-                login(requesterUser)
-            } else if (requesterUser.idProviderTypes.contains(IdProviderType.GOOGLE)) {
-                login(requesterUser)
-            } else if (userGoogle == null) {
-                // todo add provider type
-                login(requesterUser)
+        // requesterUser == null
+        //   - existing gmail account != null
+        //     - login
+        //   - else
+        //     - register
+        // requester != null
+        //  - anon == false
+        //    - googleUser != null // most likely edge case just login
+        //      - login
+        //    - googleUser == null
+        //      - TODO probably add new idp to the user?, not support currently, throws
+        //  - anon == true
+        //    - googleUser != null
+        //      - TODO merge accs? Or fail? Or have confirmation endpoint?
+        //      - login
+        //    - else
+        //      - update anon account to idpGoogle
+
+        return if (requesterUser == null) {
+            if (googleUser != null) {
+                login(googleUser)
             } else {
-                throw BadRequestException("This Google Email is already registered to a different account")
+                val user = registerUsingGoogle(payload)
+                login(user)
             }
-        } else if (userGoogle == null) {
-            val userId = userDao.insert(
-                name = payload.name.orEmpty(),
-                email = payload.email,
-                idProviderType = IdProviderType.GOOGLE,
-                anon = false,
-            )
-            val user = userDao.findById(userId)!!.toDomain()
-            login(user)
         } else {
-            login(userGoogle)
+            if (!requesterUser.anon) {
+                // most likely edge case just login
+                if (googleUser != null) {
+                    login(googleUser)
+                } else {
+                    // Explanation: If requester user is not anonymous that means it already has a provider registered
+                    // But we couldn't find a matching google account, so it either has another provider or has a different
+                    // gmail one, if it has another provider we should add the google provider to it, if it already has a
+                    // google provider but the emails dont match, than we should just throw
+                    if (requesterUser.idpGoogleEmail != null) {
+                        throw ConflictException("You already have a different google email assigned")
+                    } else {
+                        throw IllegalStateException("There are currently no other idp's so it's impossible for the user " +
+                                "to not be anon but not have a different google idp attached, in the future when there " +
+                                "more idp's this case will be reachable when, for eg., a user with facebook idp logs in with " +
+                                "google we should add the google idp to this user so it has 2 idp's")
+                    }
+                }
+            } else {
+                if (googleUser != null) {
+                    //      - TODO merge accs? Or fail? Or have confirmation endpoint?
+                    //      - login
+                    throw BadRequestException("Not supported yet")
+                } else {
+                    userDao.updateAnon(requesterUser.id, payload.email, false)
+                    val newUser = userDao.findById(requesterUser.id)!!.toDomain()
+                    login(newUser)
+                }
+            }
         }
+    }
+
+    private suspend fun registerUsingGoogle(payload: IdProviderPayload): User {
+        val userId = userDao.insert(
+            name = payload.name.orEmpty(),
+            email = payload.email,
+            idpGoogleEmail = payload.email,
+            anon = false,
+        )
+        return userDao.findById(userId)!!.toDomain()
     }
 
     override suspend fun refreshToken(refreshToken: String): Tokens {

@@ -1,0 +1,29 @@
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzcHJvdXRzY291dC11c2VycyIsImlzcyI6InNwcm91dHNjb3V0LmNvbSIsInVzZXJJZCI6MSwidXNlcm5hbWUiOiIiLCJleHAiOjE3NDgzODU4NjB9.I3KHUQaQNMhm11umvh4nFBhPo-fQBwJ_Vs6M6Z302Tg
+
+### Get all plants
+GET http://localhost:8080/api/v1/planting/all
+Authorization: Bearer {{accessToken}}
+
+### Delete plant by ID
+DELETE http://localhost:8080/api/v1/planting/1
+Authorization: Bearer {{accessToken}}
+
+### Patch plant by ID
+PATCH http://localhost:8080/api/v1/planting/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "newQuantity": 5
+}
+
+### Add a new planting
+POST http://localhost:8080/api/v1/planting/add
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "plantId": 1,
+  "quantity": 5
+}
+

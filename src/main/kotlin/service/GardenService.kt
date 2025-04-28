@@ -4,7 +4,6 @@ import com.sproutscout.api.database.GardenDao
 import com.sproutscout.api.database.models.toDomain
 import com.sproutscout.api.domain.models.*
 import com.sproutscout.api.model.PlantId
-import com.sproutscout.api.model.plants
 
 interface GardenService {
     suspend fun getAll(requester: Requester): List<Planting>
@@ -16,12 +15,12 @@ interface GardenService {
 
 class DefaultGardenService(
     private val gardenDao: GardenDao,
+    private val plantService: PlantService,
 ) : GardenService {
 
     override suspend fun getAll(requester: Requester): List<Planting> {
         return gardenDao.getAll(requester.userId).map { planting ->
-            val plant = plants.find { it.id == planting.plantId }
-                ?: throw NotFoundException("Plant #${planting.plantId} not found")
+            val plant = plantService.getById(planting.plantId)
             planting.toDomain(plant)
         }
     }
@@ -29,8 +28,7 @@ class DefaultGardenService(
     override suspend fun getById(requester: Requester, id: PlantingId): Planting {
         val planting = gardenDao.find(id) ?: throw NotFoundException("Planting not found")
         if (planting.userId != requester.userId) throw BadRequestException("Planting doesn't belong to this user")
-        val plant = plants.find { it.id == planting.plantId }
-            ?: throw NotFoundException("Plant #${planting.plantId} not found")
+        val plant = plantService.getById(planting.plantId)
 
         return planting.toDomain(plant)
     }

@@ -4,12 +4,9 @@ import com.sproutscout.api.database.RefreshTokenDao
 import com.sproutscout.api.database.UserDao
 import com.sproutscout.api.database.models.RefreshTokenEntity
 import com.sproutscout.api.database.models.UserEntity
-import com.sproutscout.api.domain.models.ConflictException
-import com.sproutscout.api.domain.models.NotFoundException
 import com.sproutscout.api.domain.models.UnauthorizedException
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import java.time.Instant
@@ -22,96 +19,13 @@ class AuthServiceTest {
     private val jwtService: JwtService = mockk()
     private val userDao: UserDao = mockk()
     private val refreshTokenDao: RefreshTokenDao = mockk()
-    private val passwordService: PasswordService = mockk()
+    private val googleAuthService: GoogleAuthService = mockk()
     private val authService = DefaultAuthService(
         jwtService = jwtService,
         userDao = userDao,
         refreshTokenDao = refreshTokenDao,
-        passwordService = passwordService
+        googleAuthService = googleAuthService,
     )
-
-    @Test
-    fun `registerAndLogin should throw ConflictException when username exists`() = runTest {
-        val username = "testuser"
-        val email = "test@example.com"
-        val password = "password"
-        val isAdmin = false
-
-        coEvery { userDao.findByUsername(username) } returns TEST_USER_ENTITY
-
-        assertFailsWith<ConflictException> {
-            authService.registerAndLogin(username, email, password, isAdmin)
-        }
-    }
-
-    @Test
-    fun `registerAndLogin should create user and return tokens`() = runTest {
-        val username = "testuser"
-        val email = "test@example.com"
-        val password = "password"
-        val isAdmin = false
-        val userId = 1
-        val accessToken = "test_access_token"
-        val hashedPassword = "\$2a\$12\$1234567890123456789012"
-
-        coEvery { userDao.findByUsername(username) }.returnsMany(null, TEST_USER_ENTITY)
-        every { passwordService.hash(password) } returns hashedPassword
-        coEvery { userDao.insert(username, email, isAdmin, hashedPassword) } returns userId
-        coEvery { jwtService.create(userId, username, isAdmin) } returns accessToken
-        coEvery { refreshTokenDao.insert(userId, any(), any()) } returns Unit
-        every { passwordService.verify(password, hashedPassword) } returns true
-
-        val tokens = authService.registerAndLogin(username, email, password, isAdmin)
-
-        assertNotNull(tokens)
-        assertEquals(accessToken, tokens.access)
-        assertNotNull(tokens.refresh)
-    }
-
-    @Test
-    fun `login should throw NotFoundException when user not found`() = runTest {
-        val username = "testuser"
-        val password = "password"
-
-        coEvery { userDao.findByUsername(username) } returns null
-
-        assertFailsWith<NotFoundException> {
-            authService.login(username, password)
-        }
-    }
-
-    @Test
-    fun `login should throw UnauthorizedException when password is wrong`() = runTest {
-        val username = "testuser"
-        val password = "wrong_password"
-        val user = TEST_USER_ENTITY
-
-        coEvery { userDao.findByUsername(username) } returns user
-        every { passwordService.verify(password, user.passwordHash) } returns false
-
-        assertFailsWith<UnauthorizedException> {
-            authService.login(username, password)
-        }
-    }
-
-    @Test
-    fun `login should return tokens when credentials are correct`() = runTest {
-        val username = "testuser"
-        val password = "password"
-        val user = TEST_USER_ENTITY
-        val accessToken = "test_access_token"
-
-        coEvery { userDao.findByUsername(username) } returns user
-        every { passwordService.verify(password, user.passwordHash) } returns true
-        coEvery { jwtService.create(user.id, username, user.isAdmin) } returns accessToken
-        coEvery { refreshTokenDao.insert(user.id, any(), any()) } returns Unit
-
-        val tokens = authService.login(username, password)
-
-        assertNotNull(tokens)
-        assertEquals(accessToken, tokens.access)
-        assertNotNull(tokens.refresh)
-    }
 
     @Test
     fun `refreshToken should throw UnauthorizedException when token not found`() = runTest {
@@ -160,7 +74,7 @@ class AuthServiceTest {
         coEvery { userDao.findById(user.id) } returns user
         coEvery { refreshTokenDao.delete(refreshToken) } returns Unit
         coEvery { refreshTokenDao.insert(user.id, any(), any()) } returns Unit
-        coEvery { jwtService.create(user.id, user.name, user.isAdmin) } returns newAccessToken
+        coEvery { jwtService.create(user.id, user.name) } returns newAccessToken
 
         val tokens = authService.refreshToken(refreshToken)
 
@@ -229,8 +143,8 @@ class AuthServiceTest {
             id = 1,
             name = "testuser",
             email = "test@example.com",
-            passwordHash = "\$2a\$12\$1234567890123456789012",
-            isAdmin = false
+            idpGoogleEmail = "test@gmail.com",
+            anon = false,
         )
     }
 } 

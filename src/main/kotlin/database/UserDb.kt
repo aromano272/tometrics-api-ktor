@@ -1,7 +1,6 @@
 package com.sproutscout.api.database
 
 import com.sproutscout.api.database.models.UserEntity
-import com.sproutscout.api.domain.models.IdProviderType
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
@@ -13,20 +12,20 @@ import org.jetbrains.annotations.Blocking
 interface UserDb {
 
     @Blocking
-    @SqlUpdate("INSERT INTO users (name, email, id_provider_types, anon) VALUES (:name, :email, ARRAY[:idProviderType], :anon)")
+    @SqlUpdate("INSERT INTO users (name, email, idp_google_email, anon) VALUES (:name, :email, :idpGoogleEmail, :anon)")
     @GetGeneratedKeys
     fun insert(
         @Bind("name") name: String,
         @Bind("email") email: String,
-        @Bind("idProviderType") idProviderType: IdProviderType?,
+        @Bind("idpGoogleEmail") idpGoogleEmail: String?,
         @Bind("anon") anon: Boolean,
     ): Int
 
     @Blocking
-    @SqlUpdate("UPDATE users SET id_provider_types = ARRAY[:idProviderType], anon = :anon WHERE id = :id")
+    @SqlUpdate("UPDATE users SET idp_google_email = :idpGoogleEmail, anon = :anon WHERE id = :id")
     fun updateAnon(
         @Bind("id") id: Int,
-        @Bind("idProviderType") idProviderType: IdProviderType?,
+        @Bind("idpGoogleEmail") idpGoogleEmail: String?,
         @Bind("anon") anon: Boolean,
     ): Int
 
@@ -35,14 +34,10 @@ interface UserDb {
     fun getAllByIds(@Bind("ids") ids: List<Int>): List<UserEntity>
 
     @Blocking
-    @SqlQuery("SELECT * FROM users WHERE email = :email AND :idProviderType = ANY(id_provider_types)")
-    fun findByEmailAndIdProviderType(
-        email: String,
-        idProviderType: IdProviderType,
-    ): UserEntity?
+    @SqlQuery("SELECT * FROM users WHERE idp_google_email = :idpGoogleEmail")
+    fun findByGoogleEmail(@Bind("idpGoogleEmail") idpGoogleEmail: String): UserEntity?
 
     @Blocking
     @SqlQuery("SELECT * FROM users WHERE id = :id")
     fun findById(@Bind("id") id: Int): UserEntity?
-
 }

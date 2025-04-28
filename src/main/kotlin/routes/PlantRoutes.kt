@@ -1,7 +1,6 @@
 package com.sproutscout.api.routes
 
 import com.sproutscout.api.model.Plant
-import com.sproutscout.api.domain.models.NotFoundException
 import com.sproutscout.api.routes.models.GetAllPlantsResponse
 import com.sproutscout.api.service.PlantService
 import io.github.smiley4.ktoropenapi.get
@@ -46,7 +45,7 @@ fun Route.plantRoutes(
                 }
             }) {
                 val plantId = call.pathParameters["id"]?.toIntOrNull()!!
-                val plant = plantService.getById(plantId) ?: throw NotFoundException("Plant #$plantId not found")
+                val plant = plantService.getById(plantId)
                 call.respond(plant)
             }
         }

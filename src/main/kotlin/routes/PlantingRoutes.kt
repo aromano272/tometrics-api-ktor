@@ -1,35 +1,88 @@
 package com.sproutscout.api.routes
 
+import com.sproutscout.api.domain.models.Planting
 import com.sproutscout.api.domain.models.requireRequester
-import com.sproutscout.api.model.PlantId
-import com.sproutscout.api.routes.models.routes.models.GetAllPlantingsResponse
+import com.sproutscout.api.routes.models.AddPlantingRequest
+import com.sproutscout.api.routes.models.GetAllPlantingsResponse
+import com.sproutscout.api.routes.models.PatchPlantingRequest
 import com.sproutscout.api.service.GardenService
+import io.github.smiley4.ktoropenapi.delete
+import io.github.smiley4.ktoropenapi.get
+import io.github.smiley4.ktoropenapi.patch
+import io.github.smiley4.ktoropenapi.post
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.Serializable
 
 fun Route.plantingRoutes(
     gardenService: GardenService,
 ) {
     authenticate {
         route("/planting") {
-            get("/all") {
+            get("/all", {
+                description = "Retrieve all plantings for the authenticated user"
+                response {
+                    HttpStatusCode.OK to {
+                        description = "List of all plantings"
+                        body<GetAllPlantingsResponse>()
+                    }
+                }
+            }) {
                 val requester = call.requireRequester()
-                val plantings = gardenService.getAll(requester, )
+                val plantings = gardenService.getAll(requester)
                 call.respond(GetAllPlantingsResponse(plantings))
             }
 
-            delete("/{id}") {
+            delete("/{id}", {
+                description = "Delete a planting by its ID"
+                request {
+                    pathParameter<Int>("id") {
+                        description = "The ID of the planting to delete"
+                    }
+                }
+                response {
+                    HttpStatusCode.OK to {
+                        description = "Planting successfully deleted"
+                    }
+                    HttpStatusCode.NotFound to {
+                        description = "Planting not found"
+                    }
+                    HttpStatusCode.BadRequest to {
+                        description = "Planting doesn't belong to this user"
+                    }
+                }
+            }) {
                 val requester = call.requireRequester()
                 val id = call.pathParameters["id"]?.toIntOrNull()!!
                 gardenService.delete(requester, id)
                 call.respond(HttpStatusCode.OK)
             }
 
-            patch("/{id}") {
+            patch("/{id}", {
+                description = "Update the quantity of a planting by its ID"
+                request {
+                    pathParameter<Int>("id") {
+                        description = "The ID of the planting to update"
+                    }
+                    body<PatchPlantingRequest> {
+                        description = "Request containing the new quantity for the planting"
+                    }
+                }
+                response {
+                    HttpStatusCode.OK to {
+                        description = "The updated planting"
+                        body<Planting>()
+                    }
+                    HttpStatusCode.NotFound to {
+                        description = "Planting not found"
+                    }
+                    HttpStatusCode.BadRequest to {
+                        description = "Planting doesn't belong to this user"
+                    }
+                }
+            }) {
                 val requester = call.requireRequester()
                 val id = call.pathParameters["id"]?.toIntOrNull()!!
                 val request = call.receive<PatchPlantingRequest>()
@@ -37,27 +90,26 @@ fun Route.plantingRoutes(
                 call.respond(updatedPlanting)
             }
 
-            post("/add") {
+            post("/add", {
+                description = "Add a new planting"
+                request {
+                    body<AddPlantingRequest> {
+                        description = "Request to add a new planting with plant ID and quantity"
+                    }
+                }
+                response {
+                    HttpStatusCode.OK to {
+                        description = "The newly added planting"
+                        body<Planting>()
+                    }
+                }
+            }) {
                 val requester = call.requireRequester()
                 val request = call.receive<AddPlantingRequest>()
                 val planting = gardenService.add(requester, request.plantId, request.quantity)
                 call.respond(planting)
             }
-
         }
     }
 }
-
-@Serializable
-data class PatchPlantingRequest(
-    val newQuantity: Int,
-)
-
-@Serializable
-data class AddPlantingRequest(
-    val plantId: PlantId,
-    val quantity: Int,
-)
-
-
 

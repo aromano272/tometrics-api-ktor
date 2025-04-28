@@ -1,7 +1,6 @@
 package com.sproutscout.api.database
 
 import com.sproutscout.api.database.models.UserEntity
-import com.sproutscout.api.domain.models.IdProviderType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -10,25 +9,21 @@ interface UserDao {
     suspend fun insert(
         name: String,
         email: String,
-        idProviderType: IdProviderType?,
+        idpGoogleEmail: String?,
         anon: Boolean,
     ): Int
 
     suspend fun updateAnon(
         id: Int,
-        idProviderType: IdProviderType?,
+        idpGoogleEmail: String?,
         anon: Boolean,
     ): Int
 
     suspend fun getAllByIds(ids: List<Int>): List<UserEntity>
 
-    suspend fun findByEmailAndIdProviderType(
-        email: String,
-        idProviderType: IdProviderType,
-    ): UserEntity?
+    suspend fun findByGoogleEmail(idpGoogleEmail: String): UserEntity?
 
     suspend fun findById(id: Int): UserEntity?
-
 }
 
 class DefaultUserDao(
@@ -37,29 +32,26 @@ class DefaultUserDao(
     override suspend fun insert(
         name: String,
         email: String,
-        idProviderType: IdProviderType?,
+        idpGoogleEmail: String?,
         anon: Boolean,
     ): Int = withContext(Dispatchers.IO) {
-        db.insert(name, email, idProviderType, anon)
+        db.insert(name, email, idpGoogleEmail, anon)
     }
 
     override suspend fun updateAnon(
         id: Int,
-        idProviderType: IdProviderType?,
+        idpGoogleEmail: String?,
         anon: Boolean,
     ): Int = withContext(Dispatchers.IO) {
-        db.updateAnon(id, idProviderType, anon)
+        db.updateAnon(id, idpGoogleEmail, anon)
     }
 
     override suspend fun getAllByIds(ids: List<Int>): List<UserEntity> = withContext(Dispatchers.IO) {
         db.getAllByIds(ids)
     }
 
-    override suspend fun findByEmailAndIdProviderType(
-        email: String,
-        idProviderType: IdProviderType,
-    ): UserEntity? = withContext(Dispatchers.IO) {
-        db.findByEmailAndIdProviderType(email, idProviderType)
+    override suspend fun findByGoogleEmail(idpGoogleEmail: String): UserEntity? = withContext(Dispatchers.IO) {
+        db.findByGoogleEmail(idpGoogleEmail)
     }
 
     override suspend fun findById(id: Int): UserEntity? = withContext(Dispatchers.IO) {

@@ -9,6 +9,6 @@ data class User(
     val id: UserId,
     val name: String,
     val email: String,
-    val idProviderTypes: List<IdProviderType>,
+    val idpGoogleEmail: String?, // Field for Google ID provider
     val anon: Boolean,
 )
