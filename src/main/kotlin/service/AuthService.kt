@@ -4,7 +4,6 @@ import com.sproutscout.api.database.RefreshTokenDao
 import com.sproutscout.api.database.UserDao
 import com.sproutscout.api.database.models.toDomain
 import com.sproutscout.api.domain.models.*
-import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.util.*
 
@@ -14,9 +13,7 @@ interface AuthService {
     suspend fun loginWithGoogle(requester: Requester?, idToken: String): Tokens
     suspend fun loginWithFacebook(
         requester: Requester?,
-        id: String,
-        name: String,
-        email: String,
+        payload: IdProviderPayload.Facebook,
     ): Tokens
     suspend fun refreshToken(refreshToken: String): Tokens
     suspend fun logout(username: String, refreshToken: String)
@@ -124,15 +121,13 @@ class DefaultAuthService(
 
     override suspend fun loginWithFacebook(
         requester: Requester?,
-        id: String,
-        name: String,
-        email: String,
+        payload: IdProviderPayload.Facebook
     ): Tokens {
         val requesterUser = requester?.userId?.let {
             userDao.findById(it) ?: throw NotFoundException("User id not found")
         }?.toDomain()
 
-        val facebookUser = userDao.findByFacebookId(id)?.toDomain()
+        val facebookUser = userDao.findByFacebookId(payload.id)?.toDomain()
 
         // requesterUser == null
         //   - existing facebook account != null
@@ -156,7 +151,7 @@ class DefaultAuthService(
             if (facebookUser != null) {
                 login(facebookUser)
             } else {
-                val user = registerUsingFacebook(id, name, email)
+                val user = registerUsingFacebook(payload)
                 login(user)
             }
         } else {
@@ -192,8 +187,8 @@ class DefaultAuthService(
                 } else {
                     userDao.updateAnon(
                         id = requesterUser.id,
-                        idpFacebookId = id,
-                        idpFacebookEmail = email,
+                        idpFacebookId = payload.id,
+                        idpFacebookEmail = payload.email,
                         anon = false,
                     )
                     val newUser = userDao.findById(requesterUser.id)!!.toDomain()
@@ -203,7 +198,7 @@ class DefaultAuthService(
         }
     }
 
-    private suspend fun registerUsingGoogle(payload: IdProviderPayload): User {
+    private suspend fun registerUsingGoogle(payload: IdProviderPayload.Google): User {
         val userId = userDao.insert(
             name = payload.name.orEmpty(),
             email = payload.email,
@@ -213,12 +208,12 @@ class DefaultAuthService(
         return userDao.findById(userId)!!.toDomain()
     }
 
-    private suspend fun registerUsingFacebook(id: String, name: String, email: String): User {
+    private suspend fun registerUsingFacebook(payload: IdProviderPayload.Facebook): User {
         val userId = userDao.insert(
-            name = name,
-            email = email,
-            idpFacebookId = id,
-            idpFacebookEmail = email,
+            name = payload.name,
+            email = payload.email,
+            idpFacebookId = payload.id,
+            idpFacebookEmail = payload.email,
             anon = false,
         )
         return userDao.findById(userId)!!.toDomain()
@@ -254,14 +249,3 @@ class DefaultAuthService(
 
     private fun getNewRefreshTokenExpiry() = Instant.ofEpochMilli(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000)
 }
-
-@Serializable
-data class GoogleUserInfo(
-    val id: String?,
-    val email: String?,
-    val verified_email: Boolean?,
-    val name: String?,
-    val picture: String?,
-    val locale: String?,
-)
-

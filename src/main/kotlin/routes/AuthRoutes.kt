@@ -1,6 +1,7 @@
 package com.sproutscout.api.routes
 
 import com.sproutscout.api.domain.models.BadRequestException
+import com.sproutscout.api.domain.models.IdProviderPayload
 import com.sproutscout.api.domain.models.requester
 import com.sproutscout.api.routes.models.AuthGoogleLoginRequest
 import com.sproutscout.api.routes.models.TokensResponse
@@ -82,7 +83,7 @@ fun Route.authRoutes(
                 val requester = call.requester()
                 val request = call.receive<AuthFacebookLoginRequest>()
 
-                val tokens = authService.loginWithFacebook(requester, request.id, request.name, request.email)
+                val tokens = authService.loginWithFacebook(requester, IdProviderPayload.Facebook(request.id, request.name, request.email))
                 call.respond(tokens)
             }
         }

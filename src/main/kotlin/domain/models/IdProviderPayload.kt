@@ -1,6 +1,14 @@
 package com.sproutscout.api.domain.models
 
-data class IdProviderPayload(
-    val name: String?,
-    val email: String,
-)
+sealed interface IdProviderPayload {
+    data class Google(
+        val name: String?,
+        val email: String,
+    ) : IdProviderPayload
+
+    data class Facebook(
+        val id: String,
+        val name: String,
+        val email: String,
+    ) : IdProviderPayload
+}
