@@ -9,6 +9,8 @@ data class User(
     val id: UserId,
     val name: String,
     val email: String,
-    val idpGoogleEmail: String?, // Field for Google ID provider
+    val idpGoogleEmail: String?,
+    val idpFacebookId: String?,
+    val idpFacebookEmail: String?,
     val anon: Boolean,
 )

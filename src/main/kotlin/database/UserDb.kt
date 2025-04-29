@@ -12,20 +12,38 @@ import org.jetbrains.annotations.Blocking
 interface UserDb {
 
     @Blocking
-    @SqlUpdate("INSERT INTO users (name, email, idp_google_email, anon) VALUES (:name, :email, :idpGoogleEmail, :anon)")
+    @SqlUpdate(
+        """
+            INSERT INTO users (name, email, idp_google_email, idp_facebook_id, idp_facebook_email, anon) 
+            VALUES (:name, :email, :idpGoogleEmail, :idpFacebookId, :idpFacebookEmail, :anon)
+        """
+    )
     @GetGeneratedKeys
     fun insert(
         @Bind("name") name: String,
         @Bind("email") email: String,
         @Bind("idpGoogleEmail") idpGoogleEmail: String?,
+        @Bind("idpFacebookId") idpFacebookId: String?,
+        @Bind("idpFacebookEmail") idpFacebookEmail: String?,
         @Bind("anon") anon: Boolean,
     ): Int
 
     @Blocking
-    @SqlUpdate("UPDATE users SET idp_google_email = :idpGoogleEmail, anon = :anon WHERE id = :id")
+    @SqlUpdate(
+        """
+            UPDATE users SET
+            idp_google_email = COALESCE(:idpGoogleEmail, idp_google_email),
+            idp_facebook_id = COALESCE(:idpFacebookId, idp_facebook_id),
+            idp_facebook_email = COALESCE(:idpFacebookEmail, idp_facebook_email),
+            anon = :anon 
+            WHERE id = :id
+            """
+    )
     fun updateAnon(
         @Bind("id") id: Int,
         @Bind("idpGoogleEmail") idpGoogleEmail: String?,
+        @Bind("idpFacebookId") idpFacebookId: String?,
+        @Bind("idpFacebookEmail") idpFacebookEmail: String?,
         @Bind("anon") anon: Boolean,
     ): Int
 
@@ -36,6 +54,10 @@ interface UserDb {
     @Blocking
     @SqlQuery("SELECT * FROM users WHERE idp_google_email = :idpGoogleEmail")
     fun findByGoogleEmail(@Bind("idpGoogleEmail") idpGoogleEmail: String): UserEntity?
+
+    @Blocking
+    @SqlQuery("SELECT * FROM users WHERE idp_facebook_id = :idpFacebookId")
+    fun findByFacebookId(@Bind("idpFacebookId") idpFacebookId: String): UserEntity?
 
     @Blocking
     @SqlQuery("SELECT * FROM users WHERE id = :id")

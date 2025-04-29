@@ -4,6 +4,7 @@ import com.sproutscout.api.domain.models.BadRequestException
 import com.sproutscout.api.domain.models.requester
 import com.sproutscout.api.routes.models.AuthGoogleLoginRequest
 import com.sproutscout.api.routes.models.TokensResponse
+import com.sproutscout.api.routes.models.routes.models.AuthFacebookLoginRequest
 import com.sproutscout.api.service.AuthService
 import io.github.smiley4.ktoropenapi.post
 import io.ktor.http.*
@@ -31,37 +32,58 @@ fun Route.authRoutes(
             call.respond(tokens)
         }
 
-        route("/google") {
-            authenticate(optional = true) {
-                post("/login", {
-                    description = "Login using Google authentication"
-                    request {
-                        body<AuthGoogleLoginRequest> {
-                            description = "Google login request containing CSRF token and ID token"
-                        }
+        authenticate(optional = true) {
+            post("/google/login", {
+                description = "Login using Google authentication"
+                request {
+                    body<AuthGoogleLoginRequest> {
+                        description = "Google login request containing CSRF token and ID token"
                     }
-                    response {
-                        HttpStatusCode.OK to {
-                            description = "Tokens for the authenticated user"
-                            body<TokensResponse>()
-                        }
-                        HttpStatusCode.BadRequest to {
-                            description = "Invalid CSRF token or other bad request"
-                        }
-                    }
-                }) {
-                    val requester = call.requester()
-                    val csrfCookie = call.request.cookies["g_csrf_token"]
-                        ?: throw BadRequestException("No CSRF token in Cookie")
-                    val formParams = call.receiveParameters()
-                    val request = call.receive<AuthGoogleLoginRequest>()
-                    if (csrfCookie != request.csrfToken) {
-                        throw BadRequestException("Failed to verify double submit cookie")
-                    }
-
-                    val tokens = authService.loginWithGoogle(requester, request.idToken)
-                    call.respond(tokens)
                 }
+                response {
+                    HttpStatusCode.OK to {
+                        description = "Tokens for the authenticated user"
+                        body<TokensResponse>()
+                    }
+                    HttpStatusCode.BadRequest to {
+                        description = "Invalid CSRF token or other bad request"
+                    }
+                }
+            }) {
+                val requester = call.requester()
+                val csrfCookie = call.request.cookies["g_csrf_token"]
+                    ?: throw BadRequestException("No CSRF token in Cookie")
+                val request = call.receive<AuthGoogleLoginRequest>()
+                if (csrfCookie != request.csrfToken) {
+                    throw BadRequestException("Failed to verify double submit cookie")
+                }
+
+                val tokens = authService.loginWithGoogle(requester, request.idToken)
+                call.respond(tokens)
+            }
+
+            post("/facebook/login", {
+                description = "Login using Facebook authentication"
+                request {
+                    body<AuthFacebookLoginRequest> {
+                        description = "Facebook login request containing CSRF token and ID token"
+                    }
+                }
+                response {
+                    HttpStatusCode.OK to {
+                        description = "Tokens for the authenticated user"
+                        body<TokensResponse>()
+                    }
+                    HttpStatusCode.BadRequest to {
+                        description = "Invalid CSRF token or other bad request"
+                    }
+                }
+            }) {
+                val requester = call.requester()
+                val request = call.receive<AuthFacebookLoginRequest>()
+
+                val tokens = authService.loginWithFacebook(requester, request.id, request.name, request.email)
+                call.respond(tokens)
             }
         }
     }

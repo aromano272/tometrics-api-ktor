@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,9 +28,68 @@
                 console.error("Error during Google Auth:", error);
             });
         }
+
+        function handleFacebookAuth(response) {
+            console.log('statusChangeCallback');
+            console.log(response);                   // The current login status of the person.
+            if (response.status === 'connected') {   // Logged into your webpage and Facebook.
+                FB.api('/me', function(response) {
+                    console.log('/me');
+                    console.log(response);                   // The current login status of the person.
+                    console.log('Successful login for: ' + response.name);
+                    fetch("http://localhost:8080/api/v1/auth/facebook/login", {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({...response, email: "email@hotmail.com"}),
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log("Google Auth Response:", data);
+                        })
+                        .catch(error => {
+                            console.error("Error during Google Auth:", error);
+                        });
+                });
+            }
+        }
     </script>
 </head>
 <body>
+    <script>
+        function checkLoginState() {               // Called when a person is finished with the Login Button.
+            FB.getLoginStatus(function(response) {   // See the onlogin handler
+                handleFacebookAuth(response);
+            });
+        }
+
+        window.fbAsyncInit = function() {
+            console.log("fbAsyncInit")
+            FB.init({
+                appId      : '1827771968081021',
+                cookie     : true,                     // Enable cookies to allow the server to access the session.
+                xfbml      : true,                     // Parse social plugins on this webpage.
+                version    : 'v22.0'                   // Use this Graph API version for this call.
+            });
+        };
+    </script>
+
+    <!-- The JS SDK Login Button -->
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    </fb:login-button>
+
+    <div id="status">
+    </div>
+
+    <!-- Load the JS SDK asynchronously -->
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
 <!--    <div id="g_id_onload"-->
 <!--         data-client_id="201477670303-t3qm85ov000hfk3konc95jjp36ds1i3k.apps.googleusercontent.com"-->
 <!--         data-context="signin"-->
@@ -52,6 +110,7 @@
          data-context="signin"
          data-ux_mode="popup"
          data-login_uri="http://localhost:8080/api/v1/auth/google/login"
+         data-onlogin="handleFacebookAuth"
          data-auto_prompt="false">
     </div>
 

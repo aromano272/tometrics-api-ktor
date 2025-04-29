@@ -55,7 +55,14 @@ class AuthServiceTest {
 
         coEvery { googleAuthService.verify(idToken) } returns payload
         coEvery { userDao.findByGoogleEmail(payload.email) } returns null
-        coEvery { userDao.insert(payload.name.orEmpty(), payload.email, payload.email, false) } returns newUserId
+        coEvery {
+            userDao.insert(
+                name = payload.name.orEmpty(),
+                email = payload.email,
+                idpGoogleEmail = payload.email,
+                anon = false,
+            )
+        } returns newUserId
         coEvery { userDao.findById(newUserId) } returns newUser
         coEvery { jwtService.create(newUserId, newUser.email) } returns tokens.access
         coEvery { refreshTokenDao.insert(newUserId, any(), any()) } returns Unit
@@ -63,7 +70,14 @@ class AuthServiceTest {
         val result = authService.loginWithGoogle(null, idToken)
 
         assertEquals(tokens.access, result.access)
-        coVerify { userDao.insert(payload.name.orEmpty(), payload.email, payload.email, false) }
+        coVerify {
+            userDao.insert(
+                name = payload.name.orEmpty(),
+                email = payload.email,
+                idpGoogleEmail = payload.email,
+                anon = false
+            )
+        }
     }
 
     @Test
@@ -83,7 +97,25 @@ class AuthServiceTest {
     }
 
     @Test
-    fun `loginWithGoogle with non-anonymous requester and google user already exists then log into googleUser`() = runTest {
+    fun `loginWithGoogle with non-anonymous requester and google user already exists and is the same as the requester then log into googleUser`() = runTest {
+        val idToken = "valid_token"
+        val payload = IdProviderPayload(email = "different@gmail.com", name = "Different User")
+        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requesterUser = TEST_USER_ENTITY.copy(idpGoogleEmail = "existing@gmail.com", anon = false)
+        val tokens = MOCK_TOKENS
+
+        coEvery { googleAuthService.verify(idToken) } returns payload
+        coEvery { userDao.findById(requester.userId) } returns requesterUser
+        coEvery { userDao.findByGoogleEmail("different@gmail.com") } returns requesterUser
+        coEvery { jwtService.create(requesterUser.id, requesterUser.email) } returns tokens.access
+        coEvery { refreshTokenDao.insert(requesterUser.id, any(), any()) } returns Unit
+
+        val result = authService.loginWithGoogle(requester, idToken)
+        assertEquals(tokens.access, result.access)
+    }
+
+    @Test
+    fun `loginWithGoogle with non-anonymous requester and google user already exists and is different than the requester then throw ConflictException`() = runTest {
         val idToken = "valid_token"
         val payload = IdProviderPayload(email = "different@gmail.com", name = "Different User")
         val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
@@ -93,6 +125,8 @@ class AuthServiceTest {
             name = "Different User",
             email = "different@gmail.com",
             idpGoogleEmail = "different@gmail.com",
+            idpFacebookId = null,
+            idpFacebookEmail = null,
             anon = false,
         )
         val tokens = MOCK_TOKENS
@@ -103,8 +137,9 @@ class AuthServiceTest {
         coEvery { jwtService.create(differentUser.id, differentUser.email) } returns tokens.access
         coEvery { refreshTokenDao.insert(differentUser.id, any(), any()) } returns Unit
 
-        val result = authService.loginWithGoogle(requester, idToken)
-        assertEquals(tokens.access, result.access)
+        assertFailsWith<ConflictException> {
+            authService.loginWithGoogle(requester, idToken)
+        }
     }
 
     @Test
@@ -136,14 +171,26 @@ class AuthServiceTest {
         coEvery { googleAuthService.verify(idToken) } returns payload
         coEvery { userDao.findById(requester.userId) }.returnsMany(anonUser, updatedUser)
         coEvery { userDao.findByGoogleEmail(payload.email) } returns null
-        coEvery { userDao.updateAnon(anonUser.id, payload.email, false) } returns 1
+        coEvery {
+            userDao.updateAnon(
+                id = anonUser.id,
+                idpGoogleEmail = payload.email,
+                anon = false,
+            )
+        } returns 1
         coEvery { jwtService.create(updatedUser.id, updatedUser.email) } returns tokens.access
         coEvery { refreshTokenDao.insert(updatedUser.id, any(), any()) } returns Unit
 
         val result = authService.loginWithGoogle(requester, idToken)
 
         assertEquals(tokens.access, result.access)
-        coVerify { userDao.updateAnon(anonUser.id, payload.email, false) }
+        coVerify {
+            userDao.updateAnon(
+                id = anonUser.id,
+                idpGoogleEmail = payload.email,
+                anon = false,
+            )
+        }
     }
 
     @Test
@@ -263,6 +310,8 @@ class AuthServiceTest {
             name = "testuser",
             email = "test@example.com",
             idpGoogleEmail = "test@gmail.com",
+            idpFacebookId = "facebookid",
+            idpFacebookEmail = "facebook@hotmail.com",
             anon = false,
         )
 
