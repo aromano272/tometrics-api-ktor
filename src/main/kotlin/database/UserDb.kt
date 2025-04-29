@@ -14,14 +14,13 @@ interface UserDb {
     @Blocking
     @SqlUpdate(
         """
-            INSERT INTO users (name, email, idp_google_email, idp_facebook_id, idp_facebook_email, anon) 
-            VALUES (:name, :email, :idpGoogleEmail, :idpFacebookId, :idpFacebookEmail, :anon)
+            INSERT INTO users (name, idp_google_email, idp_facebook_id, idp_facebook_email, anon) 
+            VALUES (:name, :idpGoogleEmail, :idpFacebookId, :idpFacebookEmail, :anon)
         """
     )
     @GetGeneratedKeys
     fun insert(
         @Bind("name") name: String,
-        @Bind("email") email: String,
         @Bind("idpGoogleEmail") idpGoogleEmail: String?,
         @Bind("idpFacebookId") idpFacebookId: String?,
         @Bind("idpFacebookEmail") idpFacebookEmail: String?,

@@ -8,7 +8,6 @@ interface UserDao {
 
     suspend fun insert(
         name: String,
-        email: String,
         idpGoogleEmail: String? = null,
         idpFacebookId: String? = null,
         idpFacebookEmail: String? = null,
@@ -37,13 +36,12 @@ class DefaultUserDao(
 ) : UserDao {
     override suspend fun insert(
         name: String,
-        email: String,
         idpGoogleEmail: String?,
         idpFacebookId: String?,
         idpFacebookEmail: String?,
         anon: Boolean,
     ): Int = withContext(Dispatchers.IO) {
-        db.insert(name, email, idpGoogleEmail, idpFacebookId, idpFacebookEmail, anon)
+        db.insert(name, idpGoogleEmail, idpFacebookId, idpFacebookEmail, anon)
     }
 
     override suspend fun updateAnon(

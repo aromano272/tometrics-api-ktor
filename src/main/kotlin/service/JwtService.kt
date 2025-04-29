@@ -3,11 +3,11 @@ package com.sproutscout.api.service
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.github.cdimascio.dotenv.Dotenv
-import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.config.*
 import java.time.Instant
 
 interface JwtService {
-    fun create(userId: Int, username: String): String
+    fun create(userId: Int): String
 }
 
 class DefaultJwtService(
@@ -28,11 +28,10 @@ class DefaultJwtService(
         developmentMode = developmentMode,
     )
 
-    override fun create(userId: Int, username: String): String = JWT.create()
+    override fun create(userId: Int): String = JWT.create()
         .withAudience(jwtAudience)
         .withIssuer(jwtDomain)
         .withClaim("userId", userId)
-        .withClaim("username", username)
         .withExpiresAt(getNewAccessTokenExpiry())
         .sign(Algorithm.HMAC256(jwtSecret))
 

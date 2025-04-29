@@ -27,13 +27,13 @@ class DefaultAuthService(
 ) : AuthService {
 
     override suspend fun registerAnon(): Tokens {
-        val userId = userDao.insert("", "", anon = true)
+        val userId = userDao.insert("", anon = true)
         val user = userDao.findById(userId)!!.toDomain()
         return login(user)
     }
 
     override suspend fun login(user: User): Tokens {
-        val access = jwtService.create(user.id, user.email)
+        val access = jwtService.create(user.id)
         val refresh = UUID.randomUUID().toString()
 
         val expiry = getNewRefreshTokenExpiry()
@@ -201,7 +201,6 @@ class DefaultAuthService(
     private suspend fun registerUsingGoogle(payload: IdProviderPayload.Google): User {
         val userId = userDao.insert(
             name = payload.name.orEmpty(),
-            email = payload.email,
             idpGoogleEmail = payload.email,
             anon = false,
         )
@@ -211,7 +210,6 @@ class DefaultAuthService(
     private suspend fun registerUsingFacebook(payload: IdProviderPayload.Facebook): User {
         val userId = userDao.insert(
             name = payload.name,
-            email = payload.email,
             idpFacebookId = payload.id,
             idpFacebookEmail = payload.email,
             anon = false,
@@ -232,7 +230,7 @@ class DefaultAuthService(
         val expiry = getNewRefreshTokenExpiry()
         refreshTokenDao.insert(user.id, newRefreshToken, expiry)
 
-        val newAccessToken = jwtService.create(user.id, user.name)
+        val newAccessToken = jwtService.create(user.id)
 
         return Tokens(newAccessToken, newRefreshToken)
     }

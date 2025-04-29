@@ -8,7 +8,6 @@ typealias UserId = Int
 data class User(
     val id: UserId,
     val name: String,
-    val email: String,
     val idpGoogleEmail: String?,
     val idpFacebookId: String?,
     val idpFacebookEmail: String?,

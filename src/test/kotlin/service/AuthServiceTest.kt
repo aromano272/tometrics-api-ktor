@@ -36,7 +36,7 @@ class AuthServiceTest {
 
         coEvery { googleAuthService.verify(idToken) } returns payload
         coEvery { userDao.findByGoogleEmail(payload.email) } returns existingUser
-        coEvery { jwtService.create(existingUser.id, existingUser.email) } returns tokens.access
+        coEvery { jwtService.create(existingUser.id) } returns tokens.access
         coEvery { refreshTokenDao.insert(existingUser.id, any(), any()) } returns Unit
 
         val result = authService.loginWithGoogle(null, idToken)
@@ -50,7 +50,7 @@ class AuthServiceTest {
         val idToken = "valid_token"
         val payload = IdProviderPayload.Google(email = "new@gmail.com", name = "New User")
         val newUserId = 2
-        val newUser = TEST_USER_ENTITY.copy(id = newUserId, email = payload.email, idpGoogleEmail = payload.email)
+        val newUser = TEST_USER_ENTITY.copy(id = newUserId, idpGoogleEmail = payload.email)
         val tokens = MOCK_TOKENS
 
         coEvery { googleAuthService.verify(idToken) } returns payload
@@ -58,13 +58,12 @@ class AuthServiceTest {
         coEvery {
             userDao.insert(
                 name = payload.name.orEmpty(),
-                email = payload.email,
                 idpGoogleEmail = payload.email,
                 anon = false,
             )
         } returns newUserId
         coEvery { userDao.findById(newUserId) } returns newUser
-        coEvery { jwtService.create(newUserId, newUser.email) } returns tokens.access
+        coEvery { jwtService.create(newUserId) } returns tokens.access
         coEvery { refreshTokenDao.insert(newUserId, any(), any()) } returns Unit
 
         val result = authService.loginWithGoogle(null, idToken)
@@ -73,7 +72,6 @@ class AuthServiceTest {
         coVerify {
             userDao.insert(
                 name = payload.name.orEmpty(),
-                email = payload.email,
                 idpGoogleEmail = payload.email,
                 anon = false
             )
@@ -84,7 +82,7 @@ class AuthServiceTest {
     fun `loginWithGoogle with non-anonymous requester that already has an idpGoogleEmail and different from the payload should throw ConflictException`() = runTest {
         val idToken = "valid_token"
         val payload = IdProviderPayload.Google(email = "different@gmail.com", name = "Different User")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val existingUser = TEST_USER_ENTITY.copy(idpGoogleEmail = "existing@gmail.com", anon = false)
 
         coEvery { googleAuthService.verify(idToken) } returns payload
@@ -100,14 +98,14 @@ class AuthServiceTest {
     fun `loginWithGoogle with non-anonymous requester and google user already exists and is the same as the requester then log into googleUser`() = runTest {
         val idToken = "valid_token"
         val payload = IdProviderPayload.Google(email = "different@gmail.com", name = "Different User")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val requesterUser = TEST_USER_ENTITY.copy(idpGoogleEmail = "existing@gmail.com", anon = false)
         val tokens = MOCK_TOKENS
 
         coEvery { googleAuthService.verify(idToken) } returns payload
         coEvery { userDao.findById(requester.userId) } returns requesterUser
         coEvery { userDao.findByGoogleEmail("different@gmail.com") } returns requesterUser
-        coEvery { jwtService.create(requesterUser.id, requesterUser.email) } returns tokens.access
+        coEvery { jwtService.create(requesterUser.id) } returns tokens.access
         coEvery { refreshTokenDao.insert(requesterUser.id, any(), any()) } returns Unit
 
         val result = authService.loginWithGoogle(requester, idToken)
@@ -118,12 +116,11 @@ class AuthServiceTest {
     fun `loginWithGoogle with non-anonymous requester and google user already exists and is different than the requester then throw ConflictException`() = runTest {
         val idToken = "valid_token"
         val payload = IdProviderPayload.Google(email = "different@gmail.com", name = "Different User")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val existingUser = TEST_USER_ENTITY.copy(idpGoogleEmail = "existing@gmail.com", anon = false)
         val differentUser = UserEntity(
             id = 123,
             name = "Different User",
-            email = "different@gmail.com",
             idpGoogleEmail = "different@gmail.com",
             idpFacebookId = null,
             idpFacebookEmail = null,
@@ -134,7 +131,7 @@ class AuthServiceTest {
         coEvery { googleAuthService.verify(idToken) } returns payload
         coEvery { userDao.findById(requester.userId) } returns existingUser
         coEvery { userDao.findByGoogleEmail("different@gmail.com") } returns differentUser
-        coEvery { jwtService.create(differentUser.id, differentUser.email) } returns tokens.access
+        coEvery { jwtService.create(differentUser.id) } returns tokens.access
         coEvery { refreshTokenDao.insert(differentUser.id, any(), any()) } returns Unit
 
         assertFailsWith<ConflictException> {
@@ -146,7 +143,7 @@ class AuthServiceTest {
     fun `loginWithGoogle with anonymous requester and existing Google user should throw BadRequestException`() = runTest {
         val idToken = "valid_token"
         val payload = IdProviderPayload.Google(email = "existing@gmail.com", name = "Existing User")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val anonUser = TEST_USER_ENTITY.copy(idpGoogleEmail = null, anon = true)
         val existingGoogleUser = TEST_USER_ENTITY.copy(idpGoogleEmail = payload.email)
 
@@ -163,7 +160,7 @@ class AuthServiceTest {
     fun `loginWithGoogle with anonymous requester and no existing Google user should update anonymous user`() = runTest {
         val idToken = "valid_token"
         val payload = IdProviderPayload.Google(email = "new@gmail.com", name = "New User")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val anonUser = TEST_USER_ENTITY.copy(idpGoogleEmail = null, anon = true)
         val updatedUser = anonUser.copy(idpGoogleEmail = payload.email, anon = false)
         val tokens = MOCK_TOKENS
@@ -178,7 +175,7 @@ class AuthServiceTest {
                 anon = false,
             )
         } returns 1
-        coEvery { jwtService.create(updatedUser.id, updatedUser.email) } returns tokens.access
+        coEvery { jwtService.create(updatedUser.id) } returns tokens.access
         coEvery { refreshTokenDao.insert(updatedUser.id, any(), any()) } returns Unit
 
         val result = authService.loginWithGoogle(requester, idToken)
@@ -200,7 +197,7 @@ class AuthServiceTest {
         val tokens = MOCK_TOKENS
 
         coEvery { userDao.findByFacebookId(payload.id) } returns existingUser
-        coEvery { jwtService.create(existingUser.id, existingUser.email) } returns tokens.access
+        coEvery { jwtService.create(existingUser.id) } returns tokens.access
         coEvery { refreshTokenDao.insert(existingUser.id, any(), any()) } returns Unit
 
         val result = authService.loginWithFacebook(null, payload)
@@ -215,7 +212,6 @@ class AuthServiceTest {
         val newUserId = 2
         val newUser = TEST_USER_ENTITY.copy(
             id = newUserId,
-            email = payload.email,
             idpFacebookId = payload.id,
             idpFacebookEmail = payload.email
         )
@@ -225,14 +221,13 @@ class AuthServiceTest {
         coEvery {
             userDao.insert(
                 name = payload.name,
-                email = payload.email,
                 idpFacebookId = payload.id,
                 idpFacebookEmail = payload.email,
                 anon = false,
             )
         } returns newUserId
         coEvery { userDao.findById(newUserId) } returns newUser
-        coEvery { jwtService.create(newUserId, newUser.email) } returns tokens.access
+        coEvery { jwtService.create(newUserId) } returns tokens.access
         coEvery { refreshTokenDao.insert(newUserId, any(), any()) } returns Unit
 
         val result = authService.loginWithFacebook(null, payload)
@@ -241,7 +236,6 @@ class AuthServiceTest {
         coVerify {
             userDao.insert(
                 name = payload.name,
-                email = payload.email,
                 idpFacebookId = payload.id,
                 idpFacebookEmail = payload.email,
                 anon = false
@@ -252,7 +246,7 @@ class AuthServiceTest {
     @Test
     fun `loginWithFacebook with non-anonymous requester that already has an idpFacebookId and different from the payload should throw ConflictException`() = runTest {
         val payload = IdProviderPayload.Facebook(id = "differentid", name = "Different User", email = "different@facebook.com")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val existingUser = TEST_USER_ENTITY.copy(idpFacebookId = "existingid", anon = false)
 
         coEvery { userDao.findById(requester.userId) } returns existingUser
@@ -266,13 +260,13 @@ class AuthServiceTest {
     @Test
     fun `loginWithFacebook with non-anonymous requester and facebook user already exists and is the same as the requester then log into facebookUser`() = runTest {
         val payload = IdProviderPayload.Facebook(id = "facebookid", name = "Test User", email = "test@facebook.com")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val requesterUser = TEST_USER_ENTITY.copy(idpFacebookId = "facebookid", anon = false)
         val tokens = MOCK_TOKENS
 
         coEvery { userDao.findById(requester.userId) } returns requesterUser
         coEvery { userDao.findByFacebookId("facebookid") } returns requesterUser
-        coEvery { jwtService.create(requesterUser.id, requesterUser.email) } returns tokens.access
+        coEvery { jwtService.create(requesterUser.id) } returns tokens.access
         coEvery { refreshTokenDao.insert(requesterUser.id, any(), any()) } returns Unit
 
         val result = authService.loginWithFacebook(requester, payload)
@@ -282,12 +276,11 @@ class AuthServiceTest {
     @Test
     fun `loginWithFacebook with non-anonymous requester and facebook user already exists and is different than the requester then throw ConflictException`() = runTest {
         val payload = IdProviderPayload.Facebook(id = "differentid", name = "Different User", email = "different@facebook.com")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val existingUser = TEST_USER_ENTITY.copy(idpFacebookId = "existingid", anon = false)
         val differentUser = UserEntity(
             id = 123,
             name = "Different User",
-            email = "different@facebook.com",
             idpGoogleEmail = null,
             idpFacebookId = "differentid",
             idpFacebookEmail = "different@facebook.com",
@@ -305,7 +298,7 @@ class AuthServiceTest {
     @Test
     fun `loginWithFacebook with anonymous requester and existing Facebook user should throw BadRequestException`() = runTest {
         val payload = IdProviderPayload.Facebook(id = "existingid", name = "Existing User", email = "existing@facebook.com")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val anonUser = TEST_USER_ENTITY.copy(idpFacebookId = null, anon = true)
         val existingFacebookUser = TEST_USER_ENTITY.copy(idpFacebookId = payload.id)
 
@@ -320,7 +313,7 @@ class AuthServiceTest {
     @Test
     fun `loginWithFacebook with anonymous requester and no existing Facebook user should update anonymous user`() = runTest {
         val payload = IdProviderPayload.Facebook(id = "newid", name = "New User", email = "new@facebook.com")
-        val requester = Requester(TEST_USER_ENTITY.id, TEST_USER_ENTITY.name)
+        val requester = Requester(TEST_USER_ENTITY.id)
         val anonUser = TEST_USER_ENTITY.copy(idpFacebookId = null, anon = true)
         val updatedUser = anonUser.copy(idpFacebookId = payload.id, idpFacebookEmail = payload.email, anon = false)
         val tokens = MOCK_TOKENS
@@ -335,7 +328,7 @@ class AuthServiceTest {
                 anon = false,
             )
         } returns 1
-        coEvery { jwtService.create(updatedUser.id, updatedUser.email) } returns tokens.access
+        coEvery { jwtService.create(updatedUser.id) } returns tokens.access
         coEvery { refreshTokenDao.insert(updatedUser.id, any(), any()) } returns Unit
 
         val result = authService.loginWithFacebook(requester, payload)
@@ -398,7 +391,7 @@ class AuthServiceTest {
         coEvery { userDao.findById(user.id) } returns user
         coEvery { refreshTokenDao.delete(refreshToken) } returns Unit
         coEvery { refreshTokenDao.insert(user.id, any(), any()) } returns Unit
-        coEvery { jwtService.create(user.id, user.name) } returns newAccessToken
+        coEvery { jwtService.create(user.id) } returns newAccessToken
 
         val tokens = authService.refreshToken(refreshToken)
 
@@ -466,7 +459,6 @@ class AuthServiceTest {
         private val TEST_USER_ENTITY = UserEntity(
             id = 1,
             name = "testuser",
-            email = "test@example.com",
             idpGoogleEmail = "test@gmail.com",
             idpFacebookId = "facebookid",
             idpFacebookEmail = "facebook@hotmail.com",
