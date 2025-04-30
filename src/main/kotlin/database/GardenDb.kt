@@ -37,4 +37,8 @@ interface GardenDb {
         @Bind("plantId") plantId: PlantId,
         @Bind("quantity") quantity: Int
     ): PlantingId
+
+    @SqlQuery("SELECT * FROM plantings")
+    fun getAll(): List<PlantingEntity>
+
 }

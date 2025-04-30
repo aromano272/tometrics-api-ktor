@@ -13,6 +13,8 @@ interface GardenDao {
     suspend fun delete(id: PlantingId): Int
     suspend fun update(id: PlantingId, newQuantity: Int): Int
     suspend fun insert(userId: UserId, plantId: PlantId, quantity: Int): PlantingId
+    // TODO move the plants into a table so we can make the query do the filtering rather than the service, getAllReadyForHarvestToday
+    suspend fun getAll(): List<PlantingEntity>
 }
 
 class DefaultGardenDao(
@@ -35,7 +37,16 @@ class DefaultGardenDao(
        db.update(id, newQuantity)
     }
 
-    override suspend fun insert(userId: UserId, plantId: PlantId, quantity: Int): PlantingId = withContext(Dispatchers.IO) {
+    override suspend fun insert(
+        userId: UserId,
+        plantId: PlantId,
+        quantity: Int
+    ): PlantingId = withContext(Dispatchers.IO) {
        db.insert(userId, plantId, quantity)
     }
+
+    override suspend fun getAll(): List<PlantingEntity> = withContext(Dispatchers.IO) {
+        db.getAll()
+    }
+
 }

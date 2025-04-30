@@ -3,14 +3,11 @@ package com.sproutscout.api
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.github.cdimascio.dotenv.Dotenv
-import io.ktor.client.HttpClient
-import io.ktor.http.HttpMethod
-import io.ktor.server.application.Application
-import io.ktor.server.auth.OAuthServerSettings
-import io.ktor.server.auth.authentication
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.jwt.jwt
-import io.ktor.server.auth.oauth
+import io.ktor.client.*
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import org.koin.ktor.ext.inject
 
 fun Application.configureSecurity() {
@@ -23,6 +20,17 @@ fun Application.configureSecurity() {
     val jwtSecret = dotenv["JWT_SECRET"]
 
     authentication {
+        bearer("auth-cronjob") {
+            realm = "Access to the '/api/v1/cronjob' path"
+            authenticate { tokenCredential ->
+                if (tokenCredential.token == dotenv["CRONJOB_BEARER_TOKEN"]) {
+                    Unit
+                } else {
+                    null
+                }
+            }
+        }
+
         jwt {
             realm = jwtRealm
             verifier(

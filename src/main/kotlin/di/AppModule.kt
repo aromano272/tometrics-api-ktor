@@ -104,6 +104,17 @@ fun databaseModule(application: Application) = module {
         )
     }
 
+    single<PlantDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(PlantDb::class.java)
+    }
+
+    single<PlantDao> {
+        DefaultPlantDao(
+            db = get()
+        )
+    }
+
 }
 
 fun serviceModule(application: Application) = module {
@@ -133,6 +144,7 @@ fun serviceModule(application: Application) = module {
 
     single<PlantService> {
         DefaultPlantService(
+            plantDao = get()
         )
     }
 
@@ -155,6 +167,15 @@ fun serviceModule(application: Application) = module {
     single<EmailTemplateRenderer> {
         MustacheEmailTemplateRenderer(
             mustacheFactory = get()
+        )
+    }
+
+    single<CronjobService> {
+        DefaultCronjobService(
+            gardenService = get(),
+            emailService = get(),
+            userDao = get(),
+            logger = application.environment.log,
         )
     }
 

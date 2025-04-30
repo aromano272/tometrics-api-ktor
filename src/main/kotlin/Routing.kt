@@ -2,9 +2,11 @@ package com.sproutscout.api
 
 import com.sproutscout.api.domain.models.*
 import com.sproutscout.api.routes.authRoutes
+import com.sproutscout.api.routes.cronjobRoutes
 import com.sproutscout.api.routes.plantRoutes
 import com.sproutscout.api.routes.plantingRoutes
 import com.sproutscout.api.service.AuthService
+import com.sproutscout.api.service.CronjobService
 import com.sproutscout.api.service.GardenService
 import com.sproutscout.api.service.PlantService
 import io.ktor.http.*
@@ -59,11 +61,13 @@ fun Application.configureRouting() {
     val authService: AuthService by inject()
     val plantService: PlantService by inject()
     val gardenService: GardenService by inject()
+    val cronjobService: CronjobService by inject()
     val logger: Logger by inject()
 
 
     routing {
         route("/api/v1") {
+            cronjobRoutes(cronjobService)
             authRoutes(authService, logger)
             plantRoutes(plantService)
             plantingRoutes(gardenService)

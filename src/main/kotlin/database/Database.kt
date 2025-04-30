@@ -3,7 +3,7 @@ package com.sproutscout.api.database
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.github.cdimascio.dotenv.Dotenv
-import io.ktor.server.application.Application
+import io.ktor.server.application.*
 import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
@@ -25,10 +25,13 @@ fun Application.createHikariDataSource(
 }
 
 fun HikariDataSource.runMigrations(): HikariDataSource = also {
-    val clean = false
+    val clean = true
     val flyway = Flyway.configure()
         .cleanDisabled(!clean)
         .dataSource(this)
+//        .javaMigrations(
+//            com.sproutscout.api.database.migrations.V2__insert_initial_plants()
+//        )
         .load()
 
     if (clean) flyway.clean()

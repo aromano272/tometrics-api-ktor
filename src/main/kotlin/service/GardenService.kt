@@ -11,6 +11,8 @@ interface GardenService {
     suspend fun delete(requester: Requester, id: PlantingId)
     suspend fun update(requester: Requester, id: PlantingId, newQuantity: Int): Planting
     suspend fun add(requester: Requester, plantId: PlantId, quantity: Int): Planting
+
+    suspend fun getAllReadyForHarvestToday(): Map<UserId, List<Planting>>
 }
 
 class DefaultGardenService(
@@ -51,4 +53,22 @@ class DefaultGardenService(
         val id: PlantingId = gardenDao.insert(requester.userId, plantId, quantity)
         return getById(requester, id)
     }
+
+    override suspend fun getAllReadyForHarvestToday(): Map<UserId, List<Planting>> {
+        throw NotImplementedError()
+//        val plantings = gardenDao.getAll()
+//            .filter { planting ->
+//                LocalDate.from(planting.createdAt).plusDays(planting.plant) == LocalDate.now()
+//                timeToHarvest
+//            }
+//            .groupBy { it.userId }
+//            .mapValues { (userId, plantings) ->
+//                plantings.map { planting ->
+//                    val plant = plantService.getById(planting.plantId)
+//                    planting.toDomain(plant)
+//                }
+//            }
+//        return plantings
+    }
+
 }
