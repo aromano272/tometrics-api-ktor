@@ -1,6 +1,6 @@
-package com.sproutscout.api.database
+package com.sproutscout.api.db
 
-import com.sproutscout.api.database.models.PlantingEntity
+import com.sproutscout.api.db.models.PlantingEntity
 import com.sproutscout.api.domain.models.PlantingId
 import com.sproutscout.api.domain.models.UserId
 import com.sproutscout.api.model.PlantId

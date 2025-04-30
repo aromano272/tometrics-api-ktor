@@ -1,6 +1,6 @@
 package com.sproutscout.api.service
 
-import com.sproutscout.api.database.PlantDao
+import com.sproutscout.api.db.PlantDao
 import com.sproutscout.api.domain.models.NotFoundException
 import com.sproutscout.api.model.Plant
 import com.sproutscout.api.model.PlantId

@@ -1,6 +1,6 @@
-package com.sproutscout.api.database
+package com.sproutscout.api.db
 
-import com.sproutscout.api.database.models.RefreshTokenEntity
+import com.sproutscout.api.db.models.RefreshTokenEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant

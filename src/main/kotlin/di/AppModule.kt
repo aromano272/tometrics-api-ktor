@@ -5,7 +5,7 @@ import com.github.mustachejava.MustacheFactory
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.v2.ApacheHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import com.sproutscout.api.database.*
+import com.sproutscout.api.db.*
 import com.sproutscout.api.service.*
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv

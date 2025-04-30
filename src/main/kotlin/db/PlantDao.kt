@@ -1,4 +1,4 @@
-package com.sproutscout.api.database
+package com.sproutscout.api.db
 
 import com.sproutscout.api.model.Plant
 import com.sproutscout.api.model.PlantId

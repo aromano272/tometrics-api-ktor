@@ -1,6 +1,6 @@
-package com.sproutscout.api.database
+package com.sproutscout.api.db
 
-import com.sproutscout.api.database.models.UserEntity
+import com.sproutscout.api.db.models.UserEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

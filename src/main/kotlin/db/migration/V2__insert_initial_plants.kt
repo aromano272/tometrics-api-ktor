@@ -1,40 +1,70 @@
-package com.sproutscout.api.database.migrations
+package com.sproutscout.api.db.migration
 
-import com.sproutscout.api.database.PlantDb
-import com.sproutscout.api.database.PlantEntity
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.sproutscout.api.db.PlantEntity
 import com.sproutscout.api.model.*
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
-import org.jdbi.v3.core.Jdbi
+import org.postgresql.util.PGobject
+
 
 @Suppress("unused", "ClassName")
 class V2__insert_initial_plants : BaseJavaMigration() {
     override fun migrate(context: Context) {
-        val jdbi = Jdbi.create(context.connection)
-        val plantDb = jdbi.onDemand(PlantDb::class.java)
+        val connection = context.connection
+        val objectMapper = ObjectMapper()
+        val insertSql = """
+            INSERT INTO plants (
+                name, time_to_harvest, 
+                yield_per_plant_from, yield_per_plant_to, yield_per_plant_unit,
+                yield_per_sqm_from, yield_per_sqm_to, yield_per_sqm_unit,
+                companion_plants, climate_zones, spacing, sunlight, daily_sunlight,
+                soil_types, water_requirement, growth_habit, growing_tips
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """.trimIndent()
+
+        val statement = connection.prepareStatement(insertSql)
 
         initialPlants.forEach { plant ->
             val entity = PlantEntity.fromPlant(plant)
-            plantDb.insert(
-                name = entity.name,
-                timeToHarvest = entity.timeToHarvest,
-                yieldPerPlantFrom = entity.yieldPerPlantFrom,
-                yieldPerPlantTo = entity.yieldPerPlantTo,
-                yieldPerPlantUnit = entity.yieldPerPlantUnit,
-                yieldPerSqMFrom = entity.yieldPerSqMFrom,
-                yieldPerSqMTo = entity.yieldPerSqMTo,
-                yieldPerSqMUnit = entity.yieldPerSqMUnit,
-                companionPlants = entity.companionPlants,
-                climateZones = entity.climateZones,
-                spacing = entity.spacing,
-                sunlight = entity.sunlight,
-                dailySunlight = entity.dailySunlight,
-                soilTypes = entity.soilTypes,
-                waterRequirement = entity.waterRequirement,
-                growthHabit = entity.growthHabit,
-                growingTips = entity.growingTips
-            )
+            statement.setString(1, entity.name)
+            statement.setInt(2, entity.timeToHarvest)
+            statement.setFloat(3, entity.yieldPerPlantFrom)
+            statement.setFloat(4, entity.yieldPerPlantTo)
+            statement.setString(5, entity.yieldPerPlantUnit)
+            statement.setFloat(6, entity.yieldPerSqMFrom)
+            statement.setFloat(7, entity.yieldPerSqMTo)
+            statement.setString(8, entity.yieldPerSqMUnit)
+
+            // Create arrays for the list fields
+            val companionPlantsArray = connection.createArrayOf("text", entity.companionPlants.toTypedArray())
+            val climateZonesBlob = PGobject().apply {
+                type = "json"
+                value = objectMapper.writeValueAsString(entity.climateZones)
+            }
+            val soilTypesArray = connection.createArrayOf("text", entity.soilTypes.map { it.toString() }.toTypedArray())
+            val growingTipsArray = connection.createArrayOf("text", entity.growingTips.toTypedArray())
+            
+            statement.setArray(9, companionPlantsArray)
+            statement.setObject(10, climateZonesBlob)
+            statement.setString(11, entity.spacing)
+            statement.setString(12, entity.sunlight)
+            statement.setString(13, entity.dailySunlight)
+            statement.setArray(14, soilTypesArray)
+            statement.setString(15, entity.waterRequirement)
+            statement.setString(16, entity.growthHabit)
+            statement.setArray(17, growingTipsArray)
+            
+            statement.addBatch()
+            
+            // Free the arrays after use
+            companionPlantsArray.free()
+            soilTypesArray.free()
+            growingTipsArray.free()
         }
+        
+        statement.executeBatch()
+        statement.close()
     }
 
     private val initialPlants = listOf(

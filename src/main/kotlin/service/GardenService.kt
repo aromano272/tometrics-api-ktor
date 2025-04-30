@@ -1,7 +1,7 @@
 package com.sproutscout.api.service
 
-import com.sproutscout.api.database.GardenDao
-import com.sproutscout.api.database.models.toDomain
+import com.sproutscout.api.db.GardenDao
+import com.sproutscout.api.db.models.toDomain
 import com.sproutscout.api.domain.models.*
 import com.sproutscout.api.model.PlantId
 

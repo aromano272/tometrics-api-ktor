@@ -1,8 +1,8 @@
 package com.sproutscout.api.service
 
-import com.sproutscout.api.database.RefreshTokenDao
-import com.sproutscout.api.database.UserDao
-import com.sproutscout.api.database.models.toDomain
+import com.sproutscout.api.db.RefreshTokenDao
+import com.sproutscout.api.db.UserDao
+import com.sproutscout.api.db.models.toDomain
 import com.sproutscout.api.domain.models.*
 import java.time.Instant
 import java.util.*

@@ -1,4 +1,4 @@
-package com.sproutscout.api.database.models
+package com.sproutscout.api.db.models
 
 import com.sproutscout.api.domain.models.User
 

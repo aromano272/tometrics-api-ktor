@@ -1,17 +1,19 @@
-package com.sproutscout.api.database
+package com.sproutscout.api.db
 
-import com.sproutscout.api.model.*
+import com.sproutscout.api.model.ClimateZones
+import com.sproutscout.api.model.GrowingTip
+import com.sproutscout.api.model.SoilType
 import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 
 @RegisterKotlinMapper(PlantEntity::class)
 interface PlantDb {
     @SqlQuery("""
         SELECT id, name, time_to_harvest,
-               yield_per_plant_min, yield_per_plant_max, yield_per_plant_unit,
-               yield_per_sqm_min, yield_per_sqm_max, yield_per_sqm_unit,
+               yield_per_plant_from, yield_per_plant_to, yield_per_plant_unit,
+               yield_per_sqm_from, yield_per_sqm_to, yield_per_sqm_unit,
                companion_plants, climate_zones, spacing, sunlight,
                daily_sunlight, soil_types, water_requirement,
                growth_habit, growing_tips
@@ -21,8 +23,8 @@ interface PlantDb {
 
     @SqlQuery("""
         SELECT id, name, time_to_harvest,
-               yield_per_plant_min, yield_per_plant_max, yield_per_plant_unit,
-               yield_per_sqm_min, yield_per_sqm_max, yield_per_sqm_unit,
+               yield_per_plant_from, yield_per_plant_to, yield_per_plant_unit,
+               yield_per_sqm_from, yield_per_sqm_to, yield_per_sqm_unit,
                companion_plants, climate_zones, spacing, sunlight,
                daily_sunlight, soil_types, water_requirement,
                growth_habit, growing_tips
@@ -34,8 +36,8 @@ interface PlantDb {
     @SqlUpdate("""
         INSERT INTO plants (
             name, time_to_harvest,
-            yield_per_plant_min, yield_per_plant_max, yield_per_plant_unit,
-            yield_per_sqm_min, yield_per_sqm_max, yield_per_sqm_unit,
+            yield_per_plant_from, yield_per_plant_to, yield_per_plant_unit,
+            yield_per_sqm_from, yield_per_sqm_to, yield_per_sqm_unit,
             companion_plants, climate_zones, spacing, sunlight,
             daily_sunlight, soil_types, water_requirement,
             growth_habit, growing_tips

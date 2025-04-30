@@ -1,4 +1,4 @@
-package com.sproutscout.api.database
+package com.sproutscout.api.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -29,8 +29,12 @@ fun HikariDataSource.runMigrations(): HikariDataSource = also {
     val flyway = Flyway.configure()
         .cleanDisabled(!clean)
         .dataSource(this)
+        .locations(
+            "classpath:db/migration",
+            "classpath:com/sproutscout/api/db/migration",
+        )
 //        .javaMigrations(
-//            com.sproutscout.api.database.migrations.V2__insert_initial_plants()
+//            com.sproutscout.api.db.migration.V2__insert_initial_plants()
 //        )
         .load()
 
