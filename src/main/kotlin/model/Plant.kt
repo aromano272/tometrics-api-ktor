@@ -1,4 +1,4 @@
-package com.sproutscout.api.model
+package com.tometrics.api.model
 
 import kotlinx.serialization.Serializable
 

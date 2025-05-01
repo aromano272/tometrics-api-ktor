@@ -1,6 +1,6 @@
-package com.sproutscout.api
+package com.tometrics.api
 
-import com.sproutscout.api.di.configureDI
+import com.tometrics.api.di.configureDI
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {

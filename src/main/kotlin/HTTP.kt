@@ -1,4 +1,4 @@
-package com.sproutscout.api
+package com.tometrics.api
 
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat

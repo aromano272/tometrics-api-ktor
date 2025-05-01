@@ -1,6 +1,6 @@
-package com.sproutscout.api.db.models
+package com.tometrics.api.db.models
 
-import com.sproutscout.api.domain.models.User
+import com.tometrics.api.domain.models.User
 
 data class UserEntity(
     val id: Int,

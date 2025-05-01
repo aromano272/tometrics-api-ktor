@@ -1,9 +1,9 @@
-package com.sproutscout.api.db
+package com.tometrics.api.db
 
-import com.sproutscout.api.db.models.PlantingEntity
-import com.sproutscout.api.domain.models.PlantingId
-import com.sproutscout.api.domain.models.UserId
-import com.sproutscout.api.model.PlantId
+import com.tometrics.api.db.models.PlantingEntity
+import com.tometrics.api.domain.models.PlantingId
+import com.tometrics.api.domain.models.UserId
+import com.tometrics.api.model.PlantId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

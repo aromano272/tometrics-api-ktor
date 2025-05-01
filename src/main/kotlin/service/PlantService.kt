@@ -1,9 +1,9 @@
-package com.sproutscout.api.service
+package com.tometrics.api.service
 
-import com.sproutscout.api.db.PlantDao
-import com.sproutscout.api.domain.models.NotFoundException
-import com.sproutscout.api.model.Plant
-import com.sproutscout.api.model.PlantId
+import com.tometrics.api.db.PlantDao
+import com.tometrics.api.domain.models.NotFoundException
+import com.tometrics.api.model.Plant
+import com.tometrics.api.model.PlantId
 
 interface PlantService {
     suspend fun getAll(): List<Plant>

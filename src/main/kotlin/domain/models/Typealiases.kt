@@ -1,3 +1,3 @@
-package com.sproutscout.api.domain.models
+package com.tometrics.api.domain.models
 
 typealias Millis = Long

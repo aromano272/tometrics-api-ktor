@@ -1,6 +1,6 @@
-package com.sproutscout.api.db
+package com.tometrics.api.db
 
-import com.sproutscout.api.db.models.PlantEntity
+import com.tometrics.api.db.models.PlantEntity
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBean
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper

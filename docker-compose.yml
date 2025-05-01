@@ -2,13 +2,13 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    container_name: sproutscout-ktor-db
+    container_name: tometrics-ktor-db
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: ktoruser
       POSTGRES_PASSWORD: ktorpass
-      POSTGRES_DB: sproutscout
+      POSTGRES_DB: tometrics
     volumes:
       - pgdata:/var/lib/postgresql/data
 

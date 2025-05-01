@@ -1,6 +1,6 @@
-package com.sproutscout.api.db
+package com.tometrics.api.db
 
-import com.sproutscout.api.db.models.RefreshTokenEntity
+import com.tometrics.api.db.models.RefreshTokenEntity
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery

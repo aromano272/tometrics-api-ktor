@@ -1,12 +1,12 @@
-package com.sproutscout.api.routes
+package com.tometrics.api.routes
 
-import com.sproutscout.api.domain.models.BadRequestException
-import com.sproutscout.api.domain.models.IdProviderPayload
-import com.sproutscout.api.domain.models.requester
-import com.sproutscout.api.routes.models.AuthGoogleLoginRequest
-import com.sproutscout.api.routes.models.TokensResponse
-import com.sproutscout.api.routes.models.AuthFacebookLoginRequest
-import com.sproutscout.api.service.AuthService
+import com.tometrics.api.domain.models.BadRequestException
+import com.tometrics.api.domain.models.IdProviderPayload
+import com.tometrics.api.domain.models.requester
+import com.tometrics.api.routes.models.AuthGoogleLoginRequest
+import com.tometrics.api.routes.models.TokensResponse
+import com.tometrics.api.routes.models.AuthFacebookLoginRequest
+import com.tometrics.api.service.AuthService
 import io.github.smiley4.ktoropenapi.post
 import io.ktor.http.*
 import io.ktor.server.auth.*

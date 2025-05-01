@@ -1,6 +1,6 @@
-package com.sproutscout.api.service
+package com.tometrics.api.service
 
-import com.sproutscout.api.service.templates.Template
+import com.tometrics.api.service.templates.Template
 import io.github.cdimascio.dotenv.Dotenv
 import io.ktor.client.HttpClient
 import io.ktor.client.request.basicAuth
@@ -23,7 +23,7 @@ class MailgunEmailService(
 
     private val apiKey = dotenv["MAILGUN_API_KEY"]
     private val domain = dotenv["MAILGUN_DOMAIN"]
-    private val fromEmail = "SproutScout <noreply@sproutscout.com>"
+    private val fromEmail = "Tometrics <noreply@tometrics.com>"
 
     override suspend fun sendEmail(to: String, subject: String, template: Template) {
         val url = "https://api.mailgun.net/v3/$domain/messages"

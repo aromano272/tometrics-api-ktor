@@ -1,6 +1,6 @@
-package com.sproutscout.api.routes
+package com.tometrics.api.routes
 
-import com.sproutscout.api.service.CronjobService
+import com.tometrics.api.service.CronjobService
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*

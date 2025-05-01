@@ -5,6 +5,6 @@ RUN gradle installDist
 
 FROM openjdk:17-jdk
 RUN microdnf install findutils
-COPY --from=builder /app/build/install/sproutscout /app
+COPY --from=builder /app/build/install/tometrics /app
 WORKDIR /app
-CMD ["bin/sproutscout"]
+CMD ["bin/tometrics"]

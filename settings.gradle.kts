@@ -1,1 +1,1 @@
-rootProject.name = "sproutscout"
+rootProject.name = "tometrics"

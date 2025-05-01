@@ -1,7 +1,7 @@
 ktor:
     application:
         modules:
-            - com.sproutscout.api.ApplicationKt.module
+            - com.tometrics.api.ApplicationKt.module
     deployment:
         port: "$PORT:8080"
         watch:
@@ -9,9 +9,9 @@ ktor:
     development: true
 
 jwt:
-    domain: "sproutscout.com"
-    audience: "sproutscout-users"
-    realm: "SproutScout"
+    domain: "tometrics.com"
+    audience: "tometrics-users"
+    realm: "Tometrics"
 
 postgres:
     maxPoolSize: 10

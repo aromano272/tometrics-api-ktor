@@ -1,9 +1,9 @@
-package com.sproutscout.api.service
+package com.tometrics.api.service
 
-import com.sproutscout.api.db.GardenDao
-import com.sproutscout.api.db.models.toDomain
-import com.sproutscout.api.domain.models.*
-import com.sproutscout.api.model.PlantId
+import com.tometrics.api.db.GardenDao
+import com.tometrics.api.db.models.toDomain
+import com.tometrics.api.domain.models.*
+import com.tometrics.api.model.PlantId
 
 interface GardenService {
     suspend fun getAll(requester: Requester): List<Planting>

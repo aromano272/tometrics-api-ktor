@@ -1,4 +1,4 @@
-package com.sproutscout.api.db
+package com.tometrics.api.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -31,10 +31,10 @@ fun HikariDataSource.runMigrations(): HikariDataSource = also {
         .dataSource(this)
         .locations(
             "classpath:db/migration",
-            "classpath:com/sproutscout/api/db/migration",
+            "classpath:com/tometrics/api/db/migration",
         )
 //        .javaMigrations(
-//            com.sproutscout.api.db.migration.V2__insert_initial_plants()
+//            com.tometrics.api.db.migration.V2__insert_initial_plants()
 //        )
         .load()
 

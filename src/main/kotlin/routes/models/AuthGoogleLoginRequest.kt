@@ -1,4 +1,4 @@
-package com.sproutscout.api.routes.models
+package com.tometrics.api.routes.models
 
 import kotlinx.serialization.Serializable
 

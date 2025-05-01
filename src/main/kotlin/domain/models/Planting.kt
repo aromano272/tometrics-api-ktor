@@ -1,7 +1,7 @@
-package com.sproutscout.api.domain.models
+package com.tometrics.api.domain.models
 
-import com.sproutscout.api.model.Plant
-import com.sproutscout.api.model.PlantYield
+import com.tometrics.api.model.Plant
+import com.tometrics.api.model.PlantYield
 import kotlinx.serialization.Serializable
 
 typealias PlantingId = Int

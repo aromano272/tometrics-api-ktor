@@ -1,8 +1,8 @@
-package com.sproutscout.api.routes
+package com.tometrics.api.routes
 
-import com.sproutscout.api.model.Plant
-import com.sproutscout.api.routes.models.GetAllPlantsResponse
-import com.sproutscout.api.service.PlantService
+import com.tometrics.api.model.Plant
+import com.tometrics.api.routes.models.GetAllPlantsResponse
+import com.tometrics.api.service.PlantService
 import io.github.smiley4.ktoropenapi.get
 import io.ktor.http.*
 import io.ktor.server.auth.*

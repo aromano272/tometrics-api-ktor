@@ -1,11 +1,11 @@
-package com.sproutscout.api.db.models
+package com.tometrics.api.db.models
 
-import com.sproutscout.api.domain.models.Planting
-import com.sproutscout.api.domain.models.PlantingId
-import com.sproutscout.api.domain.models.UserId
-import com.sproutscout.api.model.Plant
-import com.sproutscout.api.model.PlantId
-import com.sproutscout.api.model.PlantYield
+import com.tometrics.api.domain.models.Planting
+import com.tometrics.api.domain.models.PlantingId
+import com.tometrics.api.domain.models.UserId
+import com.tometrics.api.model.Plant
+import com.tometrics.api.model.PlantId
+import com.tometrics.api.model.PlantYield
 import java.time.Instant
 
 data class PlantingEntity(

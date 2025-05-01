@@ -1,6 +1,6 @@
-package com.sproutscout.api.routes.models
+package com.tometrics.api.routes.models
 
-import com.sproutscout.api.domain.models.BadRequestException
+import com.tometrics.api.domain.models.BadRequestException
 import io.ktor.http.*
 
 inline fun <reified T : Enum<T>> Parameters.getAndValidateEnum(name: String): T? =

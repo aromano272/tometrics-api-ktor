@@ -1,4 +1,4 @@
-package com.sproutscout.api.service
+package com.tometrics.api.service
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

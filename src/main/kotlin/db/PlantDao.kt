@@ -1,8 +1,8 @@
-package com.sproutscout.api.db
+package com.tometrics.api.db
 
-import com.sproutscout.api.db.models.toDomain
-import com.sproutscout.api.model.Plant
-import com.sproutscout.api.model.PlantId
+import com.tometrics.api.db.models.toDomain
+import com.tometrics.api.model.Plant
+import com.tometrics.api.model.PlantId
 
 interface PlantDao {
     fun getAll(): List<Plant>

@@ -1,6 +1,6 @@
-package com.sproutscout.api.db
+package com.tometrics.api.db
 
-import com.sproutscout.api.db.models.UserEntity
+import com.tometrics.api.db.models.UserEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

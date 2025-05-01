@@ -1,11 +1,11 @@
-package com.sproutscout.api.routes
+package com.tometrics.api.routes
 
-import com.sproutscout.api.domain.models.Planting
-import com.sproutscout.api.domain.models.requireRequester
-import com.sproutscout.api.routes.models.AddPlantingRequest
-import com.sproutscout.api.routes.models.GetAllPlantingsResponse
-import com.sproutscout.api.routes.models.PatchPlantingRequest
-import com.sproutscout.api.service.GardenService
+import com.tometrics.api.domain.models.Planting
+import com.tometrics.api.domain.models.requireRequester
+import com.tometrics.api.routes.models.AddPlantingRequest
+import com.tometrics.api.routes.models.GetAllPlantingsResponse
+import com.tometrics.api.routes.models.PatchPlantingRequest
+import com.tometrics.api.service.GardenService
 import io.github.smiley4.ktoropenapi.delete
 import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.patch

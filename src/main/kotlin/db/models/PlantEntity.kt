@@ -1,6 +1,6 @@
-package com.sproutscout.api.db.models
+package com.tometrics.api.db.models
 
-import com.sproutscout.api.model.*
+import com.tometrics.api.model.*
 
 data class PlantEntity(
     val id: Int? = null,

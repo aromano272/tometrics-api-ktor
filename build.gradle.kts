@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.plugin.serialization)
 }
 
-group = "com.sproutscout.api"
+group = "com.tometrics.api"
 version = "0.0.1"
 
 application {

@@ -1,14 +1,14 @@
-package com.sproutscout.api
+package com.tometrics.api
 
-import com.sproutscout.api.domain.models.*
-import com.sproutscout.api.routes.authRoutes
-import com.sproutscout.api.routes.cronjobRoutes
-import com.sproutscout.api.routes.plantRoutes
-import com.sproutscout.api.routes.plantingRoutes
-import com.sproutscout.api.service.AuthService
-import com.sproutscout.api.service.CronjobService
-import com.sproutscout.api.service.GardenService
-import com.sproutscout.api.service.PlantService
+import com.tometrics.api.domain.models.*
+import com.tometrics.api.routes.authRoutes
+import com.tometrics.api.routes.cronjobRoutes
+import com.tometrics.api.routes.plantRoutes
+import com.tometrics.api.routes.plantingRoutes
+import com.tometrics.api.service.AuthService
+import com.tometrics.api.service.CronjobService
+import com.tometrics.api.service.GardenService
+import com.tometrics.api.service.PlantService
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

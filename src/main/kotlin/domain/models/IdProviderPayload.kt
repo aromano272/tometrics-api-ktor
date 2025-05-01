@@ -1,4 +1,4 @@
-package com.sproutscout.api.domain.models
+package com.tometrics.api.domain.models
 
 sealed interface IdProviderPayload {
     data class Google(

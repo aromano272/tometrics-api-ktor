@@ -1,4 +1,4 @@
-package com.sproutscout.api.db.models
+package com.tometrics.api.db.models
 
 import java.time.Instant
 

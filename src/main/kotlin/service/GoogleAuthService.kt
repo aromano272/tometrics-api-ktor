@@ -1,8 +1,8 @@
-package com.sproutscout.api.service
+package com.tometrics.api.service
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
-import com.sproutscout.api.domain.models.BadRequestException
-import com.sproutscout.api.domain.models.IdProviderPayload
+import com.tometrics.api.domain.models.BadRequestException
+import com.tometrics.api.domain.models.IdProviderPayload
 
 interface GoogleAuthService {
     suspend fun verify(idToken: String): IdProviderPayload.Google

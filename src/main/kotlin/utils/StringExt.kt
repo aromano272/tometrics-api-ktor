@@ -1,4 +1,4 @@
-package com.sproutscout.api.utils
+package com.tometrics.api.utils
 
 fun String.toPascalCase(): String =
     this.split("_")

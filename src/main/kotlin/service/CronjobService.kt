@@ -1,9 +1,9 @@
-package com.sproutscout.api.service
+package com.tometrics.api.service
 
-import com.sproutscout.api.db.UserDao
-import com.sproutscout.api.db.models.toDomain
-import com.sproutscout.api.domain.models.User
-import com.sproutscout.api.service.templates.HarvestNotificationTemplate
+import com.tometrics.api.db.UserDao
+import com.tometrics.api.db.models.toDomain
+import com.tometrics.api.domain.models.User
+import com.tometrics.api.service.templates.HarvestNotificationTemplate
 import io.ktor.util.logging.*
 
 interface CronjobService {

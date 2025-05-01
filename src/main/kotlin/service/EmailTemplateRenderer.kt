@@ -1,6 +1,6 @@
-package com.sproutscout.api.service
+package com.tometrics.api.service
 
-import com.sproutscout.api.service.templates.Template
+import com.tometrics.api.service.templates.Template
 import com.github.mustachejava.MustacheFactory
 import java.io.StringWriter
 

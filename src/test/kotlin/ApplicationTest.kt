@@ -1,4 +1,4 @@
-package com.sproutscout.api
+package com.tometrics.api
 
 import io.ktor.client.request.*
 import io.ktor.http.*

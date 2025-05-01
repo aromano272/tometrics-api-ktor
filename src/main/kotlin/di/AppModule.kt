@@ -1,12 +1,12 @@
-package com.sproutscout.api.di
+package com.tometrics.api.di
 
 import com.github.mustachejava.DefaultMustacheFactory
 import com.github.mustachejava.MustacheFactory
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.v2.ApacheHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import com.sproutscout.api.db.*
-import com.sproutscout.api.service.*
+import com.tometrics.api.db.*
+import com.tometrics.api.service.*
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*
