@@ -1,6 +1,7 @@
 package com.tometrics.api.db.models
 
 import com.tometrics.api.model.*
+import org.jdbi.v3.json.Json
 
 data class PlantEntity(
     val id: Int? = null,
@@ -13,7 +14,8 @@ data class PlantEntity(
     val yieldPerSqMTo: Float,
     val yieldPerSqMUnit: YieldUnit,
     val companionPlants: List<String>,
-    val climateZones: ClimateZones,
+    @Json
+    val climateZones: ClimateZonesEntity,
     val spacing: SpacingRequirement,
     val sunlight: SunlightRequirement,
     val dailySunlight: DailySunlightRequirement,
@@ -34,7 +36,7 @@ fun Plant.toEntity() = PlantEntity(
     yieldPerSqMTo = yieldPerSqM.to,
     yieldPerSqMUnit = yieldPerSqM.unit,
     companionPlants = companionPlants,
-    climateZones = climateZones,
+    climateZones = climateZones.toEntity(),
     spacing = spacing,
     sunlight = sunlight,
     dailySunlight = dailySunlight,
@@ -42,6 +44,22 @@ fun Plant.toEntity() = PlantEntity(
     waterRequirement = waterRequirement,
     growthHabit = growthHabit,
     growingTips = growingTips
+)
+
+fun ClimateZones.toEntity() = ClimateZonesEntity(
+    temperate = temperate,
+    mediterranean = mediterranean,
+    continental = continental,
+    tropical = tropical,
+    arid = arid,
+)
+
+data class ClimateZonesEntity(
+    val temperate: List<Month>,
+    val mediterranean: List<Month>,
+    val continental: List<Month>,
+    val tropical: List<Month>,
+    val arid: List<Month>
 )
 
 fun PlantEntity.toDomain() = Plant(
@@ -59,7 +77,7 @@ fun PlantEntity.toDomain() = Plant(
         unit = yieldPerSqMUnit
     ),
     companionPlants = companionPlants,
-    climateZones = climateZones,
+    climateZones = climateZones.toDomain(),
     spacing = spacing,
     sunlight = sunlight,
     dailySunlight = dailySunlight,
@@ -68,3 +86,12 @@ fun PlantEntity.toDomain() = Plant(
     growthHabit = growthHabit,
     growingTips = growingTips
 )
+
+fun ClimateZonesEntity.toDomain() = ClimateZones(
+    temperate = temperate,
+    mediterranean = mediterranean,
+    continental = continental,
+    tropical = tropical,
+    arid = arid,
+)
+

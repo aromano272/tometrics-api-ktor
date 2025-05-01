@@ -47,6 +47,8 @@ dependencies {
     implementation(libs.jdbi.core)
     implementation(libs.jdbi.kotlin)
     implementation(libs.jdbi.sqlobject)
+    implementation(libs.jdbi.jackson2)
+    implementation(libs.jackson.kotlin)
     implementation(libs.flyway.core)
     implementation(libs.flyway.database.postgresql)
     implementation(libs.dotenv)

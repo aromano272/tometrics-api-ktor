@@ -1,5 +1,6 @@
 package com.tometrics.api.db
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.github.cdimascio.dotenv.Dotenv
@@ -7,6 +8,8 @@ import io.ktor.server.application.*
 import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
+import org.jdbi.v3.jackson2.Jackson2Config
+import org.jdbi.v3.jackson2.Jackson2Plugin
 
 fun Application.createHikariDataSource(
     dotenv: Dotenv,
@@ -46,4 +49,6 @@ fun HikariDataSource.runMigrations(): HikariDataSource = also {
 fun HikariDataSource.createJdbi(): Jdbi = Jdbi.create(this).apply {
     installPlugins()
     installPlugin(KotlinPlugin(enableCoroutineSupport = true))
+    installPlugin(Jackson2Plugin())
+    getConfig(Jackson2Config::class.java).mapper = jacksonObjectMapper()
 }
