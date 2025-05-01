@@ -1,9 +1,9 @@
 package com.tometrics.api.db
 
 import com.tometrics.api.db.models.PlantingEntity
+import com.tometrics.api.domain.models.PlantId
 import com.tometrics.api.domain.models.PlantingId
 import com.tometrics.api.domain.models.UserId
-import com.tometrics.api.model.PlantId
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys

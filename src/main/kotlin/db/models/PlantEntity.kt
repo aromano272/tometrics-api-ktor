@@ -1,6 +1,6 @@
 package com.tometrics.api.db.models
 
-import com.tometrics.api.model.*
+import com.tometrics.api.domain.models.*
 import org.jdbi.v3.json.Json
 
 data class PlantEntity(

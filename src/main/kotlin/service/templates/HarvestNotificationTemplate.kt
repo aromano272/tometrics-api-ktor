@@ -1,7 +1,7 @@
 package com.tometrics.api.service.templates
 
 import com.tometrics.api.domain.models.Planting
-import com.tometrics.api.model.YieldUnit
+import com.tometrics.api.domain.models.YieldUnit
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

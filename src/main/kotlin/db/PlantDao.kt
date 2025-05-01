@@ -1,8 +1,8 @@
 package com.tometrics.api.db
 
 import com.tometrics.api.db.models.toDomain
-import com.tometrics.api.model.Plant
-import com.tometrics.api.model.PlantId
+import com.tometrics.api.domain.models.Plant
+import com.tometrics.api.domain.models.PlantId
 
 interface PlantDao {
     fun getAll(): List<Plant>

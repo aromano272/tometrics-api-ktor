@@ -1,7 +1,5 @@
 package com.tometrics.api.domain.models
 
-import com.tometrics.api.model.Plant
-import com.tometrics.api.model.PlantYield
 import kotlinx.serialization.Serializable
 
 typealias PlantingId = Int

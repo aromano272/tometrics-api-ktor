@@ -3,7 +3,6 @@ package com.tometrics.api.service
 import com.tometrics.api.db.GardenDao
 import com.tometrics.api.db.models.toDomain
 import com.tometrics.api.domain.models.*
-import com.tometrics.api.model.PlantId
 
 interface GardenService {
     suspend fun getAll(requester: Requester): List<Planting>

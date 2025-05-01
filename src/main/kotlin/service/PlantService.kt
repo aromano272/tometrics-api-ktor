@@ -2,8 +2,8 @@ package com.tometrics.api.service
 
 import com.tometrics.api.db.PlantDao
 import com.tometrics.api.domain.models.NotFoundException
-import com.tometrics.api.model.Plant
-import com.tometrics.api.model.PlantId
+import com.tometrics.api.domain.models.Plant
+import com.tometrics.api.domain.models.PlantId
 
 interface PlantService {
     suspend fun getAll(): List<Plant>

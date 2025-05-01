@@ -2,7 +2,7 @@ package com.tometrics.api.db.migration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.tometrics.api.db.models.toEntity
-import com.tometrics.api.model.*
+import com.tometrics.api.domain.models.*
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 import org.postgresql.util.PGobject
