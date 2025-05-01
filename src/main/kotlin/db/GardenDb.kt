@@ -38,7 +38,14 @@ interface GardenDb {
         @Bind("quantity") quantity: Int
     ): PlantingId
 
-    @SqlQuery("SELECT * FROM plantings")
-    fun getAll(): List<PlantingEntity>
+    @SqlQuery(
+        """
+        SELECT p.* 
+        FROM plantings p
+        JOIN plants pl ON p.plant_id = pl.id
+        WHERE DATE_TRUNC('day', p.created_at + (pl.time_to_harvest * INTERVAL '1 day')) = DATE_TRUNC('day', CURRENT_TIMESTAMP)
+        """
+    )
+    fun getAllReadyForHarvestToday(): List<PlantingEntity>
 
 }

@@ -1,4 +1,4 @@
-package com.sproutscout.api.routes.models.routes.models
+package com.sproutscout.api.routes.models
 
 import kotlinx.serialization.Serializable
 

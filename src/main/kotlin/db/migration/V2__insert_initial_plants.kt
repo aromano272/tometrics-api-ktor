@@ -1,7 +1,7 @@
 package com.sproutscout.api.db.migration
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.sproutscout.api.db.PlantEntity
+import com.sproutscout.api.db.models.toEntity
 import com.sproutscout.api.model.*
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
@@ -26,15 +26,15 @@ class V2__insert_initial_plants : BaseJavaMigration() {
         val statement = connection.prepareStatement(insertSql)
 
         initialPlants.forEach { plant ->
-            val entity = PlantEntity.fromPlant(plant)
+            val entity = plant.toEntity()
             statement.setString(1, entity.name)
             statement.setInt(2, entity.timeToHarvest)
             statement.setFloat(3, entity.yieldPerPlantFrom)
             statement.setFloat(4, entity.yieldPerPlantTo)
-            statement.setString(5, entity.yieldPerPlantUnit)
+            statement.setString(5, entity.yieldPerPlantUnit.name)
             statement.setFloat(6, entity.yieldPerSqMFrom)
             statement.setFloat(7, entity.yieldPerSqMTo)
-            statement.setString(8, entity.yieldPerSqMUnit)
+            statement.setString(8, entity.yieldPerSqMUnit.name)
 
             // Create arrays for the list fields
             val companionPlantsArray = connection.createArrayOf("text", entity.companionPlants.toTypedArray())
@@ -47,12 +47,12 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             
             statement.setArray(9, companionPlantsArray)
             statement.setObject(10, climateZonesBlob)
-            statement.setString(11, entity.spacing)
-            statement.setString(12, entity.sunlight)
-            statement.setString(13, entity.dailySunlight)
+            statement.setString(11, entity.spacing.name)
+            statement.setString(12, entity.sunlight.name)
+            statement.setString(13, entity.dailySunlight.name)
             statement.setArray(14, soilTypesArray)
-            statement.setString(15, entity.waterRequirement)
-            statement.setString(16, entity.growthHabit)
+            statement.setString(15, entity.waterRequirement.name)
+            statement.setString(16, entity.growthHabit.name)
             statement.setArray(17, growingTipsArray)
             
             statement.addBatch()
@@ -87,7 +87,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.INDETERMINATE,
+            growthHabit = GrowthHabit.INDETERMINATE,
             growingTips = listOf(
                 GrowingTip.PRUNE_SUCKERS,
                 GrowingTip.PROVIDE_SUPPORT,
@@ -115,7 +115,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.HILL_SOIL,
                 GrowingTip.PLANT_DEEP,
@@ -143,7 +143,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.LOOSEN_SOIL,
                 GrowingTip.THIN_SEEDLINGS,
@@ -177,7 +177,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.PLANT_TIPS_UP,
                 GrowingTip.REDUCE_WATERING_AT_MATURITY,
@@ -205,7 +205,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.SUPPORT_WHEN_FRUITING,
                 GrowingTip.HARVEST_WHEN_FIRM,
@@ -233,7 +233,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.PROVIDE_SUPPORT,
                 GrowingTip.HARVEST_WHEN_FIRM,
@@ -267,7 +267,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.SUCCESSION_PLANTING,
                 GrowingTip.HEAT_SENSITIVE,
@@ -295,7 +295,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.HARVEST_WHEN_FIRM,
                 GrowingTip.CONSISTENT_MOISTURE,
@@ -329,7 +329,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.SUCCESSION_PLANTING,
                 GrowingTip.COLD_HARDY,
@@ -357,7 +357,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.HARVEST_WHEN_FIRM,
                 GrowingTip.CONSISTENT_MOISTURE,
@@ -385,7 +385,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.CONSISTENT_MOISTURE,
                 GrowingTip.CROP_ROTATION,
@@ -413,7 +413,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.PROVIDE_SUPPORT,
@@ -441,7 +441,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.PLANT_IN_BLOCKS,
                 GrowingTip.REQUIRES_POLLINATION,
@@ -469,7 +469,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.PROVIDE_SUPPORT,
                 GrowingTip.AVOID_OVERHEAD_WATERING,
@@ -497,7 +497,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.CONSISTENT_MOISTURE,
                 GrowingTip.CROP_ROTATION,
@@ -525,7 +525,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DIRECT_SOW,
                 GrowingTip.SUCCESSION_PLANTING,
@@ -553,7 +553,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.COLD_HARDY,
                 GrowingTip.CUT_AND_COME_AGAIN,
@@ -581,7 +581,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.PLANT_DEEP,
                 GrowingTip.PLANT_TIPS_UP,
@@ -609,7 +609,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DIRECT_SOW,
                 GrowingTip.THIN_SEEDLINGS,
@@ -637,7 +637,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.PROVIDE_SUPPORT,
                 GrowingTip.DIRECT_SOW,
@@ -665,7 +665,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DEEP_ROOT_SYSTEM,
                 GrowingTip.PERENNIAL_CROP,
@@ -693,7 +693,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.CONSISTENT_MOISTURE,
@@ -721,7 +721,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.CONSISTENT_MOISTURE,
                 GrowingTip.FERTILE_SOIL,
@@ -749,7 +749,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.CUT_AND_COME_AGAIN,
                 GrowingTip.CONSISTENT_MOISTURE,
@@ -777,7 +777,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DIRECT_SOW,
                 GrowingTip.THIN_SEEDLINGS,
@@ -805,7 +805,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.HARVEST_REGULARLY,
@@ -839,7 +839,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.TRENCH_PLANTING,
                 GrowingTip.BLANCHING,
@@ -867,7 +867,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.DIRECT_SOW,
                 GrowingTip.SUCCESSION_PLANTING,
@@ -895,7 +895,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.DROUGHT_RESISTANT,
@@ -923,7 +923,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DIRECT_SOW,
                 GrowingTip.SLOW_TO_GERMINATE,
@@ -951,7 +951,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.DEEP_ROOT_SYSTEM,
@@ -979,7 +979,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.CONSISTENT_MOISTURE,
@@ -1007,7 +1007,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DIRECT_SOW,
                 GrowingTip.COOL_WEATHER_CROP,
@@ -1035,7 +1035,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.HARVEST_REGULARLY,
@@ -1063,7 +1063,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DROUGHT_RESISTANT,
                 GrowingTip.AVOID_TRANSPLANTING,
@@ -1091,7 +1091,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.BLANCHING,
@@ -1119,7 +1119,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.COLD_HARDY,
                 GrowingTip.HEAT_TOLERANT,
@@ -1147,7 +1147,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.SUCCESSION_PLANTING,
@@ -1175,7 +1175,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.HEAT_SENSITIVE,
@@ -1203,7 +1203,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.CLUMPING,
+            growthHabit = GrowthHabit.CLUMPING,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.AVOID_HARVESTING_FIRST_YEAR,
@@ -1231,7 +1231,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.CLUMPING,
+            growthHabit = GrowthHabit.CLUMPING,
             growingTips = listOf(
                 GrowingTip.PLANT_TIPS_UP,
                 GrowingTip.REDUCE_WATERING_AT_MATURITY,
@@ -1265,7 +1265,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.SPREADING,
+            growthHabit = GrowthHabit.SPREADING,
             growingTips = listOf(
                 GrowingTip.NEEDS_CONSTANT_MOISTURE,
                 GrowingTip.CUT_AND_COME_AGAIN,
@@ -1293,7 +1293,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.PLANT_DEEP,
@@ -1327,7 +1327,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.REQUIRES_POLLINATION,
                 GrowingTip.NEEDS_SPACE,
@@ -1361,7 +1361,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.REQUIRES_POLLINATION,
                 GrowingTip.NEEDS_SPACE,
@@ -1389,7 +1389,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.HARVEST_REGULARLY,
                 GrowingTip.REQUIRES_POLLINATION,
@@ -1423,7 +1423,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.DEEP_ROOT_SYSTEM,
@@ -1457,7 +1457,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.SPREADING,
+            growthHabit = GrowthHabit.SPREADING,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.CONSISTENT_MOISTURE,
@@ -1491,7 +1491,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.SPREADING,
+            growthHabit = GrowthHabit.SPREADING,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.CONSISTENT_MOISTURE,
@@ -1519,7 +1519,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.MOUND_PLANTING,
@@ -1547,7 +1547,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.NEEDS_CONSTANT_MOISTURE,
                 GrowingTip.HEAT_TOLERANT,
@@ -1575,7 +1575,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DROUGHT_RESISTANT,
                 GrowingTip.HEAT_TOLERANT,
@@ -1609,7 +1609,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.SPREADING,
+            growthHabit = GrowthHabit.SPREADING,
             growingTips = listOf(
                 GrowingTip.AQUATIC_FRIENDLY,
                 GrowingTip.NEEDS_CONSTANT_MOISTURE,
@@ -1643,7 +1643,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.AQUATIC_FRIENDLY,
                 GrowingTip.SUBMERGED_PLANTING,
@@ -1671,7 +1671,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.LOW,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.CLUMPING,
+            growthHabit = GrowthHabit.CLUMPING,
             growingTips = listOf(
                 GrowingTip.NEEDS_CONSTANT_MOISTURE,
                 GrowingTip.SHADE_TOLERANT,
@@ -1699,7 +1699,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DEEP_ROOT_SYSTEM,
                 GrowingTip.DIRECT_SOW,
@@ -1727,7 +1727,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.DIRECT_SOW,
@@ -1761,7 +1761,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.PROVIDE_SUPPORT,
@@ -1795,7 +1795,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.LOW,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.DROUGHT_RESISTANT,
                 GrowingTip.NITROGEN_FIXING,
@@ -1823,7 +1823,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.LOW,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.DROUGHT_RESISTANT,
                 GrowingTip.NITROGEN_FIXING,
@@ -1857,7 +1857,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.NITROGEN_FIXING,
@@ -1891,7 +1891,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.NITROGEN_FIXING,
@@ -1925,7 +1925,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.DROUGHT_RESISTANT,
@@ -1953,7 +1953,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.NEEDS_LONG_SEASON,
@@ -1981,7 +1981,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DEEP_ROOT_SYSTEM,
                 GrowingTip.COLD_HARDY,
@@ -2009,7 +2009,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.FERTILE_SOIL,
                 GrowingTip.CONSISTENT_MOISTURE,
@@ -2037,7 +2037,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.BLANCHING,
                 GrowingTip.PERENNIAL_CROP,
@@ -2065,7 +2065,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.CONSISTENT_MOISTURE,
@@ -2093,7 +2093,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.DROUGHT_RESISTANT,
@@ -2121,7 +2121,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.CUT_AND_COME_AGAIN,
@@ -2149,7 +2149,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.CUT_AND_COME_AGAIN,
@@ -2177,7 +2177,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.COLD_HARDY,
@@ -2205,7 +2205,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.LOW,
-            growthHabit = PlantGrowthHabit.SPREADING,
+            growthHabit = GrowthHabit.SPREADING,
             growingTips = listOf(
                 GrowingTip.DROUGHT_RESISTANT,
                 GrowingTip.HEAT_TOLERANT,
@@ -2233,7 +2233,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.CLUMPING,
+            growthHabit = GrowthHabit.CLUMPING,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.CUT_AND_COME_AGAIN,
@@ -2261,7 +2261,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.DEEP_ROOT_SYSTEM,
@@ -2289,7 +2289,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.INVASIVE_TENDENCIES,
@@ -2317,7 +2317,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.NEEDS_LONG_SEASON,
                 GrowingTip.HARVEST_AFTER_FROST,
@@ -2343,7 +2343,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(
                 GrowingTip.DAY_LENGTH_SENSITIVE,
                 GrowingTip.NEEDS_LONG_SEASON,
@@ -2369,7 +2369,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.PROVIDE_SUPPORT,
                 GrowingTip.PEST_RESISTANT,
@@ -2396,7 +2396,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.SPREADING,
+            growthHabit = GrowthHabit.SPREADING,
             growingTips = listOf(
                 GrowingTip.COLORFUL_TUBERS,
                 GrowingTip.DAY_LENGTH_SENSITIVE,
@@ -2423,7 +2423,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.PROVIDE_SUPPORT,
                 GrowingTip.HEAT_TOLERANT,
@@ -2450,7 +2450,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.PROVIDE_SUPPORT,
                 GrowingTip.HEAT_TOLERANT,
@@ -2476,7 +2476,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.PROVIDE_SUPPORT,
                 GrowingTip.HEAT_TOLERANT,
@@ -2508,7 +2508,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.PROVIDE_SUPPORT,
                 GrowingTip.HEAT_TOLERANT,
@@ -2534,7 +2534,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.LOW,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DROUGHT_RESISTANT,
                 GrowingTip.FAST_GROWING,
@@ -2561,7 +2561,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.BUSH,
+            growthHabit = GrowthHabit.BUSH,
             growingTips = listOf(GrowingTip.SUPPORT_WHEN_FRUITING, GrowingTip.HEAT_TOLERANT),
         ),
         Plant(
@@ -2583,7 +2583,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.LOW,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DROUGHT_RESISTANT,
                 GrowingTip.DIRECT_SOW,
@@ -2610,7 +2610,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.LOW,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DROUGHT_RESISTANT,
                 GrowingTip.DIRECT_SOW,
@@ -2636,7 +2636,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(GrowingTip.QUICK_GROWING, GrowingTip.DIRECT_SOW),
         ),
         Plant(
@@ -2658,7 +2658,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.LOW,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.DROUGHT_RESISTANT,
                 GrowingTip.DIRECT_SOW,
@@ -2690,7 +2690,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(GrowingTip.DIRECT_SOW, GrowingTip.COOL_WEATHER_CROP),
         ),
         Plant(
@@ -2712,7 +2712,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.ROSETTE,
+            growthHabit = GrowthHabit.ROSETTE,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.BLANCHING,
@@ -2738,7 +2738,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.HIGH,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(GrowingTip.PERENNIAL_CROP, GrowingTip.DIVIDE_EVERY_FEW_YEARS),
         ),
         Plant(
@@ -2766,7 +2766,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.DROUGHT_RESISTANT,
@@ -2793,7 +2793,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.SANDY, SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.CLUMPING,
+            growthHabit = GrowthHabit.CLUMPING,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.BLANCHING,
@@ -2821,7 +2821,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.COOL_WEATHER_CROP,
                 GrowingTip.HEAT_SENSITIVE,
@@ -2849,7 +2849,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.CLUMPING,
+            growthHabit = GrowthHabit.CLUMPING,
             growingTips = listOf(
                 GrowingTip.PERENNIAL_CROP,
                 GrowingTip.CUT_AND_COME_AGAIN,
@@ -2877,7 +2877,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY, SoilType.SANDY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.SPREADING,
+            growthHabit = GrowthHabit.SPREADING,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.DROUGHT_RESISTANT,
@@ -2904,7 +2904,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.HIGH,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.UPRIGHT,
+            growthHabit = GrowthHabit.UPRIGHT,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.SALT_TOLERANT,
@@ -2932,7 +2932,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             dailySunlight = DailySunlightRequirement.MEDIUM,
             soilType = listOf(SoilType.LOAMY),
             waterRequirement = WaterRequirement.MEDIUM,
-            growthHabit = PlantGrowthHabit.VINING,
+            growthHabit = GrowthHabit.VINING,
             growingTips = listOf(
                 GrowingTip.HEAT_TOLERANT,
                 GrowingTip.PROVIDE_SUPPORT,

@@ -38,7 +38,7 @@ enum class WaterRequirement {
     HIGH    // Consistently moist, frequent watering
 }
 
-enum class PlantGrowthHabit {
+enum class GrowthHabit {
     DETERMINATE,    // Bush-type that grows to a certain height and stops
     INDETERMINATE,  // Vining type that continues growing
     BUSH,          // Compact growing habit
@@ -234,6 +234,6 @@ data class Plant(
     val dailySunlight: DailySunlightRequirement,
     val soilType: List<SoilType>,
     val waterRequirement: WaterRequirement,
-    val growthHabit: PlantGrowthHabit,
+    val growthHabit: GrowthHabit,
     val growingTips: List<GrowingTip>
 )

@@ -1,9 +1,8 @@
 package com.sproutscout.api.db
 
-import com.sproutscout.api.model.ClimateZones
-import com.sproutscout.api.model.GrowingTip
-import com.sproutscout.api.model.SoilType
+import com.sproutscout.api.db.models.PlantEntity
 import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.customizer.BindBean
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
@@ -50,23 +49,5 @@ interface PlantDb {
             :growthHabit, :growingTips
         )
     """)
-    fun insert(
-        @Bind("name") name: String,
-        @Bind("timeToHarvest") timeToHarvest: Int,
-        @Bind("yieldPerPlantFrom") yieldPerPlantFrom: Float,
-        @Bind("yieldPerPlantTo") yieldPerPlantTo: Float,
-        @Bind("yieldPerPlantUnit") yieldPerPlantUnit: String,
-        @Bind("yieldPerSqMFrom") yieldPerSqMFrom: Float,
-        @Bind("yieldPerSqMTo") yieldPerSqMTo: Float,
-        @Bind("yieldPerSqMUnit") yieldPerSqMUnit: String,
-        @Bind("companionPlants") companionPlants: List<String>,
-        @Bind("climateZones") climateZones: ClimateZones,
-        @Bind("spacing") spacing: String,
-        @Bind("sunlight") sunlight: String,
-        @Bind("dailySunlight") dailySunlight: String,
-        @Bind("soilTypes") soilTypes: List<SoilType>,
-        @Bind("waterRequirement") waterRequirement: String,
-        @Bind("growthHabit") growthHabit: String,
-        @Bind("growingTips") growingTips: List<GrowingTip>
-    )
+    fun insert(@BindBean entity: PlantEntity)
 } 

@@ -5,7 +5,7 @@ import com.sproutscout.api.domain.models.IdProviderPayload
 import com.sproutscout.api.domain.models.requester
 import com.sproutscout.api.routes.models.AuthGoogleLoginRequest
 import com.sproutscout.api.routes.models.TokensResponse
-import com.sproutscout.api.routes.models.routes.models.AuthFacebookLoginRequest
+import com.sproutscout.api.routes.models.AuthFacebookLoginRequest
 import com.sproutscout.api.service.AuthService
 import io.github.smiley4.ktoropenapi.post
 import io.ktor.http.*

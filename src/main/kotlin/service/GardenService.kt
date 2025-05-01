@@ -55,20 +55,19 @@ class DefaultGardenService(
     }
 
     override suspend fun getAllReadyForHarvestToday(): Map<UserId, List<Planting>> {
-        throw NotImplementedError()
-//        val plantings = gardenDao.getAll()
-//            .filter { planting ->
-//                LocalDate.from(planting.createdAt).plusDays(planting.plant) == LocalDate.now()
-//                timeToHarvest
-//            }
-//            .groupBy { it.userId }
-//            .mapValues { (userId, plantings) ->
-//                plantings.map { planting ->
-//                    val plant = plantService.getById(planting.plantId)
-//                    planting.toDomain(plant)
-//                }
-//            }
-//        return plantings
+        val plantings = gardenDao.getAll()
+            .filter { planting ->
+                LocalDate.from(planting.createdAt).plusDays(planting.plant) == LocalDate.now()
+                timeToHarvest
+            }
+            .groupBy { it.userId }
+            .mapValues { (userId, plantings) ->
+                plantings.map { planting ->
+                    val plant = plantService.getById(planting.plantId)
+                    planting.toDomain(plant)
+                }
+            }
+        return plantings
     }
 
 }
