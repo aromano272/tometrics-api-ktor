@@ -6,13 +6,19 @@ import com.tometrics.api.domain.models.PlantingId
 import com.tometrics.api.domain.models.UserId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.Instant
 
 interface GardenDao {
     suspend fun getAll(userId: UserId): List<PlantingEntity>
     suspend fun find(id: PlantingId): PlantingEntity?
     suspend fun delete(id: PlantingId): Int
     suspend fun update(id: PlantingId, newQuantity: Int): Int
-    suspend fun insert(userId: UserId, plantId: PlantId, quantity: Int): PlantingId
+    suspend fun insert(
+        userId: UserId,
+        plantId: PlantId,
+        quantity: Int,
+        readyToHarvestAt: Instant,
+    ): PlantingId
     suspend fun getAllReadyForHarvestToday(): List<PlantingEntity>
 }
 
@@ -39,9 +45,10 @@ class DefaultGardenDao(
     override suspend fun insert(
         userId: UserId,
         plantId: PlantId,
-        quantity: Int
+        quantity: Int,
+        readyToHarvestAt: Instant,
     ): PlantingId = withContext(Dispatchers.IO) {
-       db.insert(userId, plantId, quantity)
+       db.insert(userId, plantId, quantity, readyToHarvestAt)
     }
 
     override suspend fun getAllReadyForHarvestToday(): List<PlantingEntity> = withContext(Dispatchers.IO) {

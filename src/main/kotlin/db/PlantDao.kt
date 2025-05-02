@@ -1,22 +1,30 @@
 package com.tometrics.api.db
 
-import com.tometrics.api.db.models.toDomain
-import com.tometrics.api.domain.models.Plant
+import com.tometrics.api.db.models.PlantEntity
 import com.tometrics.api.domain.models.PlantId
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 interface PlantDao {
-    fun getAll(): List<Plant>
-    fun getById(id: PlantId): Plant?
+    suspend fun getAll(): List<PlantEntity>
+    suspend fun getAllByIds(ids: Set<PlantId>): List<PlantEntity>
+    suspend fun getById(id: PlantId): PlantEntity?
 }
 
 class DefaultPlantDao(
     private val db: PlantDb
 ) : PlantDao {
 
-    override fun getAll(): List<Plant> =
-        db.getAll().map { it.toDomain() }
+    override suspend fun getAll(): List<PlantEntity> = withContext(Dispatchers.IO) {
+        db.getAll()
+    }
 
-    override fun getById(id: PlantId): Plant? =
-        db.getById(id)?.toDomain()
+    override suspend fun getAllByIds(ids: Set<PlantId>): List<PlantEntity> = withContext(Dispatchers.IO) {
+        db.getAllByIds(ids)
+    }
+
+    override suspend fun getById(id: PlantId): PlantEntity? = withContext(Dispatchers.IO) {
+        db.getById(id)
+    }
 
 }

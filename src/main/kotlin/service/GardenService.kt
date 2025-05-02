@@ -3,6 +3,8 @@ package com.tometrics.api.service
 import com.tometrics.api.db.GardenDao
 import com.tometrics.api.db.models.toDomain
 import com.tometrics.api.domain.models.*
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 interface GardenService {
     suspend fun getAll(requester: Requester): List<Planting>
@@ -49,25 +51,27 @@ class DefaultGardenService(
     }
 
     override suspend fun add(requester: Requester, plantId: PlantId, quantity: Int): Planting {
-        val id: PlantingId = gardenDao.insert(requester.userId, plantId, quantity)
+        val plant = plantService.getById(plantId)
+        val id: PlantingId = gardenDao.insert(
+            userId = requester.userId,
+            plantId = plantId,
+            quantity = quantity,
+            readyToHarvestAt = Instant.now().plus(plant.timeToHarvest.toLong(), ChronoUnit.DAYS),
+        )
         return getById(requester, id)
     }
 
     override suspend fun getAllReadyForHarvestToday(): Map<UserId, List<Planting>> {
-        throw NotImplementedError()
-//        val plantings = gardenDao.getAll()
-//            .filter { planting ->
-//                LocalDate.from(planting.createdAt).plusDays(planting.plant) == LocalDate.now()
-//                timeToHarvest
-//            }
-//            .groupBy { it.userId }
-//            .mapValues { (userId, plantings) ->
-//                plantings.map { planting ->
-//                    val plant = plantService.getById(planting.plantId)
-//                    planting.toDomain(plant)
-//                }
-//            }
-//        return plantings
+        val plantings = gardenDao.getAllReadyForHarvestToday()
+        val plantIds = plantings.map { it.plantId }.toSet()
+        val plantsMap = plantService.getAllByIds(plantIds).associateBy { it.id }
+        return plantings
+            .groupBy { it.userId }
+            .mapValues { (_, plantings) ->
+                plantings.mapNotNull { planting ->
+                    val plant = plantsMap[planting.plantId] ?: return@mapNotNull null
+                    planting.toDomain(plant)
+                }
+            }
     }
-
 }

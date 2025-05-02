@@ -11,4 +11,5 @@ data class Planting(
     val areaSqM: Int,
     val totalYield: PlantYield,
     val createdAt: Millis,
+    val readyToHarvestAt: Millis,
 )

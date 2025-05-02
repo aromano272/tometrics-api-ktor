@@ -41,5 +41,6 @@ CREATE TABLE plantings (
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     plant_id INT REFERENCES plants(id) ON DELETE CASCADE,
     quantity INT NOT NULL,
-    created_at TIMESTAMP DEFAULT now()
+    created_at TIMESTAMP DEFAULT now(),
+    ready_to_harvest_at TIMESTAMP NOT NULL
 );

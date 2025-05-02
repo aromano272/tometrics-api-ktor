@@ -1,4 +1,4 @@
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ0b21ldHJpY3MtdXNlcnMiLCJpc3MiOiJ0b21ldHJpY3MuY29tIiwidXNlcklkIjoxLCJleHAiOjE3NDg2OTUzNjZ9.FvDV_fCO2Z8eQyk1jFJy8nwuTG-x3vi_jIpHxAGCaGM
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ0b21ldHJpY3MtdXNlcnMiLCJpc3MiOiJ0b21ldHJpY3MuY29tIiwidXNlcklkIjoyLCJleHAiOjE3NDg3NzE0MTJ9.UPaa8XFWFyXzGh1ztLBnkvOaVDoStKnWjKjEcjKUl0g
 
 ### Get all plants
 GET http://localhost:8080/api/v1/planting/all

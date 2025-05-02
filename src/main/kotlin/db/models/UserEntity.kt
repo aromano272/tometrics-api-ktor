@@ -1,9 +1,10 @@
 package com.tometrics.api.db.models
 
 import com.tometrics.api.domain.models.User
+import com.tometrics.api.domain.models.UserId
 
 data class UserEntity(
-    val id: Int,
+    val id: UserId,
     val name: String,
     val idpGoogleEmail: String?,
     val idpFacebookId: String?,

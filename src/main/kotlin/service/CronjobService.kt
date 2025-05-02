@@ -2,7 +2,6 @@ package com.tometrics.api.service
 
 import com.tometrics.api.db.UserDao
 import com.tometrics.api.db.models.toDomain
-import com.tometrics.api.domain.models.User
 import com.tometrics.api.service.templates.HarvestNotificationTemplate
 import io.ktor.util.logging.*
 
@@ -20,18 +19,8 @@ class DefaultCronjobService(
     override suspend fun checkForDailyHarvests() {
         val readyForHarvest = gardenService.getAllReadyForHarvestToday()
 
-//        val planting = Planting(
-//            1,
-//            plantsMap["ORACH"]!!,
-//            1,
-//            PlantYield(1f, 1f, YieldUnit.UNIT),
-//            1283109301238
-//        )
-//        val readyForHarvest = mapOf(1 to listOf(planting))
-
         readyForHarvest.forEach { (userId, plantings) ->
             val user = userDao.findById(userId)?.toDomain()
-                ?: User(1, "name", "google@gmail.com", null, null, false)
                 ?: return@forEach
 
             val email = user.idpGoogleEmail ?: user.idpFacebookEmail

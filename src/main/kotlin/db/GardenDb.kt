@@ -9,14 +9,21 @@ import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
+import java.time.Instant
 
 @RegisterKotlinMapper(PlantingEntity::class)
 interface GardenDb {
 
-    @SqlQuery("SELECT * FROM plantings WHERE user_id = :userId")
+    @SqlQuery("""
+        SELECT * FROM plantings
+        WHERE user_id = :userId
+    """)
     fun getAll(@Bind("userId") userId: UserId): List<PlantingEntity>
 
-    @SqlQuery("SELECT * FROM plantings WHERE id = :id")
+    @SqlQuery("""
+        SELECT * FROM plantings
+        WHERE id = :id
+    """)
     fun find(@Bind("id") id: PlantingId): PlantingEntity?
 
     @SqlUpdate("DELETE FROM plantings WHERE id = :id")
@@ -27,23 +34,22 @@ interface GardenDb {
 
     @SqlUpdate(
         """
-        INSERT INTO plantings (user_id, plant_id, quantity) 
-        VALUES (:userId, :plantId, :quantity)
+        INSERT INTO plantings (user_id, plant_id, quantity, ready_to_harvest_at) 
+        VALUES (:userId, :plantId, :quantity, :readyToHarvestAt)
         """
     )
     @GetGeneratedKeys
     fun insert(
         @Bind("userId") userId: UserId,
         @Bind("plantId") plantId: PlantId,
-        @Bind("quantity") quantity: Int
+        @Bind("quantity") quantity: Int,
+        @Bind("readyToHarvestAt") readyToHarvestAt: Instant,
     ): PlantingId
 
     @SqlQuery(
         """
-        SELECT p.* 
-        FROM plantings p
-        JOIN plants pl ON p.plant_id = pl.id
-        WHERE DATE_TRUNC('day', p.created_at + (pl.time_to_harvest * INTERVAL '1 day')) = DATE_TRUNC('day', CURRENT_TIMESTAMP)
+        SELECT * FROM plantings
+        WHERE DATE_TRUNC('day', ready_to_harvest_at) = DATE_TRUNC('day', CURRENT_TIMESTAMP)
         """
     )
     fun getAllReadyForHarvestToday(): List<PlantingEntity>

@@ -21,6 +21,7 @@ fun Route.plantingRoutes(
 ) {
     authenticate {
         route("/planting") {
+
             get("/all", {
                 description = "Retrieve all plantings for the authenticated user"
                 response {

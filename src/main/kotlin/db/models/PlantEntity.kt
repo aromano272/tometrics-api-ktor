@@ -4,7 +4,7 @@ import com.tometrics.api.domain.models.*
 import org.jdbi.v3.json.Json
 
 data class PlantEntity(
-    val id: Int? = null,
+    val id: PlantId? = null,
     val name: String,
     val timeToHarvest: Int,
     val yieldPerPlantFrom: Float,
