@@ -28,7 +28,7 @@ fun Application.createHikariDataSource(
 }
 
 fun HikariDataSource.runMigrations(): HikariDataSource = also {
-    val clean = false
+    val clean = true
     val flyway = Flyway.configure()
         .cleanDisabled(!clean)
         .dataSource(this)
