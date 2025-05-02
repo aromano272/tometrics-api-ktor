@@ -15,13 +15,8 @@ data class PlantingEntity(
 fun PlantingEntity.toDomain(plant: Plant): Planting = Planting(
     id = id!!,
     plant = plant,
-    // todo
-    areaSqM = 1,
-    totalYield = PlantYield(
-        from = plant.yieldPerPlant.from * quantity,
-        to = plant.yieldPerPlant.to * quantity,
-        unit = plant.yieldPerPlant.unit,
-    ),
+    areaSqM = (plant.spacing.recommendedInCm() * quantity) / 100,
+    totalYield = plant.yieldPerPlant * quantity,
     createdAt = createdAt.toEpochMilli(),
     readyToHarvestAt = readyToHarvestAt.toEpochMilli(),
 )

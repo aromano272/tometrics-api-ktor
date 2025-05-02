@@ -3,8 +3,8 @@ package com.tometrics.api.db
 import com.tometrics.api.db.models.PlantEntity
 import com.tometrics.api.domain.models.PlantId
 import org.jdbi.v3.sqlobject.customizer.Bind
-import org.jdbi.v3.sqlobject.customizer.BindBean
 import org.jdbi.v3.sqlobject.customizer.BindList
+import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
@@ -41,5 +41,5 @@ interface PlantDb {
             :growthHabit, :growingTips
         )
     """)
-    fun insert(@BindBean entity: PlantEntity)
+    fun insert(@BindKotlin entity: PlantEntity)
 } 

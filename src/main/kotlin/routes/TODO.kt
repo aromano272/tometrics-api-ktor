@@ -24,8 +24,6 @@ type CropCalendarEntry
 Planting Calendar
 GET /cropcalendar?search=%s&PAGINATION RES: {entries: [CropCalendarEntry], PAGINATION}
 
-TODO add chron and email notification when the planting are ready to harvest?
-
 Veggie Guide
 GET /plant/all
     RES: {plants: List<Plant>}
@@ -40,6 +38,8 @@ type GardenCell
 
 type GardenSummary
     vai ter em conta o espacamento entre as plantas
+
+TODO watering reminder?
 
 Garden Layout Designer
 GET /designer

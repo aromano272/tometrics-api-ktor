@@ -210,7 +210,22 @@ data class PlantYield(
     val from: Float,
     val to: Float,
     val unit: YieldUnit,
-)
+) {
+    operator fun times(n: Int): PlantYield = PlantYield(
+        from = from * n,
+        to = to * n,
+        unit = unit
+    )
+
+    operator fun plus(other: PlantYield): PlantYield {
+        if (unit != other.unit) throw IllegalArgumentException("Cannot add 2 PlantYield with different `unit`s")
+        return PlantYield(
+            from = from + other.from,
+            to = to + other.to,
+            unit = unit,
+        )
+    }
+}
 
 typealias PlantId = Int
 
@@ -237,3 +252,24 @@ data class Plant(
     val growthHabit: GrowthHabit,
     val growingTips: List<GrowingTip>
 )
+
+fun SpacingRequirement.inCm(): IntRange = when (this) {
+    SpacingRequirement.VERY_CLOSE -> 5..15
+    SpacingRequirement.CLOSE -> 15..30
+    SpacingRequirement.MODERATE -> 30..60
+    SpacingRequirement.WIDE -> 60..90
+    SpacingRequirement.VERY_WIDE -> 90..100 // 90+
+}
+
+fun SpacingRequirement.recommendedInCm(): Int {
+    val cm = inCm()
+    val diff = cm.endInclusive - cm.start
+    val recommended = cm.start + diff * 0.666
+    return recommended.toInt()
+}
+
+fun Plant.quantityPerAreaSqM(areaSqM: Int): Float {
+    val recommended = (areaSqM * 100f) / spacing.recommendedInCm()
+    return recommended
+}
+

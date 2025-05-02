@@ -36,9 +36,6 @@ fun HikariDataSource.runMigrations(): HikariDataSource = also {
             "classpath:db/migration",
             "classpath:com/tometrics/api/db/migration",
         )
-//        .javaMigrations(
-//            com.tometrics.api.db.migration.V2__insert_initial_plants()
-//        )
         .load()
 
     if (clean) flyway.clean()

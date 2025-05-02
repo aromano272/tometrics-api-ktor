@@ -106,6 +106,7 @@ fun Route.plantingRoutes(
                 }
             }) {
                 val requester = call.requireRequester()
+                // TODO if the wrong data comes in it throws a 500, it should print a nicer error and not a 500
                 val request = call.receive<AddPlantingRequest>()
                 val planting = gardenService.add(requester, request.plantId, request.quantity)
                 call.respond(planting)
