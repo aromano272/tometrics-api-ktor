@@ -1,14 +1,8 @@
 package com.tometrics.api
 
 import com.tometrics.api.domain.models.*
-import com.tometrics.api.routes.authRoutes
-import com.tometrics.api.routes.cronjobRoutes
-import com.tometrics.api.routes.plantRoutes
-import com.tometrics.api.routes.plantingRoutes
-import com.tometrics.api.service.AuthService
-import com.tometrics.api.service.CronjobService
-import com.tometrics.api.service.GardenService
-import com.tometrics.api.service.PlantService
+import com.tometrics.api.routes.*
+import com.tometrics.api.service.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -62,6 +56,7 @@ fun Application.configureRouting() {
     val plantService: PlantService by inject()
     val gardenService: GardenService by inject()
     val cronjobService: CronjobService by inject()
+    val designerService: DesignerService by inject()
     val logger: Logger by inject()
 
 
@@ -71,6 +66,7 @@ fun Application.configureRouting() {
             authRoutes(authService, logger)
             plantRoutes(plantService)
             plantingRoutes(gardenService)
+            designerRoutes(designerService)
         }
     }
 }

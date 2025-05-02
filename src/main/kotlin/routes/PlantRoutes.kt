@@ -4,6 +4,7 @@ import com.tometrics.api.domain.models.Plant
 import com.tometrics.api.routes.models.GetAllPlantsResponse
 import com.tometrics.api.service.PlantService
 import io.github.smiley4.ktoropenapi.get
+import io.github.smiley4.ktoropenapi.route
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
@@ -13,7 +14,9 @@ fun Route.plantRoutes(
     plantService: PlantService,
 ) {
     authenticate {
-        route("/plant") {
+        route("/plant", {
+            tags = listOf("Plant")
+        }) {
             get("/all", {
                 description = "Retrieve all plants"
                 response {

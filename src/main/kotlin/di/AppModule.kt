@@ -170,6 +170,12 @@ fun serviceModule(application: Application) = module {
         )
     }
 
+    single<DesignerService> {
+        DefaultDesignerService(
+            plantService = get(),
+        )
+    }
+
     single<CronjobService> {
         DefaultCronjobService(
             gardenService = get(),

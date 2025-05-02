@@ -3,11 +3,12 @@ package com.tometrics.api.routes
 import com.tometrics.api.domain.models.BadRequestException
 import com.tometrics.api.domain.models.IdProviderPayload
 import com.tometrics.api.domain.models.requester
+import com.tometrics.api.routes.models.AuthFacebookLoginRequest
 import com.tometrics.api.routes.models.AuthGoogleLoginRequest
 import com.tometrics.api.routes.models.TokensResponse
-import com.tometrics.api.routes.models.AuthFacebookLoginRequest
 import com.tometrics.api.service.AuthService
 import io.github.smiley4.ktoropenapi.post
+import io.github.smiley4.ktoropenapi.route
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -19,7 +20,9 @@ fun Route.authRoutes(
     authService: AuthService,
     logger: Logger,
 ) {
-    route("/auth") {
+    route("/auth", {
+        tags = listOf("Auth")
+    }) {
         post("/anon/register", {
             description = "Register an anonymous user"
             response {

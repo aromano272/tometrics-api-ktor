@@ -6,10 +6,7 @@ import com.tometrics.api.routes.models.AddPlantingRequest
 import com.tometrics.api.routes.models.GetAllPlantingsResponse
 import com.tometrics.api.routes.models.PatchPlantingRequest
 import com.tometrics.api.service.GardenService
-import io.github.smiley4.ktoropenapi.delete
-import io.github.smiley4.ktoropenapi.get
-import io.github.smiley4.ktoropenapi.patch
-import io.github.smiley4.ktoropenapi.post
+import io.github.smiley4.ktoropenapi.*
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -20,7 +17,9 @@ fun Route.plantingRoutes(
     gardenService: GardenService,
 ) {
     authenticate {
-        route("/planting") {
+        route("/planting", {
+            tags = listOf("Planting")
+        }) {
 
             get("/all", {
                 description = "Retrieve all plantings for the authenticated user"
