@@ -7,6 +7,7 @@ import com.tometrics.api.routes.models.AuthFacebookLoginRequest
 import com.tometrics.api.routes.models.AuthGoogleLoginRequest
 import com.tometrics.api.routes.models.TokensResponse
 import com.tometrics.api.service.AuthService
+import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.post
 import io.github.smiley4.ktoropenapi.route
 import io.ktor.http.*
@@ -23,6 +24,23 @@ fun Route.authRoutes(
     route("/auth", {
         tags = listOf("Auth")
     }) {
+
+        authenticate {
+            get("/verify", {
+                description = "Verify if the provided authentication token is valid"
+                response {
+                    HttpStatusCode.OK to {
+                        description = "Token is valid"
+                    }
+                    HttpStatusCode.Unauthorized to {
+                        description = "Invalid or expired token"
+                    }
+                }
+            }) {
+                call.respond(HttpStatusCode.OK)
+            }
+        }
+
         post("/anon/register", {
             description = "Register an anonymous user"
             response {
