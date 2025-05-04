@@ -15,6 +15,7 @@ import io.ktor.server.testing.*
 import org.flywaydb.core.Flyway
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.koin.dsl.module
+import org.koin.test.KoinTest
 import org.koin.test.junit5.KoinTestExtension
 import org.testcontainers.containers.PostgreSQLContainer
 import javax.sql.DataSource
@@ -27,7 +28,7 @@ interface TestUtilMethods {
     suspend fun registerAnon(): Tokens
 }
 
-abstract class BaseE2ETest : TestUtilMethods {
+abstract class BaseE2ETest : KoinTest, TestUtilMethods {
 
     private val dataSource: HikariDataSource = run {
         val config = HikariConfig().apply {
@@ -47,7 +48,8 @@ abstract class BaseE2ETest : TestUtilMethods {
 
     @JvmField
     @RegisterExtension
-    val koinTestExtension = KoinTestExtension.Companion.create {
+    // TODO this isn't really running
+    val koinTestExtension = KoinTestExtension.create {
         modules(
             testDbModule
         )
