@@ -14,17 +14,21 @@ import java.time.Instant
 @RegisterKotlinMapper(PlantingEntity::class)
 interface GardenDb {
 
-    @SqlQuery("""
+    @SqlQuery(
+        """
         SELECT * FROM plantings
         WHERE user_id = :userId
-    """)
+    """
+    )
     fun getAll(@Bind("userId") userId: UserId): List<PlantingEntity>
 
-    @SqlQuery("""
+    @SqlQuery(
+        """
         SELECT * FROM plantings
         WHERE id = :id
         ORDER BY created_at
-    """)
+    """
+    )
     fun find(@Bind("id") id: PlantingId): PlantingEntity?
 
     @SqlUpdate("DELETE FROM plantings WHERE id = :id")

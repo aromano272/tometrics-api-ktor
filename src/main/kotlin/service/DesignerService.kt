@@ -45,7 +45,8 @@ class DefaultDesignerService(
                     val nx = x + dx
                     val ny = y + dy
                     if (nx in 0 until rows && ny in 0 until cols
-                        && !visited[nx][ny] && cells[nx][ny].plantId == value.plantId) {
+                        && !visited[nx][ny] && cells[nx][ny].plantId == value.plantId
+                    ) {
                         visited[nx][ny] = true
                         stack.add(cells[nx][ny])
                     }

@@ -2,13 +2,12 @@ package com.tometrics.api.service
 
 import com.tometrics.api.service.templates.Template
 import io.github.cdimascio.dotenv.Dotenv
-import io.ktor.client.HttpClient
-import io.ktor.client.request.basicAuth
-import io.ktor.client.request.forms.submitForm
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.Parameters
-import io.ktor.http.isSuccess
-import io.ktor.util.logging.Logger
+import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.util.logging.*
 
 interface EmailService {
     suspend fun sendEmail(to: String, subject: String, template: Template)

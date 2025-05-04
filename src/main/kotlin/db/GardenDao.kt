@@ -19,6 +19,7 @@ interface GardenDao {
         quantity: Int,
         readyToHarvestAt: Instant,
     ): PlantingId
+
     suspend fun getAllReadyForHarvestToday(): List<PlantingEntity>
 }
 
@@ -27,19 +28,19 @@ class DefaultGardenDao(
 ) : GardenDao {
 
     override suspend fun getAll(userId: UserId): List<PlantingEntity> = withContext(Dispatchers.IO) {
-       db.getAll(userId)
+        db.getAll(userId)
     }
 
     override suspend fun find(id: PlantingId): PlantingEntity? = withContext(Dispatchers.IO) {
-       db.find(id)
+        db.find(id)
     }
 
     override suspend fun delete(id: PlantingId): Int = withContext(Dispatchers.IO) {
-       db.delete(id)
+        db.delete(id)
     }
 
     override suspend fun update(id: PlantingId, newQuantity: Int): Int = withContext(Dispatchers.IO) {
-       db.update(id, newQuantity)
+        db.update(id, newQuantity)
     }
 
     override suspend fun insert(
@@ -48,7 +49,7 @@ class DefaultGardenDao(
         quantity: Int,
         readyToHarvestAt: Instant,
     ): PlantingId = withContext(Dispatchers.IO) {
-       db.insert(userId, plantId, quantity, readyToHarvestAt)
+        db.insert(userId, plantId, quantity, readyToHarvestAt)
     }
 
     override suspend fun getAllReadyForHarvestToday(): List<PlantingEntity> = withContext(Dispatchers.IO) {

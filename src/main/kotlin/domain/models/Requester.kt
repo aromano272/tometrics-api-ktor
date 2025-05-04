@@ -15,6 +15,7 @@ private fun JWTPrincipal.asRequester(): Requester = Requester(
         ?: throw UnauthorizedException("userId missing from token"),
 )
 
-fun RoutingCall.requireRequester(): Requester =  principal<JWTPrincipal>()?.asRequester()
+fun RoutingCall.requireRequester(): Requester = principal<JWTPrincipal>()?.asRequester()
     ?: throw UnauthorizedException("missing jwt")
-fun RoutingCall.requester(): Requester? =  principal<JWTPrincipal>()?.asRequester()
+
+fun RoutingCall.requester(): Requester? = principal<JWTPrincipal>()?.asRequester()

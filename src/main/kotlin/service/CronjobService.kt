@@ -24,19 +24,19 @@ class DefaultCronjobService(
                 ?: return@forEach
 
             val email = user.idpGoogleEmail ?: user.idpFacebookEmail
-                ?: return@forEach
+            ?: return@forEach
 
             try {
                 val template = HarvestNotificationTemplate(
                     plantings = plantings
                 )
-                
+
                 emailService.sendEmail(
                     to = email,
                     subject = "🌱 Your Plants Are Ready for Harvest!",
                     template = template
                 )
-                
+
                 logger.info("Sent harvest notification email to $email")
             } catch (e: Exception) {
                 logger.error("Failed to send harvest notification email to $email: ${e.message}")

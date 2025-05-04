@@ -1,17 +1,17 @@
 ktor:
-    application:
-        modules:
-            - com.tometrics.api.ApplicationKt.module
-    deployment:
-        port: "$PORT:8080"
-        watch:
-            - classes
-    development: true
+  application:
+    modules:
+      - com.tometrics.api.ApplicationKt.module
+  deployment:
+    port: "$PORT:8080"
+    watch:
+      - classes
+  development: true
 
 jwt:
-    domain: "tometrics.com"
-    audience: "tometrics-users"
-    realm: "Tometrics"
+  domain: "tometrics.com"
+  audience: "tometrics-users"
+  realm: "Tometrics"
 
 postgres:
-    maxPoolSize: 10
+  maxPoolSize: 10

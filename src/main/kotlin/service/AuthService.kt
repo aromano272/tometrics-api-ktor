@@ -15,6 +15,7 @@ interface AuthService {
         requester: Requester?,
         payload: IdProviderPayload.Facebook,
     ): Tokens
+
     suspend fun refreshToken(refreshToken: String): Tokens
     suspend fun logout(username: String, refreshToken: String)
 }
@@ -95,10 +96,12 @@ class DefaultAuthService(
                     if (requesterUser.idpGoogleEmail != null) {
                         throw ConflictException("You already have a different google email assigned")
                     } else {
-                        throw IllegalStateException("There are currently no other idp's so it's impossible for the user " +
-                                "to not be anon but not have a different google idp attached, in the future when there " +
-                                "more idp's this case will be reachable when, for eg., a user with facebook idp logs in with " +
-                                "google we should add the google idp to this user so it has 2 idp's")
+                        throw IllegalStateException(
+                            "There are currently no other idp's so it's impossible for the user " +
+                                    "to not be anon but not have a different google idp attached, in the future when there " +
+                                    "more idp's this case will be reachable when, for eg., a user with facebook idp logs in with " +
+                                    "google we should add the google idp to this user so it has 2 idp's"
+                        )
                     }
                 }
             } else {
@@ -173,10 +176,12 @@ class DefaultAuthService(
                     if (requesterUser.idpFacebookId != null) {
                         throw ConflictException("You already have a different facebook email assigned")
                     } else {
-                        throw IllegalStateException("There are currently no other idp's so it's impossible for the user " +
-                                "to not be anon but not have a different facebook idp attached, in the future when there " +
-                                "more idp's this case will be reachable when, for eg., a user with facebook idp logs in with " +
-                                "facebook we should add the facebook idp to this user so it has 2 idp's")
+                        throw IllegalStateException(
+                            "There are currently no other idp's so it's impossible for the user " +
+                                    "to not be anon but not have a different facebook idp attached, in the future when there " +
+                                    "more idp's this case will be reachable when, for eg., a user with facebook idp logs in with " +
+                                    "facebook we should add the facebook idp to this user so it has 2 idp's"
+                        )
                     }
                 }
             } else {
@@ -245,5 +250,6 @@ class DefaultAuthService(
         refreshTokenDao.delete(refreshToken)
     }
 
-    private fun getNewRefreshTokenExpiry() = Instant.ofEpochMilli(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000)
+    private fun getNewRefreshTokenExpiry() =
+        Instant.ofEpochMilli(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000)
 }

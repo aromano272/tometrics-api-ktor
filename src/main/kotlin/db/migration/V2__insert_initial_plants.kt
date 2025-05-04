@@ -44,7 +44,7 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             }
             val soilTypesArray = connection.createArrayOf("text", entity.soilTypes.map { it.toString() }.toTypedArray())
             val growingTipsArray = connection.createArrayOf("text", entity.growingTips.toTypedArray())
-            
+
             statement.setArray(9, companionPlantsArray)
             statement.setObject(10, climateZonesBlob)
             statement.setString(11, entity.spacing.name)
@@ -54,15 +54,15 @@ class V2__insert_initial_plants : BaseJavaMigration() {
             statement.setString(15, entity.waterRequirement.name)
             statement.setString(16, entity.growthHabit.name)
             statement.setArray(17, growingTipsArray)
-            
+
             statement.addBatch()
-            
+
             // Free the arrays after use
             companionPlantsArray.free()
             soilTypesArray.free()
             growingTipsArray.free()
         }
-        
+
         statement.executeBatch()
         statement.close()
     }

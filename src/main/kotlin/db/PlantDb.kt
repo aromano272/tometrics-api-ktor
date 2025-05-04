@@ -17,14 +17,17 @@ interface PlantDb {
     @SqlQuery("SELECT * FROM plants WHERE id IN (<ids>)")
     fun getAllByIds(@BindList("ids") ids: Set<PlantId>): List<PlantEntity>
 
-    @SqlQuery("""
+    @SqlQuery(
+        """
         SELECT *
         FROM plants
         WHERE id = :id
-    """)
+    """
+    )
     fun getById(@Bind("id") id: Int): PlantEntity?
 
-    @SqlUpdate("""
+    @SqlUpdate(
+        """
         INSERT INTO plants (
             name, time_to_harvest,
             yield_per_plant_from, yield_per_plant_to, yield_per_plant_unit,
@@ -40,6 +43,7 @@ interface PlantDb {
             :dailySunlight, :soilTypes, :waterRequirement,
             :growthHabit, :growingTips
         )
-    """)
+    """
+    )
     fun insert(@BindKotlin entity: PlantEntity)
 } 

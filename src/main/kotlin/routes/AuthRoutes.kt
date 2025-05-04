@@ -104,7 +104,10 @@ fun Route.authRoutes(
                 val requester = call.requester()
                 val request = call.receive<AuthFacebookLoginRequest>()
 
-                val tokens = authService.loginWithFacebook(requester, IdProviderPayload.Facebook(request.id, request.name, request.email))
+                val tokens = authService.loginWithFacebook(
+                    requester,
+                    IdProviderPayload.Facebook(request.id, request.name, request.email)
+                )
                 call.respond(tokens)
             }
         }
