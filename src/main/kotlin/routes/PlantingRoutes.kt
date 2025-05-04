@@ -1,5 +1,6 @@
 package com.tometrics.api.routes
 
+import com.tometrics.api.domain.models.BadRequestException
 import com.tometrics.api.domain.models.Planting
 import com.tometrics.api.domain.models.requireRequester
 import com.tometrics.api.routes.models.AddPlantingRequest
@@ -107,6 +108,8 @@ fun Route.plantingRoutes(
                 val requester = call.requireRequester()
                 // TODO if the wrong data comes in it throws a 500, it should print a nicer error and not a 500
                 val request = call.receive<AddPlantingRequest>()
+                if (request.quantity <= 0) throw BadRequestException("quantity needs to be greater than 0")
+
                 val planting = gardenService.add(requester, request.plantId, request.quantity)
                 call.respond(planting)
             }

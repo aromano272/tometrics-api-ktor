@@ -11,7 +11,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
 @RegisterKotlinMapper(PlantEntity::class)
 interface PlantDb {
-    @SqlQuery("SELECT * FROM plants")
+    @SqlQuery("SELECT * FROM plants ORDER BY name")
     fun getAll(): List<PlantEntity>
 
     @SqlQuery("SELECT * FROM plants WHERE id IN (<ids>)")

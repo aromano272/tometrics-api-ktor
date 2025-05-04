@@ -22,6 +22,7 @@ import org.jdbi.v3.core.Jdbi
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
+import javax.sql.DataSource
 
 fun appModule(application: Application) = module {
     single<Dotenv> {
@@ -64,11 +65,16 @@ fun appModule(application: Application) = module {
 }
 
 fun databaseModule(application: Application) = module {
-    single<Jdbi> {
+
+    single<DataSource> {
         application.createHikariDataSource(
             dotenv = get(),
         ).runMigrations()
-            .createJdbi()
+    }
+
+    single<Jdbi> {
+        val dataSource: DataSource = get()
+        dataSource.createJdbi()
     }
 
     single<UserDb> {

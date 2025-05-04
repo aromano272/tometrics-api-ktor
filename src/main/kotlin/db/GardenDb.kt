@@ -23,6 +23,7 @@ interface GardenDb {
     @SqlQuery("""
         SELECT * FROM plantings
         WHERE id = :id
+        ORDER BY created_at
     """)
     fun find(@Bind("id") id: PlantingId): PlantingEntity?
 
@@ -50,6 +51,7 @@ interface GardenDb {
         """
         SELECT * FROM plantings
         WHERE DATE_TRUNC('day', ready_to_harvest_at) = DATE_TRUNC('day', CURRENT_TIMESTAMP)
+        ORDER BY created_at
         """
     )
     fun getAllReadyForHarvestToday(): List<PlantingEntity>

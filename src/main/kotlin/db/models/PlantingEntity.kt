@@ -17,6 +17,7 @@ fun PlantingEntity.toDomain(plant: Plant): Planting = Planting(
     plant = plant,
     areaSqM = (plant.spacing.recommendedInCm() * quantity) / 100,
     totalYield = plant.yieldPerPlant * quantity,
+    quantity = quantity,
     createdAt = createdAt.toEpochMilli(),
     readyToHarvestAt = readyToHarvestAt.toEpochMilli(),
 )

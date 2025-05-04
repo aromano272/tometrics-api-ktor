@@ -57,8 +57,12 @@ dependencies {
     implementation(libs.schema.kenerator.swagger)
     implementation(libs.google.api.client)
 
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.testcontainers.core)
+    testImplementation(libs.testcontainers.postgres)
     testImplementation(libs.mockk)
 }

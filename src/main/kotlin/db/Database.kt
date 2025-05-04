@@ -10,6 +10,7 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.jackson2.Jackson2Config
 import org.jdbi.v3.jackson2.Jackson2Plugin
+import javax.sql.DataSource
 
 fun Application.createHikariDataSource(
     dotenv: Dotenv,
@@ -43,7 +44,7 @@ fun HikariDataSource.runMigrations(): HikariDataSource = also {
     flyway.migrate()
 }
 
-fun HikariDataSource.createJdbi(): Jdbi = Jdbi.create(this).apply {
+fun DataSource.createJdbi(): Jdbi = Jdbi.create(this).apply {
     installPlugins()
     installPlugin(KotlinPlugin(enableCoroutineSupport = true))
     installPlugin(Jackson2Plugin())
