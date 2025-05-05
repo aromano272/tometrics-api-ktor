@@ -15,12 +15,11 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.logging.*
+import org.koin.ktor.ext.inject
 
-fun Route.authRoutes(
-    authService: AuthService,
-    logger: Logger,
-) {
+fun Route.authRoutes() {
+    val authService: AuthService by inject()
+
     route("/auth", {
         tags = listOf("Auth")
     }) {

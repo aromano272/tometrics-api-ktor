@@ -13,10 +13,9 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import org.flywaydb.core.Flyway
-import org.junit.jupiter.api.extension.RegisterExtension
+import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 import org.koin.test.KoinTest
-import org.koin.test.junit5.KoinTestExtension
 import org.testcontainers.containers.PostgreSQLContainer
 import javax.sql.DataSource
 import kotlin.test.BeforeTest
@@ -46,20 +45,15 @@ abstract class BaseE2ETest : KoinTest, TestUtilMethods {
         }
     }
 
-    @JvmField
-    @RegisterExtension
-    // TODO this isn't really running
-    val koinTestExtension = KoinTestExtension.create {
-        modules(
-            testDbModule
-        )
-    }
-
     lateinit var jsonClient: HttpClient
 
     fun runApp(block: suspend ApplicationTestBuilder.() -> Unit) = testApplication {
         environment {
             config = ApplicationConfig("application.yaml")
+        }
+
+        application {
+            loadKoinModules(testDbModule)
         }
 
         this@BaseE2ETest.jsonClient = createClient {
@@ -84,6 +78,10 @@ abstract class BaseE2ETest : KoinTest, TestUtilMethods {
         Flyway.configure()
             .dataSource(dataSource)
             .cleanDisabled(false)
+            .locations(
+                "classpath:db/migration",
+                "classpath:com/tometrics/api/db/migration",
+            )
             .load()
             .run {
                 clean()

@@ -9,10 +9,11 @@ import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 
-fun Route.plantRoutes(
-    plantService: PlantService,
-) {
+fun Route.plantRoutes() {
+    val plantService: PlantService by inject()
+
     authenticate {
         route("/plant", {
             tags = listOf("Plant")

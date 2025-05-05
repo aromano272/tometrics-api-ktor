@@ -11,10 +11,11 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 
-fun Route.designerRoutes(
-    designerService: DesignerService
-) {
+fun Route.designerRoutes() {
+    val designerService: DesignerService by inject()
+
     authenticate {
         route("/designer", {
             tags = listOf("Garden Designer")

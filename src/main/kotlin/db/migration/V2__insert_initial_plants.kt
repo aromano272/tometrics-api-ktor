@@ -2940,6 +2940,34 @@ class V2__insert_initial_plants : BaseJavaMigration() {
                 GrowingTip.CUT_AND_COME_AGAIN,
             ),
         ),
+        Plant(
+            id = 101,
+            name = "Soybeans",
+            timeToHarvest = 80,
+            yieldPerPlant = PlantYield(150f, 200f, YieldUnit.GRAMS),
+            yieldPerSqM = PlantYield(1.2f, 2f, YieldUnit.KG),
+            companionPlants = listOf("Corn", "Sunflowers", "Sorghum", "Catnip", "Flax"),
+            climateZones = ClimateZones(
+                temperate = listOf(3, 4, 5),
+                mediterranean = listOf(3, 4),
+                continental = listOf(3, 4, 5),
+                tropical = listOf(4, 5, 8, 9),
+                arid = listOf(3, 4)
+            ),
+            spacing = SpacingRequirement.MODERATE,
+            sunlight = SunlightRequirement.FULL_SUN,
+            dailySunlight = DailySunlightRequirement.HIGH,
+            soilType = listOf(SoilType.LOAMY, SoilType.CLAY, SoilType.SILTY),
+            waterRequirement = WaterRequirement.MEDIUM,
+            growthHabit = GrowthHabit.BUSH,
+            growingTips = listOf(
+                GrowingTip.NITROGEN_FIXING,
+                GrowingTip.DIRECT_SOW,
+                GrowingTip.WAIT_FOR_WARM_SOIL,
+                GrowingTip.INOCULANT_BENEFICIAL,
+                GrowingTip.DROUGHT_TOLERANT,
+            )
+        )
     )
 
 }

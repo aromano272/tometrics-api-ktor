@@ -34,7 +34,7 @@ class DefaultAuthService(
     }
 
     override suspend fun login(user: User): Tokens {
-        val access = jwtService.create(user.id)
+        val access = jwtService.create(user.id, user.anon)
         val refresh = UUID.randomUUID().toString()
 
         val expiry = getNewRefreshTokenExpiry()
@@ -235,7 +235,7 @@ class DefaultAuthService(
         val expiry = getNewRefreshTokenExpiry()
         refreshTokenDao.insert(user.id, newRefreshToken, expiry)
 
-        val newAccessToken = jwtService.create(user.id)
+        val newAccessToken = jwtService.create(user.id, user.anon)
 
         return Tokens(newAccessToken, newRefreshToken)
     }

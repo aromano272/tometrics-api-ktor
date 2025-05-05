@@ -7,7 +7,7 @@ ktor-client-version = "3.1.2"
 logback-version = "1.4.14"
 postgres-version = "42.7.5"
 hikari = "5.0.1"
-koin = "3.5.0"
+koin = "4.1.0-Beta8"
 jdbi = "3.43.0"
 flyway = "11.7.1"
 dotenv = "6.5.1"
@@ -48,7 +48,7 @@ testcontainers-postgres = { module = "org.testcontainers:postgresql", version.re
 hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 koin-test-junit = { module = "io.insert-koin:koin-test-junit5", version.ref = "koin" }
-koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
+koin-ktor = { module = "io.insert-koin:koin-ktor3", version.ref = "koin" }
 koin-logger = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin" }
 jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
 jdbi-sqlobject = { module = "org.jdbi:jdbi3-kotlin-sqlobject", version.ref = "jdbi" }

@@ -7,7 +7,7 @@ import io.ktor.server.config.*
 import java.time.Instant
 
 interface JwtService {
-    fun create(userId: Int): String
+    fun create(userId: Int, anon: Boolean): String
 }
 
 class DefaultJwtService(
@@ -28,10 +28,11 @@ class DefaultJwtService(
         developmentMode = developmentMode,
     )
 
-    override fun create(userId: Int): String = JWT.create()
+    override fun create(userId: Int, anon: Boolean): String = JWT.create()
         .withAudience(jwtAudience)
         .withIssuer(jwtDomain)
         .withClaim("userId", userId)
+        .withClaim("anon", anon)
         .withExpiresAt(getNewAccessTokenExpiry())
         .sign(Algorithm.HMAC256(jwtSecret))
 

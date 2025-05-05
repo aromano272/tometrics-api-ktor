@@ -5,10 +5,11 @@ import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 
-fun Route.cronjobRoutes(
-    cronjobService: CronjobService,
-) {
+fun Route.cronjobRoutes() {
+    val cronjobService: CronjobService by inject()
+
     authenticate("auth-cronjob") {
         route("/cronjob") {
 

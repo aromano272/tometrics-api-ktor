@@ -13,10 +13,11 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 
-fun Route.plantingRoutes(
-    gardenService: GardenService,
-) {
+fun Route.plantingRoutes() {
+    val gardenService: GardenService by inject()
+
     authenticate {
         route("/planting", {
             tags = listOf("Planting")

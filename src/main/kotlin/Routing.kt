@@ -2,7 +2,6 @@ package com.tometrics.api
 
 import com.tometrics.api.domain.models.*
 import com.tometrics.api.routes.*
-import com.tometrics.api.service.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -11,9 +10,7 @@ import io.ktor.server.plugins.requestvalidation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.logging.*
 import kotlinx.serialization.json.Json
-import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
     install(StatusPages) {
@@ -52,21 +49,13 @@ fun Application.configureRouting() {
         })
     }
 
-    val authService: AuthService by inject()
-    val plantService: PlantService by inject()
-    val gardenService: GardenService by inject()
-    val cronjobService: CronjobService by inject()
-    val designerService: DesignerService by inject()
-    val logger: Logger by inject()
-
-
     routing {
         route("/api/v1") {
-            cronjobRoutes(cronjobService)
-            authRoutes(authService, logger)
-            plantRoutes(plantService)
-            plantingRoutes(gardenService)
-            designerRoutes(designerService)
+            cronjobRoutes()
+            authRoutes()
+            plantRoutes()
+            plantingRoutes()
+            designerRoutes()
         }
     }
 }
