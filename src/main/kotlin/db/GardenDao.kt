@@ -12,12 +12,21 @@ interface GardenDao {
     suspend fun getAll(userId: UserId): List<PlantingEntity>
     suspend fun find(id: PlantingId): PlantingEntity?
     suspend fun delete(id: PlantingId): Int
-    suspend fun update(id: PlantingId, newQuantity: Int): Int
+    suspend fun update(
+        id: PlantingId,
+        newQuantity: Int?,
+        newName: String?,
+        newDiary: String?,
+        newHarvested: Boolean?,
+    ): Int
     suspend fun insert(
         userId: UserId,
         plantId: PlantId,
+        name: String?,
         quantity: Int,
         readyToHarvestAt: Instant,
+        diary: String = "",
+        harvested: Boolean = false,
     ): PlantingId
 
     suspend fun getAllReadyForHarvestToday(): List<PlantingEntity>
@@ -39,17 +48,20 @@ class DefaultGardenDao(
         db.delete(id)
     }
 
-    override suspend fun update(id: PlantingId, newQuantity: Int): Int = withContext(Dispatchers.IO) {
-        db.update(id, newQuantity)
+    override suspend fun update(id: PlantingId, newQuantity: Int?, newName: String?, newDiary: String?, newHarvested: Boolean?): Int = withContext(Dispatchers.IO) {
+        db.update(id, newQuantity, newName, newDiary, newHarvested)
     }
 
     override suspend fun insert(
         userId: UserId,
         plantId: PlantId,
+        name: String?,
         quantity: Int,
         readyToHarvestAt: Instant,
+        diary: String,
+        harvested: Boolean,
     ): PlantingId = withContext(Dispatchers.IO) {
-        db.insert(userId, plantId, quantity, readyToHarvestAt)
+        db.insert(userId, plantId, name, quantity, readyToHarvestAt, diary, harvested)
     }
 
     override suspend fun getAllReadyForHarvestToday(): List<PlantingEntity> = withContext(Dispatchers.IO) {

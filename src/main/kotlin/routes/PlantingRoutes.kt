@@ -88,7 +88,14 @@ fun Route.plantingRoutes() {
                 val requester = call.requireRequester()
                 val id = call.pathParameters["id"]?.toIntOrNull()!!
                 val request = call.receive<PatchPlantingRequest>()
-                val updatedPlanting = gardenService.update(requester, id, request.newQuantity)
+                val updatedPlanting = gardenService.update(
+                    requester = requester,
+                    id = id,
+                    newQuantity = request.newQuantity,
+                    newName = request.newName,
+                    newDiary = request.newDiary,
+                    newHarvested = request.newHarvested,
+                )
                 call.respond(updatedPlanting)
             }
 
@@ -117,4 +124,3 @@ fun Route.plantingRoutes() {
         }
     }
 }
-

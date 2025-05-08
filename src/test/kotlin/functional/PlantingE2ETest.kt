@@ -18,33 +18,42 @@ class PlantingE2ETest : BaseE2ETest() {
         val planting1: Planting = postAndAssert(
             "/api/v1/planting/add",
             accessToken,
-            AddPlantingRequest(1, 5)
+            AddPlantingRequest(plantId = 1, quantity = 5)
         )
         assertEquals(1, planting1.plant.id)
+        assertEquals("Tomatoes", planting1.name)
         assertEquals(5, planting1.quantity)
+        assertEquals("", planting1.diary)
+        assertEquals(false, planting1.harvested)
 
         // Create second planting
         val planting2: Planting = postAndAssert(
             "/api/v1/planting/add",
             accessToken,
-            AddPlantingRequest(2, 3)
+            AddPlantingRequest(plantId = 2, quantity = 3)
         )
         assertEquals(2, planting2.plant.id)
+        assertEquals("Potatoes", planting2.name)
         assertEquals(3, planting2.quantity)
+        assertEquals("", planting2.diary)
+        assertEquals(false, planting2.harvested)
 
         // Verify both plantings are listed
         val allPlantings = getAndAssert<GetAllPlantingsResponse>("/api/v1/planting/all", accessToken).plantings
         assertEquals(2, allPlantings.size)
         assertEquals(setOf(planting1, planting2), allPlantings.toSet())
 
-        // Update first planting quantity
+        // Update first planting quantity, name, diary, and harvested status
         val updatedPlanting: Planting = patchAndAssert(
             "/api/v1/planting/${planting1.id}",
             accessToken,
-            PatchPlantingRequest(10)
+            PatchPlantingRequest(newQuantity = 10, newName = "Updated Tomatoes", newDiary = "Test diary entry", newHarvested = true)
         )
         assertEquals(planting1.id, updatedPlanting.id)
+        assertEquals("Updated Tomatoes", updatedPlanting.name)
         assertEquals(10, updatedPlanting.quantity)
+        assertEquals("Test diary entry", updatedPlanting.diary)
+        assertEquals(true, updatedPlanting.harvested)
 
         // Delete second planting
         deleteAndAssert<Unit>(
@@ -67,7 +76,7 @@ class PlantingE2ETest : BaseE2ETest() {
         val planting: Planting = postAndAssert(
             "/api/v1/planting/add",
             accessToken,
-            AddPlantingRequest(1, 5)
+            AddPlantingRequest(plantId = 1, quantity = 5)
         )
 
         // Try to access with different user
@@ -106,7 +115,7 @@ class PlantingE2ETest : BaseE2ETest() {
         postAndAssertFailsWith(
             "/api/v1/planting/add",
             accessToken,
-            AddPlantingRequest(99999, 5),
+            AddPlantingRequest(plantId = 99999, quantity = 5),
             HttpStatusCode.NotFound,
             null
         )
@@ -115,7 +124,7 @@ class PlantingE2ETest : BaseE2ETest() {
         postAndAssertFailsWith(
             "/api/v1/planting/add",
             accessToken,
-            AddPlantingRequest(1, -1),
+            AddPlantingRequest(plantId = 1, quantity = -1),
             HttpStatusCode.BadRequest,
             null
         )

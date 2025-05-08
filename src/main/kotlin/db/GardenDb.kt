@@ -34,21 +34,39 @@ interface GardenDb {
     @SqlUpdate("DELETE FROM plantings WHERE id = :id")
     fun delete(@Bind("id") id: PlantingId): Int
 
-    @SqlUpdate("UPDATE plantings SET quantity = :newQuantity WHERE id = :id")
-    fun update(@Bind("id") id: PlantingId, @Bind("newQuantity") newQuantity: Int): Int
+    @SqlUpdate(
+        """
+            UPDATE plantings 
+            SET quantity = COALESCE(:newQuantity, quantity), 
+            name = COALESCE(:newName, name),
+            diary = COALESCE(:newDiary, diary),
+            harvested = COALESCE(:newHarvested, harvested)
+            WHERE id = :id
+    """
+    )
+    fun update(
+        @Bind("id") id: PlantingId,
+        @Bind("newQuantity") newQuantity: Int?,
+        @Bind("newName") newName: String?,
+        @Bind("newDiary") newDiary: String?,
+        @Bind("newHarvested") newHarvested: Boolean?,
+    ): Int
 
     @SqlUpdate(
         """
-        INSERT INTO plantings (user_id, plant_id, quantity, ready_to_harvest_at) 
-        VALUES (:userId, :plantId, :quantity, :readyToHarvestAt)
+        INSERT INTO plantings (user_id, plant_id, name, quantity, ready_to_harvest_at, diary, harvested) 
+        VALUES (:userId, :plantId, :name, :quantity, :readyToHarvestAt, :diary, :harvested)
         """
     )
     @GetGeneratedKeys
     fun insert(
         @Bind("userId") userId: UserId,
         @Bind("plantId") plantId: PlantId,
+        @Bind("name") name: String?,
         @Bind("quantity") quantity: Int,
         @Bind("readyToHarvestAt") readyToHarvestAt: Instant,
+        @Bind("diary") diary: String = "",
+        @Bind("harvested") harvested: Boolean = false,
     ): PlantingId
 
     @SqlQuery(

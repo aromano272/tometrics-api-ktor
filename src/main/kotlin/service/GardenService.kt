@@ -10,7 +10,14 @@ interface GardenService {
     suspend fun getAll(requester: Requester): List<Planting>
     suspend fun getById(requester: Requester, id: PlantingId): Planting
     suspend fun delete(requester: Requester, id: PlantingId)
-    suspend fun update(requester: Requester, id: PlantingId, newQuantity: Int): Planting
+    suspend fun update(
+        requester: Requester,
+        id: PlantingId,
+        newQuantity: Int?,
+        newName: String? = null,
+        newDiary: String? = null,
+        newHarvested: Boolean? = null,
+    ): Planting
     suspend fun add(requester: Requester, plantId: PlantId, quantity: Int): Planting
 
     suspend fun getAllReadyForHarvestToday(): Map<UserId, List<Planting>>
@@ -42,10 +49,10 @@ class DefaultGardenService(
         gardenDao.delete(id)
     }
 
-    override suspend fun update(requester: Requester, id: PlantingId, newQuantity: Int): Planting {
+    override suspend fun update(requester: Requester, id: PlantingId, newQuantity: Int?, newName: String?, newDiary: String?, newHarvested: Boolean?): Planting {
         val planting = gardenDao.find(id) ?: throw NotFoundException("Planting not found")
         if (planting.userId != requester.userId) throw BadRequestException("Planting doesn't belong to this user")
-        gardenDao.update(id, newQuantity)
+        gardenDao.update(id, newQuantity, newName, newDiary, newHarvested)
 
         return getById(requester, id)
     }
@@ -55,8 +62,11 @@ class DefaultGardenService(
         val id: PlantingId = gardenDao.insert(
             userId = requester.userId,
             plantId = plantId,
+            name = plant.name,
             quantity = quantity,
             readyToHarvestAt = Instant.now().plus(plant.timeToHarvest.toLong(), ChronoUnit.DAYS),
+            diary = "",
+            harvested = false,
         )
         return getById(requester, id)
     }
