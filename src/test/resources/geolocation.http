@@ -1,0 +1,9 @@
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ0b21ldHJpY3MtdXNlcnMiLCJpc3MiOiJ0b21ldHJpY3MuY29tIiwidXNlcklkIjoxLCJhbm9uIjp0cnVlLCJleHAiOjE3NDk0MTk2MDN9.VJ0KyFJ6GI-0cV_RTGjnboVsEn79mt-HXx4goS38_tA
+
+### Autocomplete
+GET http://localhost:8080/api/v1/geolocation/autocomplete?searchQuery=london
+Authorization: Bearer {{accessToken}}
+
+### Autocomplete
+GET http://localhost:8080/api/v1/geolocation/reverse-geocoding?lat=51.50853&lon=-0.12574
+Authorization: Bearer {{accessToken}}
