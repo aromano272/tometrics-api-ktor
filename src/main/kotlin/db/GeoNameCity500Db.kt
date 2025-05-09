@@ -41,16 +41,33 @@ interface GeoNameCity500Db {
 
     @SqlQuery(
         """
+        SELECT *,
+          similarity(asciiname, unaccent(:name)) +
+          CASE
+            WHEN :asciiadmin1 IS NOT NULL AND asciiadmin1 % :asciiadmin1 THEN similarity(asciiadmin1, :asciiadmin1)
+            ELSE 0.0
+          END AS score
+        FROM geoname_cities_500
+        WHERE country_code = UPPER(:countryCode)
+        ORDER BY score DESC
+        LIMIT 1;
+        """
+    )
+    fun findByNameAndAdmin1Similarity(
+        @Bind("name") name: String,
+        @Bind("countryCode") countryCode: String,
+        @Bind("asciiadmin1") asciiadmin1: String?,
+    ): GeoNameCity500Entity?
+
+    @SqlQuery(
+        """
         SELECT *
         FROM geoname_cities_500
         WHERE 
-            name ILIKE '%' || :query || '%' 
-            OR asciiname ILIKE '%' || :query || '%'
-            OR country_code ILIKE '%' || :query || '%'
-            OR admin1_code ILIKE '%' || :query || '%'
-            OR admin2_code ILIKE '%' || :query || '%'
-            OR admin3_code ILIKE '%' || :query || '%'
-            OR admin4_code ILIKE '%' || :query || '%'
+            asciiname ILIKE '%' || normalize(:query, NFD) || '%'
+            OR country ILIKE '%' || normalize(:query, NFD) || '%'
+            OR asciiadmin1 ILIKE '%' || normalize(:query, NFD) || '%'
+            OR asciiadmin2 ILIKE '%' || normalize(:query, NFD) || '%'
         ORDER BY population DESC
         LIMIT 20
         """

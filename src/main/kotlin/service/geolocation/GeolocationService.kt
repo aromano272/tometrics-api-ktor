@@ -1,4 +1,4 @@
-package com.tometrics.api.service
+package com.tometrics.api.service.geolocation
 
 interface GeolocationService : ReverseGeocodingService, GeolocationAutocompleteService
 

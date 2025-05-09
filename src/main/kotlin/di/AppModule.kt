@@ -9,6 +9,7 @@ import com.tometrics.api.db.*
 import com.tometrics.api.external.nominatim.DefaultNominatimClient
 import com.tometrics.api.external.nominatim.NominatimClient
 import com.tometrics.api.service.*
+import com.tometrics.api.service.geolocation.*
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*
@@ -20,11 +21,16 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.util.logging.Logger
+import kotlinx.serialization.json.Json
 import org.jdbi.v3.core.Jdbi
+import org.koin.core.qualifier.qualifier
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
+import org.slf4j.LoggerFactory
 import javax.sql.DataSource
+
+val qualifierLoggerUnmatchedPlaces = qualifier("loggerUnmatchedPlaces")
 
 fun appModule(application: Application) = module {
     single<Dotenv> {
@@ -36,7 +42,11 @@ fun appModule(application: Application) = module {
     single {
         HttpClient(CIO) {
             install(ContentNegotiation) {
-                json()
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
             }
             install(Logging) {
                 level = LogLevel.INFO
@@ -53,6 +63,10 @@ fun appModule(application: Application) = module {
 
     factory<Logger> {
         application.environment.log
+    }
+
+    factory<Logger>(qualifierLoggerUnmatchedPlaces) {
+        LoggerFactory.getLogger("UnmatchedPlaceLogger")
     }
 
     factory<GoogleIdTokenVerifier> {
@@ -192,6 +206,8 @@ fun serviceModule(application: Application) = module {
     single<ReverseGeocodingService> {
         NominatimReverseGeocodingService(
             nominatimClient = get(),
+            geoNameCity500Dao = get(),
+            unmatchedPlacesLogger = get(qualifierLoggerUnmatchedPlaces),
         )
     }
 

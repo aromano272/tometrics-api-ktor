@@ -43,14 +43,14 @@ fun NominatimPlace.toLocationInfo(
     lon = lon?.toDoubleOrNull() ?: 0.0,
     city = address?.city,
     stateDistrict = address?.stateDistrict,
-    state = address?.state,
+    admin1 = address?.state,
     country = address?.countryCode?.let { code -> 
         Locale(requesterLocaleIso2.orEmpty(), code).displayCountry 
     } ?: address?.country,
-    countryCode = address?.countryCode,
+    countryCode = address?.countryCode?.uppercase(),
     continent = address?.continent,
     region = address?.region,
-    county = address?.county,
+    admin2 = address?.county,
     municipality = address?.municipality,
     town = address?.town,
     village = address?.village,

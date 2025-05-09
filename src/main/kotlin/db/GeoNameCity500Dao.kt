@@ -9,6 +9,11 @@ interface GeoNameCity500Dao {
     suspend fun getById(id: Int): GeoNameCity500Entity?
     suspend fun getByName(name: String): List<GeoNameCity500Entity>
     suspend fun getByCountryCode(countryCode: String): List<GeoNameCity500Entity>
+    suspend fun findByNameAndAdmin1Similarity(
+        name: String,
+        countryCode: String,
+        asciiadmin1: String?,
+    ): GeoNameCity500Entity?
     suspend fun search(query: String): List<GeoNameCity500Entity>
 }
 
@@ -30,6 +35,14 @@ class DefaultGeoNameCity500Dao(
 
     override suspend fun getByCountryCode(countryCode: String): List<GeoNameCity500Entity> = withContext(Dispatchers.IO) {
         db.getByCountryCode(countryCode)
+    }
+
+    override suspend fun findByNameAndAdmin1Similarity(
+        name: String,
+        countryCode: String,
+        asciiadmin1: String?,
+    ): GeoNameCity500Entity? = withContext(Dispatchers.IO) {
+        db.findByNameAndAdmin1Similarity(name, countryCode, asciiadmin1)
     }
 
     override suspend fun search(query: String): List<GeoNameCity500Entity> = withContext(Dispatchers.IO) {

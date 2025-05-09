@@ -1,7 +1,8 @@
-package com.tometrics.api.service
+package com.tometrics.api.service.geolocation
 
 import com.tometrics.api.db.GeoNameCity500Dao
 import com.tometrics.api.db.models.toLocationInfo
+import com.tometrics.api.domain.models.BadRequestException
 import com.tometrics.api.domain.models.LocationInfo
 
 class GeoNamesAutocompleteService(
@@ -9,6 +10,8 @@ class GeoNamesAutocompleteService(
 ) : GeolocationAutocompleteService {
 
     override suspend fun search(query: String): List<LocationInfo> {
+        if (query.length < 3) throw BadRequestException("search query should be at least 3 characters long")
+
         // Search for cities across multiple fields (name, country, state, etc.)
         val cities = geoNameCity500Dao.search(query)
 

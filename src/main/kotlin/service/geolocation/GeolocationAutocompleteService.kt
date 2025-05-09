@@ -1,4 +1,4 @@
-package com.tometrics.api.service
+package com.tometrics.api.service.geolocation
 
 import com.tometrics.api.domain.models.LocationInfo
 
