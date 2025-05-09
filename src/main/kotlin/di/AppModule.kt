@@ -6,6 +6,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.v2.ApacheHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.tometrics.api.db.*
+import com.tometrics.api.external.nominatim.DefaultNominatimClient
+import com.tometrics.api.external.nominatim.NominatimClient
 import com.tometrics.api.service.*
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
@@ -121,6 +123,17 @@ fun databaseModule(application: Application) = module {
         )
     }
 
+    single<GeoNameCity500Db> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(GeoNameCity500Db::class.java)
+    }
+
+    single<GeoNameCity500Dao> {
+        DefaultGeoNameCity500Dao(
+            db = get()
+        )
+    }
+
 }
 
 fun serviceModule(application: Application) = module {
@@ -166,13 +179,32 @@ fun serviceModule(application: Application) = module {
             dotenv = get(),
             httpClient = get(),
             emailTemplateRenderer = get(),
-            logger = application.environment.log,
+            logger = get(),
         )
     }
 
     single<EmailTemplateRenderer> {
         MustacheEmailTemplateRenderer(
             mustacheFactory = get()
+        )
+    }
+
+    single<ReverseGeocodingService> {
+        NominatimReverseGeocodingService(
+            nominatimClient = get(),
+        )
+    }
+
+    single<GeolocationAutocompleteService> {
+        GeoNamesAutocompleteService(
+            geoNameCity500Dao = get()
+        )
+    }
+
+    single<GeolocationService> {
+        DefaultGeolocationService(
+            reverseGeocodingService = get(),
+            geolocationAutocompleteService = get()
         )
     }
 
@@ -187,7 +219,17 @@ fun serviceModule(application: Application) = module {
             gardenService = get(),
             emailService = get(),
             userDao = get(),
-            logger = application.environment.log,
+            logger = get(),
+        )
+    }
+
+}
+
+val externalModule = module {
+
+    single<NominatimClient> {
+        DefaultNominatimClient(
+            client = get(),
         )
     }
 
@@ -201,5 +243,6 @@ fun Application.configureDI() {
         modules(appModule(app))
         modules(databaseModule(app))
         modules(serviceModule(app))
+        modules(externalModule)
     }
 }

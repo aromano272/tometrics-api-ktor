@@ -50,6 +50,15 @@ PUT /designer
 
 
 
+// TODO
+
+Add ability for users to report their harvestings, use this data to build out graphs, fields: yield, notes, date, pest presence, diseases
+Track user's location to enrich the graph data with temperature and rain
+Track user’s location to provide customized gardening advice based on weather reports
+
+
+
+
 
 
 
