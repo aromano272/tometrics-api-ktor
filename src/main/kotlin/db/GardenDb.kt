@@ -78,4 +78,14 @@ interface GardenDb {
     )
     fun getAllReadyForHarvestToday(): List<PlantingEntity>
 
+    @SqlQuery(
+        """
+        SELECT * FROM plantings
+        WHERE harvested = FALSE
+        AND user_id = :userId
+        AND plant_id = :plantId
+        """
+    )
+    fun getSamePlantPlantings(userId: UserId, plantId: PlantId): List<PlantingEntity>
+
 }

@@ -4,6 +4,8 @@ import com.tometrics.api.db.GardenDao
 import com.tometrics.api.db.models.toDomain
 import com.tometrics.api.domain.models.*
 import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 interface GardenService {
@@ -59,10 +61,31 @@ class DefaultGardenService(
 
     override suspend fun add(requester: Requester, plantId: PlantId, quantity: Int): Planting {
         val plant = plantService.getById(plantId)
+        val samePlantPlantings = gardenDao.getSamePlantPlantings(
+            requester.userId,
+            plantId,
+        )
+        val plantingName = if (samePlantPlantings.isEmpty()) {
+            plant.name
+        } else {
+            val dateStr = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd")
+                .withZone(ZoneId.systemDefault())
+                .format(Instant.now())
+            val count = samePlantPlantings.count {
+                it.createdAt.truncatedTo(ChronoUnit.DAYS) == Instant.now().truncatedTo(ChronoUnit.DAYS)
+            }
+
+            if (count == 0) {
+                "${plant.name} $dateStr"
+            } else {
+                "${plant.name} $dateStr #${count + 1}"
+            }
+        }
         val id: PlantingId = gardenDao.insert(
             userId = requester.userId,
             plantId = plantId,
-            name = plant.name,
+            name = plantingName,
             quantity = quantity,
             readyToHarvestAt = Instant.now().plus(plant.timeToHarvest.toLong(), ChronoUnit.DAYS),
             diary = "",

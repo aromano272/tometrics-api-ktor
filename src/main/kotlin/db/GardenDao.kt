@@ -30,6 +30,7 @@ interface GardenDao {
     ): PlantingId
 
     suspend fun getAllReadyForHarvestToday(): List<PlantingEntity>
+    suspend fun getSamePlantPlantings(userId: UserId, plantId: PlantId): List<PlantingEntity>
 }
 
 class DefaultGardenDao(
@@ -66,6 +67,13 @@ class DefaultGardenDao(
 
     override suspend fun getAllReadyForHarvestToday(): List<PlantingEntity> = withContext(Dispatchers.IO) {
         db.getAllReadyForHarvestToday()
+    }
+
+    override suspend fun getSamePlantPlantings(
+        userId: UserId,
+        plantId: PlantId,
+    ): List<PlantingEntity> = withContext(Dispatchers.IO) {
+        db.getSamePlantPlantings(userId, plantId)
     }
 
 }
