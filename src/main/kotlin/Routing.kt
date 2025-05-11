@@ -57,6 +57,7 @@ fun Application.configureRouting() {
             plantingRoutes()
             designerRoutes()
             geolocationRoutes()
+            harvestRoutes()
         }
     }
 }
