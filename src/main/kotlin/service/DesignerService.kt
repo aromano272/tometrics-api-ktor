@@ -15,9 +15,9 @@ class DefaultDesignerService(
     override suspend fun get(): GardenDesign = garden
 
     override suspend fun update(cells: List<List<GardenCellRef>>): GardenDesign {
-        val rows = cells.size
-        val cols = cells.firstOrNull()?.size ?: 0
-        val visited = Array(rows) { BooleanArray(cols) }
+        val numRows = cells.size
+        val numCols = cells.firstOrNull()?.size ?: 0
+        val visited = Array(numRows) { BooleanArray(numCols) }
         val plantedContiguous = mutableListOf<ContiguousCellRefs>()
         val plantIds = mutableSetOf<PlantId>()
 
@@ -28,7 +28,7 @@ class DefaultDesignerService(
         fun dfs(x: Int, y: Int, value: GardenCellRef): ContiguousCellRefs {
             val stack = ArrayDeque<GardenCellRef>()
             stack.add(value)
-            visited[x][y] = true
+            visited[y][x] = true
             val result = mutableListOf<GardenCellRef>()
 
             while (stack.isNotEmpty()) {
@@ -44,11 +44,11 @@ class DefaultDesignerService(
                 for ((dx, dy) in directions) {
                     val nx = x + dx
                     val ny = y + dy
-                    if (nx in 0 until rows && ny in 0 until cols
-                        && !visited[nx][ny] && cells[nx][ny].plantId == value.plantId
+                    if (ny in 0 until numRows && nx in 0 until numCols
+                        && !visited[ny][nx] && cells[ny][nx].plantId == value.plantId
                     ) {
-                        visited[nx][ny] = true
-                        stack.add(cells[nx][ny])
+                        visited[ny][nx] = true
+                        stack.add(cells[ny][nx])
                     }
                 }
             }
@@ -56,10 +56,10 @@ class DefaultDesignerService(
             return result
         }
 
-        cells.forEachIndexed { x, rows ->
-            rows.forEachIndexed { y, cell ->
+        cells.forEachIndexed { y, row ->
+            row.forEachIndexed { x, cell ->
                 if (cell.x != x || cell.y != y) throw BadRequestException("Cells are not ordered")
-                if (!visited[x][y] && cell.plantId != null) {
+                if (!visited[y][x] && cell.plantId != null) {
                     val result = dfs(x, y, cell)
                     plantedContiguous += result
                 }
