@@ -6,7 +6,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.v2.ApacheHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.tometrics.api.db.*
-import com.tometrics.api.db.HarvestDb
+import com.tometrics.api.db.UserProfileDb
 import com.tometrics.api.external.nominatim.DefaultNominatimClient
 import com.tometrics.api.external.nominatim.NominatimClient
 import com.tometrics.api.service.*
@@ -160,6 +160,17 @@ fun databaseModule(application: Application) = module {
         )
     }
 
+    single<UserProfileDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(UserProfileDb::class.java)
+    }
+
+    single<UserProfileDao> {
+        DefaultUserProfileDao(
+            db = get()
+        )
+    }
+
 }
 
 fun serviceModule(application: Application) = module {
@@ -255,6 +266,13 @@ fun serviceModule(application: Application) = module {
         DefaultHarvestService(
             gardenService = get(),
             harvestDao = get(),
+        )
+    }
+
+    single<UserProfileService> {
+        DefaultUserProfileService(
+            userProfileDao = get(),
+            city500Dao = get(),
         )
     }
 

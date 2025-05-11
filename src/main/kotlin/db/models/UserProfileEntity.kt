@@ -1,6 +1,7 @@
 package com.tometrics.api.db.models
 
 import com.tometrics.api.domain.models.LocationInfo
+import com.tometrics.api.domain.models.LocationInfoId
 import com.tometrics.api.domain.models.UserId
 import com.tometrics.api.domain.models.domain.models.UserProfile
 import java.time.Instant
@@ -15,6 +16,6 @@ data class UserProfileEntity(
 fun UserProfileEntity.toDomain(location: LocationInfo?) = UserProfile(
     userId = userId,
     name = name,
-    locationId = location,
+    location = location,
     updatedAt = updatedAt.toEpochMilli(),
 )

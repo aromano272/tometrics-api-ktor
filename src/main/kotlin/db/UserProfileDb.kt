@@ -1,7 +1,7 @@
-package com.tometrics.api.db.db
+package com.tometrics.api.db
 
-import com.tometrics.api.db.models.LocationInfoId
 import com.tometrics.api.db.models.UserProfileEntity
+import com.tometrics.api.domain.models.LocationInfoId
 import com.tometrics.api.domain.models.UserId
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
@@ -25,7 +25,7 @@ interface UserProfileDb {
             INSERT INTO userprofiles (user_id, name, location_id, updated_at)
             VALUES (:userId, :name, :locationId, NOW())
             ON CONFLICT (user_id) DO UPDATE
-            SET name = :name, location_id = :location_id, updated_at = NOW()
+            SET name = :name, location_id = :locationId, updated_at = NOW()
         """
     )
     @GetGeneratedKeys
