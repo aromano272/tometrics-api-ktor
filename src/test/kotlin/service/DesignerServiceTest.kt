@@ -78,7 +78,9 @@ class DesignerServiceTest {
         val cells = listOf(
             listOf(
                 GardenCellRef(0, 0, 999), // Non-existent plant ID
-                GardenCellRef(0, 1, null)
+            ),
+            listOf(
+                GardenCellRef(0, 1, null),
             )
         )
         coEvery { plantService.getAllByIds(setOf(999)) } returns emptyList()
@@ -179,8 +181,8 @@ class DesignerServiceTest {
         }
     }
 
-    private fun String.toCells() = split("\n").mapIndexed { y, row ->
-        row.mapIndexed { x, ch ->
+    private fun String.toCells() = split("\n").mapIndexed { x, col ->
+        col.mapIndexed { y, ch ->
             GardenCellRef(x, y, ch.takeUnless { it == '.' }?.digitToIntOrNull())
         }
     }.transposed()

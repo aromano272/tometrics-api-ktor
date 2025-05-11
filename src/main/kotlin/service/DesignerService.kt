@@ -15,9 +15,9 @@ class DefaultDesignerService(
     override suspend fun get(): GardenDesign = garden
 
     override suspend fun update(cells: List<List<GardenCellRef>>): GardenDesign {
-        val rows = cells.size
-        val cols = cells.firstOrNull()?.size ?: 0
-        val visited = Array(rows) { BooleanArray(cols) }
+        val numRows = cells.size
+        val numCols = cells.firstOrNull()?.size ?: 0
+        val visited = Array(numRows) { BooleanArray(numCols) }
         val plantedContiguous = mutableListOf<ContiguousCellRefs>()
         val plantIds = mutableSetOf<PlantId>()
 
@@ -44,7 +44,7 @@ class DefaultDesignerService(
                 for ((dx, dy) in directions) {
                     val nx = x + dx
                     val ny = y + dy
-                    if (nx in 0 until rows && ny in 0 until cols
+                    if (ny in 0 until numRows && nx in 0 until numCols
                         && !visited[ny][nx] && cells[ny][nx].plantId == value.plantId
                     ) {
                         visited[ny][nx] = true
