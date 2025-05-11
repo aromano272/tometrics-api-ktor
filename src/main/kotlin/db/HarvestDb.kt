@@ -1,4 +1,4 @@
-package com.tometrics.api.db.db
+package com.tometrics.api.db
 
 import com.tometrics.api.db.models.HarvestEntity
 import com.tometrics.api.domain.models.*

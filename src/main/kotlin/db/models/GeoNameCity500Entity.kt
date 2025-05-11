@@ -1,13 +1,14 @@
 package com.tometrics.api.db.models
 
 import com.tometrics.api.domain.models.LocationInfo
+import com.tometrics.api.domain.models.LocationInfoId
 import java.util.*
 
 // https://download.geonames.org/export/dump/readme.txt
 // all cities with a population > 500 or seats of adm div down to
 // PPLA4 (ca 185.000), see 'geoname' table for columns
 data class GeoNameCity500Entity(
-    val geonameid: Int? = null,                // integer id of record in geonames database
+    val geonameid: LocationInfoId? = null,                // integer id of record in geonames database
     val name: String,                          // name of geographical point (utf8)
     val asciiname: String,                     // name of geographical point in plain ascii characters
     val alternatenames: String,                // alternatenames, comma separated

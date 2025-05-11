@@ -28,7 +28,7 @@ class DefaultDesignerService(
         fun dfs(x: Int, y: Int, value: GardenCellRef): ContiguousCellRefs {
             val stack = ArrayDeque<GardenCellRef>()
             stack.add(value)
-            visited[x][y] = true
+            visited[y][x] = true
             val result = mutableListOf<GardenCellRef>()
 
             while (stack.isNotEmpty()) {
@@ -45,10 +45,10 @@ class DefaultDesignerService(
                     val nx = x + dx
                     val ny = y + dy
                     if (nx in 0 until rows && ny in 0 until cols
-                        && !visited[nx][ny] && cells[nx][ny].plantId == value.plantId
+                        && !visited[ny][nx] && cells[ny][nx].plantId == value.plantId
                     ) {
-                        visited[nx][ny] = true
-                        stack.add(cells[nx][ny])
+                        visited[ny][nx] = true
+                        stack.add(cells[ny][nx])
                     }
                 }
             }
@@ -56,10 +56,10 @@ class DefaultDesignerService(
             return result
         }
 
-        cells.forEachIndexed { x, rows ->
-            rows.forEachIndexed { y, cell ->
+        cells.forEachIndexed { y, row ->
+            row.forEachIndexed { x, cell ->
                 if (cell.x != x || cell.y != y) throw BadRequestException("Cells are not ordered")
-                if (!visited[x][y] && cell.plantId != null) {
+                if (!visited[y][x] && cell.plantId != null) {
                     val result = dfs(x, y, cell)
                     plantedContiguous += result
                 }
