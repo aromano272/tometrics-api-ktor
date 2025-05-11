@@ -370,7 +370,7 @@ class AuthServiceTest {
         coEvery { refreshTokenDao.findByToken(refreshToken) } returns null
 
         assertFailsWith<UnauthorizedException> {
-            authService.refreshToken(, refreshToken)
+            authService.refreshToken(refreshToken)
         }
     }
 
@@ -389,7 +389,7 @@ class AuthServiceTest {
         coEvery { userDao.findById(expiredToken.userId) } returns TEST_USER_ENTITY
 
         assertFailsWith<UnauthorizedException> {
-            authService.refreshToken(, refreshToken)
+            authService.refreshToken(refreshToken)
         }
     }
 
@@ -412,7 +412,7 @@ class AuthServiceTest {
         coEvery { refreshTokenDao.insert(user.id, any(), any()) } returns Unit
         coEvery { jwtService.create(user.id, false) } returns newAccessToken
 
-        val tokens = authService.refreshToken(, refreshToken)
+        val tokens = authService.refreshToken(refreshToken)
 
         assertNotNull(tokens)
         assertEquals(newAccessToken, tokens.access)
@@ -421,40 +421,19 @@ class AuthServiceTest {
 
     @Test
     fun `logout should throw UnauthorizedException when token not found`() = runTest {
-        val username = "testuser"
+        val requester = Requester(TEST_USER_ENTITY.id)
         val refreshToken = "invalid_token"
 
         coEvery { refreshTokenDao.findByToken(refreshToken) } returns null
 
         assertFailsWith<UnauthorizedException> {
-            authService.logout(username, refreshToken)
-        }
-    }
-
-    @Test
-    fun `logout should throw UnauthorizedException when username doesn't match`() = runTest {
-        val username = "wrong_user"
-        val refreshToken = "valid_token"
-        val tokenEntity = RefreshTokenEntity(
-            id = 1,
-            userId = 1,
-            token = refreshToken,
-            expiresAt = Instant.now().plusSeconds(3600),
-            createdAt = Instant.now().plusSeconds(3600),
-        )
-        val user = TEST_USER_ENTITY.copy(name = "correct_user")
-
-        coEvery { refreshTokenDao.findByToken(refreshToken) } returns tokenEntity
-        coEvery { userDao.findById(tokenEntity.userId) } returns user
-
-        assertFailsWith<UnauthorizedException> {
-            authService.logout(username, refreshToken)
+            authService.logout(requester, refreshToken)
         }
     }
 
     @Test
     fun `logout should delete token when successful`() = runTest {
-        val username = "testuser"
+        val requester = Requester(TEST_USER_ENTITY.id)
         val refreshToken = "valid_token"
         val tokenEntity = RefreshTokenEntity(
             id = 1,
@@ -463,13 +442,12 @@ class AuthServiceTest {
             expiresAt = Instant.now().plusSeconds(3600),
             createdAt = Instant.now().plusSeconds(3600),
         )
-        val user = TEST_USER_ENTITY.copy(name = username)
 
         coEvery { refreshTokenDao.findByToken(refreshToken) } returns tokenEntity
-        coEvery { userDao.findById(tokenEntity.userId) } returns user
+        coEvery { userDao.findById(tokenEntity.userId) } returns TEST_USER_ENTITY
         coEvery { refreshTokenDao.delete(refreshToken) } returns Unit
 
-        authService.logout(username, refreshToken)
+        authService.logout(requester, refreshToken)
 
         coVerify { refreshTokenDao.delete(refreshToken) }
     }
