@@ -1,14 +1,12 @@
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ0b21ldHJpY3MtdXNlcnMiLCJpc3MiOiJ0b21ldHJpY3MuY29tIiwidXNlcklkIjoyLCJleHAiOjE3NDg3NzE0MTJ9.UPaa8XFWFyXzGh1ztLBnkvOaVDoStKnWjKjEcjKUl0g
-
-### Get all plants
+### Get all plantings
 GET http://localhost:8080/api/v1/planting/all
 Authorization: Bearer {{accessToken}}
 
-### Delete plant by ID
+### Delete planting by ID
 DELETE http://localhost:8080/api/v1/planting/2
 Authorization: Bearer {{accessToken}}
 
-### Patch plant by ID
+### Patch planting by ID
 PATCH http://localhost:8080/api/v1/planting/2
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json

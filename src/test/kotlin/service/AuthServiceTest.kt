@@ -370,7 +370,7 @@ class AuthServiceTest {
         coEvery { refreshTokenDao.findByToken(refreshToken) } returns null
 
         assertFailsWith<UnauthorizedException> {
-            authService.refreshToken(refreshToken)
+            authService.refreshToken(, refreshToken)
         }
     }
 
@@ -389,7 +389,7 @@ class AuthServiceTest {
         coEvery { userDao.findById(expiredToken.userId) } returns TEST_USER_ENTITY
 
         assertFailsWith<UnauthorizedException> {
-            authService.refreshToken(refreshToken)
+            authService.refreshToken(, refreshToken)
         }
     }
 
@@ -412,7 +412,7 @@ class AuthServiceTest {
         coEvery { refreshTokenDao.insert(user.id, any(), any()) } returns Unit
         coEvery { jwtService.create(user.id, false) } returns newAccessToken
 
-        val tokens = authService.refreshToken(refreshToken)
+        val tokens = authService.refreshToken(, refreshToken)
 
         assertNotNull(tokens)
         assertEquals(newAccessToken, tokens.access)

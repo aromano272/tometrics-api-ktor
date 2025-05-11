@@ -17,7 +17,7 @@ interface AuthService {
     ): Tokens
 
     suspend fun refreshToken(refreshToken: String): Tokens
-    suspend fun logout(username: String, refreshToken: String)
+    suspend fun logout(requester: Requester, refreshToken: String)
 }
 
 class DefaultAuthService(
@@ -225,27 +225,20 @@ class DefaultAuthService(
     override suspend fun refreshToken(refreshToken: String): Tokens {
         val stored = refreshTokenDao.findByToken(refreshToken)
             ?: throw UnauthorizedException("couldn't find refresh token")
-        val user = userDao.findById(stored.userId) ?: throw NotFoundException("couldn't find user")
+        val user = userDao.findById(stored.userId)?.toDomain()
+            ?: throw NotFoundException("couldn't find user")
 
-        if (stored.expiresAt.isBefore(Instant.now())) throw UnauthorizedException("refresh token has expired")
+        if (stored.expiresAt.isBefore(Instant.now()))
+            throw UnauthorizedException("refresh token has expired")
 
         refreshTokenDao.delete(refreshToken)
 
-        val newRefreshToken = UUID.randomUUID().toString()
-        val expiry = getNewRefreshTokenExpiry()
-        refreshTokenDao.insert(user.id, newRefreshToken, expiry)
-
-        val newAccessToken = jwtService.create(user.id, user.anon)
-
-        return Tokens(newAccessToken, newRefreshToken)
+        return login(user)
     }
 
-    override suspend fun logout(username: String, refreshToken: String) {
-        val stored =
-            refreshTokenDao.findByToken(refreshToken) ?: throw UnauthorizedException("couldn't find refresh token")
-
-        val user = userDao.findById(stored.userId) ?: throw NotFoundException("couldn't find user")
-        if (user.name != username) throw UnauthorizedException("username doesn't match refreshToken's username")
+    override suspend fun logout(requester: Requester, refreshToken: String) {
+        val stored = refreshTokenDao.findByToken(refreshToken)
+            ?: throw UnauthorizedException("couldn't find refresh token")
 
         refreshTokenDao.delete(refreshToken)
     }
