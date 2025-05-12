@@ -58,6 +58,7 @@ fun Application.configureRouting() {
             designerRoutes()
             geolocationRoutes()
             harvestRoutes()
+            userProfileRoutes()
         }
     }
 }
