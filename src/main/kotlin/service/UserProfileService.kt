@@ -22,8 +22,6 @@ class DefaultUserProfileService(
     private val city500Dao: GeoNameCity500Dao,
 ) : UserProfileService {
 
-    // TODO: create java migration to insert all existing users into userprofiles
-
     override suspend fun get(requester: Requester): UserProfile {
         val entity = (userProfileDao.findById(requester.userId)
             ?: run {
