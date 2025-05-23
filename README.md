@@ -1,49 +1,51 @@
-# tometrics
+# 🌱 Tometrics API
 
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
+**Tometrics** is an advanced gardening metrics API designed to help users **plan gardens, manage plantings, track harvests**, and record critical data like **diseases, pests, and climate insights**. What sets Tometrics apart is its strong **focus on metrics** — empowering users to analyze and compare multiple plantings of the same vegetable over time to optimize yields and strategies.
 
-Here are some useful links to get you started:
+## 🚀 Features
 
-- [Ktor Documentation](https://ktor.io/docs/home.html)
-- [Ktor GitHub page](https://github.com/ktorio/ktor)
-- The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need to [request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
+- 🧑‍🌾 **Garden Planning**: Organize and plan garden layouts and planting schedules.
+- 🌿 **Planting Management**: Record multiple plantings of the same crop and track their individual outcomes.
+- 📈 **Harvest Tracking**: Log harvests and analyze yields across seasons and plantings.
+- 🐛 **Disease & Pest Logging**: Record occurrences of diseases and pests to monitor their impact.
+- 🌍 **Geo & Climate Enrichment**: Automatically enrich records with:
+  - Geographic location
+  - Climate zone
+  - Real-time and historical weather data
+- 📊 **Comparative Metrics Engine**: Core focus on metrics — enables meaningful comparisons between plantings to drive gardening insights.
 
-## Features
+## 🧪 Tech Stack
 
-Here's a list of features included in this project:
+Tometrics is built with a robust, modern Kotlin backend stack:
 
-| Name                                                                   | Description                                                                        |
-| ------------------------------------------------------------------------|------------------------------------------------------------------------------------ |
-| [Routing](https://start.ktor.io/p/routing)                             | Provides a structured routing DSL                                                  |
-| [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization) | Handles JSON serialization using kotlinx.serialization library                     |
-| [Content Negotiation](https://start.ktor.io/p/content-negotiation)     | Provides automatic content conversion according to Content-Type and Accept headers |
-| [Postgres](https://start.ktor.io/p/postgres)                           | Adds Postgres db to your application                                         |
-| [Call Logging](https://start.ktor.io/p/call-logging)                   | Logs client requests                                                               |
-| [OpenAPI](https://start.ktor.io/p/openapi)                             | Serves OpenAPI documentation                                                       |
-| [CORS](https://start.ktor.io/p/cors)                                   | Enables Cross-Origin Resource Sharing (CORS)                                       |
-| [Status Pages](https://start.ktor.io/p/status-pages)                   | Provides exception handling for routes                                             |
-| [Request Validation](https://start.ktor.io/p/request-validation)       | Adds validation for incoming requests                                              |
-| [Authentication](https://start.ktor.io/p/auth)                         | Provides extension point for handling the Authorization header                     |
-| [Authentication JWT](https://start.ktor.io/p/auth-jwt)                 | Handles JSON Web Token (JWT) bearer authentication scheme                          |
+- ⚙️ **Ktor**: Lightweight asynchronous web framework for Kotlin.
+- 💾 **PostgreSQL**: Primary database, accessed via:
+  - **JDBI**: SQL convenience layer for clean, fluent database interactions.
+  - **HikariCP**: High-performance JDBC connection pooling.
+- 🛠️ **Flyway**: Schema migrations made easy.
+- 🔐 **Authentication**:
+  - **JWT**: Token-based authentication.
+  - **Identity Provider Integration**: Support for OAuth/OpenID identity providers.
+- 🔄 **Cron Jobs**: Scheduled tasks for data enrichment and background jobs.
+- 🧾 **Mustache**: Templating for human-readable output or templated views.
+- 📃 **OpenAPI + Swagger**: Automatically documented, interactive API docs.
+- 🧪 **Testing Frameworks**:
+  - **Testcontainers**: Real integration testing using containerized Postgres.
+  - **Kotlin Test**: Unit and integration testing made easy.
 
-## Building & Running
+## 📘 API Documentation
 
-To build or run the project, use one of the following tasks:
+Interactive API docs are available via Swagger/OpenAPI at:
 
-| Task                          | Description                                                          |
-| -------------------------------|---------------------------------------------------------------------- |
-| `./gradlew test`              | Run the tests                                                        |
-| `./gradlew build`             | Build everything                                                     |
-| `buildFatJar`                 | Build an executable JAR of the server with all dependencies included |
-| `buildImage`                  | Build the docker image to use with the fat JAR                       |
-| `publishImageToLocalRegistry` | Publish the docker image locally                                     |
-| `run`                         | Run the server                                                       |
-| `runDocker`                   | Run using the local docker image                                     |
+https://tometrics-api.onrender.com/swagger
 
-If the server starts successfully, you'll see the following output:
+## 📦 Development & Setup
 
-```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
-```
+1. Clone the repository
+2. Configure environment variables
+3. Start the server with your preferred build tool
+4. Access Swagger at `localhost:8080/swagger` to begin exploring
 
+### Run tests
+```bash
+./gradlew test
