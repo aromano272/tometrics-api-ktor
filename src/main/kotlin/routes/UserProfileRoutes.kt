@@ -1,6 +1,6 @@
 package com.tometrics.api.routes
 
-import com.tometrics.api.domain.models.domain.models.UserProfile
+import com.tometrics.api.domain.models.UserProfile
 import com.tometrics.api.domain.models.requireRequester
 import com.tometrics.api.routes.models.PutUserProfileRequest
 import com.tometrics.api.service.UserProfileService
@@ -57,6 +57,8 @@ fun Route.userProfileRoutes() {
                     requester,
                     request.name,
                     request.locationId,
+                    request.metricUnits,
+                    request.climateZone,
                 )
 
                 call.respond(profile)

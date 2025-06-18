@@ -4,7 +4,7 @@ import com.tometrics.api.db.GeoNameCity500Dao
 import com.tometrics.api.db.UserProfileDao
 import com.tometrics.api.db.models.UserProfileEntity
 import com.tometrics.api.domain.models.Requester
-import com.tometrics.api.domain.models.domain.models.UserProfile
+import com.tometrics.api.domain.models.UserProfile
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -30,20 +30,22 @@ class UserProfileServiceTest {
             userId = 1,
             name = null,
             locationId = null,
+            metricUnits = true,
+            climateZone = null,
             updatedAt = Instant.now(),
         )
         coEvery { userProfileDao.findById(1) }.returnsMany(
             null,
             entity,
         )
-        coEvery { userProfileDao.upsert(1, null, null) }.returns(1)
+        coEvery { userProfileDao.upsert(1, null, null, true, null) }.returns(1)
 
         val actual = userProfileService.get(requester)
 
-        coVerify { userProfileDao.upsert(1, null, null) }
+        coVerify { userProfileDao.upsert(1, null, null, true, null) }
 
         assertEquals(
-            UserProfile(1, null, null, actual.updatedAt), // ignoring updatedAt checking
+            UserProfile(1, null, null, true, null,actual.updatedAt), // ignoring updatedAt checking
             actual,
         )
     }

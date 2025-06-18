@@ -203,32 +203,6 @@ data class ClimateZones(
     val arid: List<Month>
 )
 
-enum class YieldUnit {
-    UNIT, KG, GRAMS
-}
-
-@Serializable
-data class PlantYield(
-    val from: Float,
-    val to: Float,
-    val unit: YieldUnit,
-) {
-    operator fun times(n: Int): PlantYield = PlantYield(
-        from = from * n,
-        to = to * n,
-        unit = unit
-    )
-
-    operator fun plus(other: PlantYield): PlantYield {
-        if (unit != other.unit) throw IllegalArgumentException("Cannot add 2 PlantYield with different `unit`s")
-        return PlantYield(
-            from = from + other.from,
-            to = to + other.to,
-            unit = unit,
-        )
-    }
-}
-
 typealias PlantId = Int
 
 @Serializable
