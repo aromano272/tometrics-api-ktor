@@ -4,16 +4,17 @@ import com.tometrics.api.db.GeoNameCity500Dao
 import com.tometrics.api.db.UserProfileDao
 import com.tometrics.api.db.models.toDomain
 import com.tometrics.api.db.models.toLocationInfo
-import com.tometrics.api.domain.models.LocationInfoId
-import com.tometrics.api.domain.models.Requester
-import com.tometrics.api.domain.models.domain.models.UserProfile
+import com.tometrics.api.domain.models.*
 
 interface UserProfileService {
     suspend fun get(requester: Requester): UserProfile
+    suspend fun get(userId: UserId): UserProfile
     suspend fun update(
         requester: Requester,
         name: String?,
         locationId: LocationInfoId?,
+        metricUnits: Boolean?,
+        climateZone: ClimateZone?,
     ): UserProfile
 }
 
@@ -22,11 +23,14 @@ class DefaultUserProfileService(
     private val city500Dao: GeoNameCity500Dao,
 ) : UserProfileService {
 
-    override suspend fun get(requester: Requester): UserProfile {
-        val entity = (userProfileDao.findById(requester.userId)
+    override suspend fun get(requester: Requester): UserProfile =
+        get(requester.userId)
+
+    override suspend fun get(userId: UserId): UserProfile {
+        val entity = (userProfileDao.findById(userId)
             ?: run {
-                userProfileDao.upsert(requester.userId, null, null)
-                userProfileDao.findById(requester.userId)!!
+                userProfileDao.upsert(userId, null, null, true, null)
+                userProfileDao.findById(userId)!!
             })
 
         val location = entity.locationId?.let { city500Dao.getById(it) }?.toLocationInfo()
@@ -38,8 +42,10 @@ class DefaultUserProfileService(
         requester: Requester,
         name: String?,
         locationId: LocationInfoId?,
+        metricUnits: Boolean?,
+        climateZone: ClimateZone?,
     ): UserProfile {
-        userProfileDao.upsert(requester.userId, name, locationId)
+        userProfileDao.upsert(requester.userId, name, locationId, metricUnits, climateZone)
         return get(requester)
     }
 

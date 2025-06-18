@@ -33,6 +33,8 @@ data class HarvestNotificationTemplate(
         YieldUnit.UNIT -> " units"
         YieldUnit.KG -> " kg"
         YieldUnit.GRAMS -> "g"
+        YieldUnit.LB -> " lb"
+        YieldUnit.OZ -> " oz"
     }
 
     data class PlantingTemplate(

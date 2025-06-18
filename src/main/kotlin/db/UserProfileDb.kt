@@ -1,6 +1,7 @@
 package com.tometrics.api.db
 
 import com.tometrics.api.db.models.UserProfileEntity
+import com.tometrics.api.domain.models.ClimateZone
 import com.tometrics.api.domain.models.LocationInfoId
 import com.tometrics.api.domain.models.UserId
 import org.jdbi.v3.sqlobject.customizer.Bind
@@ -22,10 +23,12 @@ interface UserProfileDb {
 
     @SqlUpdate(
         """
-            INSERT INTO userprofiles (user_id, name, location_id, updated_at)
-            VALUES (:userId, :name, :locationId, NOW())
+            INSERT INTO userprofiles (user_id, name, location_id, metric_units, climate_zone, updated_at)
+            VALUES (:userId, :name, :locationId, COALESCE(:metricUnits, TRUE), :climateZone, NOW())
             ON CONFLICT (user_id) DO UPDATE
-            SET name = :name, location_id = :locationId, updated_at = NOW()
+            SET name = :name, location_id = :locationId, 
+            metric_units = COALESCE(:metricUnits, userprofiles.metric_units), climate_zone = :climateZone,
+            updated_at = NOW()
         """
     )
     @GetGeneratedKeys
@@ -33,6 +36,8 @@ interface UserProfileDb {
         @Bind("userId") userId: UserId,
         @Bind("name") name: String?,
         @Bind("locationId") locationId: LocationInfoId?,
+        @Bind("metricUnits") metricUnits: Boolean?,
+        @Bind("climateZone") climateZone: ClimateZone?,
     ): UserId
 
 }

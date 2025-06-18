@@ -32,9 +32,8 @@ fun Route.geolocationRoutes() {
                 }
                 response {
                     HttpStatusCode.OK to {
-                        body<GetGeolocationAutocompleteResponse> {
-                            description = "A list of matching locations."
-                        }
+                        description = "A list of matching locations."
+                        body<GetGeolocationAutocompleteResponse>()
                     }
                 }
             }) {
@@ -59,9 +58,8 @@ fun Route.geolocationRoutes() {
                 }
                 response {
                     HttpStatusCode.OK to {
-                        body<LocationInfo> {
-                            description = "The location details for the given coordinates."
-                        }
+                        description = "The location details for the given coordinates."
+                        body<LocationInfo>()
                     }
                     HttpStatusCode.BadRequest to {
                         description = "Invalid or missing query parameters."

@@ -90,30 +90,13 @@
 
 <!-- Load the JS SDK asynchronously -->
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
-<!--    <div id="g_id_onload"-->
-<!--         data-client_id="201477670303-t3qm85ov000hfk3konc95jjp36ds1i3k.apps.googleusercontent.com"-->
-<!--         data-context="signin"-->
-<!--         data-ux_mode="popup"-->
-<!--         data-callback="handleGoogleAuth"-->
-<!--         data-auto_prompt="false">-->
-<!--    </div>-->
-<!--    <div class="g_id_signin"-->
-<!--         data-type="standard"-->
-<!--         data-shape="rectangular"-->
-<!--         data-theme="outline"-->
-<!--         data-text="signin_with"-->
-<!--         data-size="large"-->
-<!--         data-logo_alignment="left">-->
-<!--    </div>-->
 <div id="g_id_onload"
      data-client_id="201477670303-t3qm85ov000hfk3konc95jjp36ds1i3k.apps.googleusercontent.com"
      data-context="signin"
      data-ux_mode="popup"
-     data-login_uri="http://localhost:8080/api/v1/auth/google/login"
-     data-onlogin="handleFacebookAuth"
+     data-callback="handleGoogleAuth"
      data-auto_prompt="false">
 </div>
-
 <div class="g_id_signin"
      data-type="standard"
      data-shape="rectangular"
@@ -122,5 +105,22 @@
      data-size="large"
      data-logo_alignment="left">
 </div>
+<!--<div id="g_id_onload"-->
+<!--     data-client_id="201477670303-t3qm85ov000hfk3konc95jjp36ds1i3k.apps.googleusercontent.com"-->
+<!--     data-context="signin"-->
+<!--     data-ux_mode="popup"-->
+<!--     data-login_uri="http://localhost:8080/api/v1/auth/google/login"-->
+<!--     data-onlogin="handleFacebookAuth"-->
+<!--     data-auto_prompt="false">-->
+<!--</div>-->
+
+<!--<div class="g_id_signin"-->
+<!--     data-type="standard"-->
+<!--     data-shape="rectangular"-->
+<!--     data-theme="outline"-->
+<!--     data-text="signin_with"-->
+<!--     data-size="large"-->
+<!--     data-logo_alignment="left">-->
+<!--</div>-->
 </body>
 </html>

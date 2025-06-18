@@ -1,7 +1,7 @@
 package com.tometrics.api.db
 
-import com.tometrics.api.db.UserProfileDb
 import com.tometrics.api.db.models.UserProfileEntity
+import com.tometrics.api.domain.models.ClimateZone
 import com.tometrics.api.domain.models.LocationInfoId
 import com.tometrics.api.domain.models.UserId
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +14,8 @@ interface UserProfileDao {
         userId: UserId,
         name: String?,
         locationId: LocationInfoId?,
+        metricUnits: Boolean?,
+        climateZone: ClimateZone?,
     ): Int
 
 }
@@ -30,11 +32,15 @@ class DefaultUserProfileDao(
         userId: UserId,
         name: String?,
         locationId: LocationInfoId?,
+        metricUnits: Boolean?,
+        climateZone: ClimateZone?,
     ): UserId = withContext(Dispatchers.IO) {
         db.upsert(
             userId,
             name,
-            locationId
+            locationId,
+            metricUnits,
+            climateZone,
         )
     }
 
