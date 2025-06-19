@@ -4,7 +4,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.github.cdimascio.dotenv.Dotenv
-import io.ktor.server.application.*
 import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
@@ -12,14 +11,14 @@ import org.jdbi.v3.jackson2.Jackson2Config
 import org.jdbi.v3.jackson2.Jackson2Plugin
 import javax.sql.DataSource
 
-fun Application.createHikariDataSource(
+fun createHikariDataSource(
     dotenv: Dotenv,
 ): HikariDataSource {
     val hikariConfig = HikariConfig().apply {
         jdbcUrl = dotenv["POSTGRES_URL"]
         username = dotenv["POSTGRES_USER"]
         password = dotenv["POSTGRES_PASSWORD"]
-        maximumPoolSize = environment.config.propertyOrNull("maxPoolSize")?.getString()?.toInt() ?: 10
+        maximumPoolSize = dotenv["POSTGRES_MAX_POOL_SIZE"].toIntOrNull() ?: 10
         isAutoCommit = true
         transactionIsolation = "TRANSACTION_REPEATABLE_READ"
         validate()
@@ -28,15 +27,12 @@ fun Application.createHikariDataSource(
     return HikariDataSource(hikariConfig)
 }
 
-fun HikariDataSource.runMigrations(): HikariDataSource = also {
+fun HikariDataSource.runMigrations(locations: List<String>): HikariDataSource = also {
     val clean = false
     val flyway = Flyway.configure()
         .cleanDisabled(!clean)
         .dataSource(this)
-        .locations(
-            "classpath:db/migration",
-            "classpath:com/tometrics/api/db/migration",
-        )
+        .locations(*locations.toTypedArray())
         .load()
 
     if (clean) flyway.clean()

@@ -21,6 +21,7 @@ fun Application.configureHTTP() {
             }
         }
     }
+
     routing {
         route("/openapi/api.yaml") {
             openApi()
@@ -29,6 +30,7 @@ fun Application.configureHTTP() {
             swaggerUI("/openapi/api.yaml")
         }
     }
+
     install(CORS) {
         allowMethod(HttpMethod.Options)
         allowMethod(HttpMethod.Put)

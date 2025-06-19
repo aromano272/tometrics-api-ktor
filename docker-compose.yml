@@ -12,5 +12,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  socialgraph:
+    build:
+      context: .
+      dockerfile: services/socialgraph/Dockerfile
+    container_name: tometrics-socialgraph
+    ports:
+      - "8081:8081"
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/tometrics
+      DATABASE_USER: ktoruser
+      DATABASE_PASSWORD: ktorpass
+    depends_on:
+      - db
+
 volumes:
   pgdata:
