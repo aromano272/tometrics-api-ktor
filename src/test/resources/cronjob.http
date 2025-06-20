@@ -1,5 +1,5 @@
 @accessToken = VPfksehIoSHqhpVI23CqdysfXCdd4ikYueA5iz7I7thFUGK330J1LOTjfFO8A9tODXjQO2iooOyHjUUbME5gJ6RQ2PWteqo3OQPZY0h2iWb5VRVlapiMjgc65kdtVAwlS9LqqA5A8pRy9E2G97uQ0TMYsBSQwQodsAsrepGq4AjpySTePTT3mQGz8x4JyKMpJQA90p58yjO1YxWh184BucSxPWR3epjSP3PpEqgCUmKIK24PmvHSVxyJe6VpUaPD
 
 ### Post Daily Harvest
-POST http://localhost:8080/api/v1/cronjob/daily-harvest
+POST https://localhost/api/v1/cronjob/daily-harvest
 Authorization: Bearer {{accessToken}}

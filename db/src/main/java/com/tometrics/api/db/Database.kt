@@ -27,12 +27,12 @@ fun createHikariDataSource(
     return HikariDataSource(hikariConfig)
 }
 
-fun HikariDataSource.runMigrations(locations: List<String>): HikariDataSource = also {
+fun HikariDataSource.runMigrations(vararg locations: String): HikariDataSource = also {
     val clean = false
     val flyway = Flyway.configure()
         .cleanDisabled(!clean)
         .dataSource(this)
-        .locations(*locations.toTypedArray())
+        .locations(*locations)
         .load()
 
     if (clean) flyway.clean()

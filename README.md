@@ -43,8 +43,9 @@ https://tometrics-api.onrender.com/swagger
 
 1. Clone the repository
 2. Configure environment variables
-3. Start the server with your preferred build tool
-4. Access Swagger at `localhost:8080/swagger` to begin exploring
+3. Create cert at /etc/nginx/certs/
+4. Start the server with your preferred build tool
+5. Access Swagger at `localhost:8080/swagger` to begin exploring
 
 ### Run tests
 ```bash

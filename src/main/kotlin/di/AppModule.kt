@@ -5,6 +5,8 @@ import com.github.mustachejava.MustacheFactory
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.v2.ApacheHttpTransport
 import com.google.api.client.json.gson.GsonFactory
+import com.tometrics.api.db.*
+import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.external.nominatim.DefaultNominatimClient
 import com.tometrics.api.external.nominatim.NominatimClient
 import com.tometrics.api.service.*
@@ -21,6 +23,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.util.logging.Logger
 import kotlinx.serialization.json.Json
+import org.jdbi.v3.core.Jdbi
 import org.koin.core.qualifier.qualifier
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
@@ -73,6 +76,87 @@ fun appModule(application: Application) = module {
         GoogleIdTokenVerifier.Builder(transport, jsonFactory)
             .setAudience(listOf(dotenv["GOOGLE_OAUTH_CLIENT_ID"]))
             .build()
+    }
+
+}
+
+val databaseModule = module {
+
+    single<UserDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(UserDb::class.java)
+    }
+
+    single<UserDao> {
+        DefaultUserDao(
+            db = get()
+        )
+    }
+
+    single<GardenDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(GardenDb::class.java)
+    }
+
+    single<GardenDao> {
+        DefaultGardenDao(
+            db = get()
+        )
+    }
+
+    single<RefreshTokenDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(RefreshTokenDb::class.java)
+    }
+
+    single<RefreshTokenDao> {
+        DefaultRefreshTokenDao(
+            db = get()
+        )
+    }
+
+    single<PlantDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(PlantDb::class.java)
+    }
+
+    single<PlantDao> {
+        DefaultPlantDao(
+            db = get()
+        )
+    }
+
+    single<GeoNameCity500Db> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(GeoNameCity500Db::class.java)
+    }
+
+    single<GeoNameCity500Dao> {
+        DefaultGeoNameCity500Dao(
+            db = get()
+        )
+    }
+
+    single<HarvestDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(HarvestDb::class.java)
+    }
+
+    single<HarvestDao> {
+        DefaultHarvestDao(
+            db = get()
+        )
+    }
+
+    single<UserProfileDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(UserProfileDb::class.java)
+    }
+
+    single<UserProfileDao> {
+        DefaultUserProfileDao(
+            db = get()
+        )
     }
 
 }
@@ -197,8 +281,15 @@ fun Application.configureDI() {
 
     install(Koin) {
         slf4jLogger()
-        modules(appModule(app))
-        modules(serviceModule(app))
-        modules(externalModule)
+        modules(
+            appModule(app),
+            jdbiModule(
+                "classpath:db/migration",
+                "classpath:com/tometrics/api/db/migration",
+            ),
+            databaseModule,
+            serviceModule(app),
+            externalModule,
+        )
     }
 }

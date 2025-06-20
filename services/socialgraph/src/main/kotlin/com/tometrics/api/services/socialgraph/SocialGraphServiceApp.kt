@@ -1,7 +1,7 @@
 package com.tometrics.api.services.socialgraph
 
 import com.tometrics.api.auth.configureSecurity
-import com.tometrics.api.db.di.databaseModule
+import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.services.socialgraph.routes.socialGraphRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
@@ -40,7 +40,10 @@ fun Application.configureDI() {
     install(Koin) {
         slf4jLogger()
         modules(
-            databaseModule,
+            jdbiModule(
+                "classpath:db/migration",
+                "classpath:com/tometrics/api/db/migration",
+            ),
             appModule,
         )
     }

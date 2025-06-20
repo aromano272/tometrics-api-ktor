@@ -7,15 +7,12 @@ import org.jdbi.v3.core.Jdbi
 import org.koin.dsl.module
 import javax.sql.DataSource
 
-val databaseModule = module {
+fun jdbiModule(vararg migrationLocations: String) = module {
 
-    single<DataSource> { (locations: List<String>) ->
+    single<DataSource> {
         createHikariDataSource(
             dotenv = get(),
-        ).runMigrations(locations)
-            // TODO move out
-//                "classpath:db/migration",
-//                "classpath:com/tometrics/api/db/migration",
+        ).runMigrations(*migrationLocations)
     }
 
     single<Jdbi> {

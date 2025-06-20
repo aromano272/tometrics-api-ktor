@@ -8,7 +8,7 @@ group = "com.tometrics.api.services.socialgraph"
 version = "0.0.1"
 
 application {
-    mainClass = "com.tometrics.api.services.socialgraph.ApplicationKt"
+    mainClass = "com.tometrics.api.services.socialgraph.SocialGraphServiceAppKt"
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")

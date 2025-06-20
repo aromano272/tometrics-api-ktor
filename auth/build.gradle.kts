@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.ktor)
 }
 
 group = "com.tometrics.api"
