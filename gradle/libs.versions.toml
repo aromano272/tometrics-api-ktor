@@ -18,9 +18,11 @@ mockk = "1.13.5"
 google-api-client = "2.4.0"
 jackson-kotlin = "2.19.0"
 testcontainers = "1.19.1"
+kotlin-serialization = "1.8.1"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm", version.ref = "kotlin-serialization" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-version" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor-version" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgres-version" }

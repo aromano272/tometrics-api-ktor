@@ -2,8 +2,8 @@ package com.tometrics.api.routes
 
 import com.tometrics.api.domain.models.BadRequestException
 import com.tometrics.api.domain.models.IdProviderPayload
-import com.tometrics.api.domain.models.requester
-import com.tometrics.api.domain.models.requireRequester
+import com.tometrics.api.auth.domain.models.requester
+import com.tometrics.api.auth.domain.models.requireRequester
 import com.tometrics.api.routes.models.*
 import com.tometrics.api.service.AuthService
 import io.github.smiley4.ktoropenapi.get

@@ -1,5 +1,6 @@
 package com.tometrics.api.service
 
+import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.db.RefreshTokenDao
 import com.tometrics.api.db.UserDao
 import com.tometrics.api.db.models.toDomain

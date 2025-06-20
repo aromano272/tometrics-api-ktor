@@ -3,7 +3,7 @@ package com.tometrics.api.routes
 import com.tometrics.api.domain.models.BadRequestException
 import com.tometrics.api.domain.models.LocationInfo
 import com.tometrics.api.domain.models.NotFoundException
-import com.tometrics.api.domain.models.requireRequester
+import com.tometrics.api.auth.domain.models.requireRequester
 import com.tometrics.api.routes.models.GetGeolocationAutocompleteResponse
 import com.tometrics.api.service.geolocation.GeolocationService
 import io.github.smiley4.ktoropenapi.get

@@ -1,7 +1,7 @@
 package com.tometrics.api.routes
 
 import com.tometrics.api.domain.models.HarvestRecord
-import com.tometrics.api.domain.models.requireRequester
+import com.tometrics.api.auth.domain.models.requireRequester
 import com.tometrics.api.routes.models.AddHarvestRequest
 import com.tometrics.api.service.HarvestService
 import io.github.smiley4.ktoropenapi.delete

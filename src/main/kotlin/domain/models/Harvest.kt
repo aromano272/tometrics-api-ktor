@@ -1,5 +1,6 @@
 package com.tometrics.api.domain.models
 
+import com.tometrics.api.common.domain.models.Millis
 import kotlinx.serialization.Serializable
 
 typealias HarvestId = Int

@@ -1,14 +1,33 @@
 package com.tometrics.api.services.socialgraph
 
-import com.tometrics.api.services.socialgraph.db.Database
-import com.tometrics.api.services.socialgraph.service.SocialGraphService
-import io.ktor.server.application.*
+import com.tometrics.api.services.socialgraph.db.DefaultFollowerDao
+import com.tometrics.api.services.socialgraph.db.FollowerDao
+import com.tometrics.api.services.socialgraph.db.FollowerDb
+import com.tometrics.api.services.socialgraph.service.DefaultSocialGraphService
+import org.jdbi.v3.core.Jdbi
 import org.koin.dsl.module
 
 val appModule = module {
-    // Database
-    single { (environment: ApplicationEnvironment) -> Database.init(environment) }
 
-    // Services
-    single { SocialGraphService(get()) }
+    single {
+        DefaultSocialGraphService(
+            dao = get(),
+        )
+    }
+
+}
+
+val databaseModule = module {
+
+    single<FollowerDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(FollowerDb::class.java)
+    }
+
+    single<FollowerDao> {
+        DefaultFollowerDao(
+            db = get()
+        )
+    }
+
 }

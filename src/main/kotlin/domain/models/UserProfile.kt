@@ -1,5 +1,7 @@
 package com.tometrics.api.domain.models
 
+import com.tometrics.api.common.domain.models.Millis
+import com.tometrics.api.common.domain.models.UserId
 import kotlinx.serialization.Serializable
 
 @Serializable

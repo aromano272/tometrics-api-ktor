@@ -1,6 +1,6 @@
 package com.tometrics.api.routes.models
 
-import com.tometrics.api.domain.models.Millis
+import com.tometrics.api.common.domain.models.Millis
 import com.tometrics.api.domain.models.PlantingId
 import com.tometrics.api.domain.models.YieldUnit
 import kotlinx.serialization.Serializable

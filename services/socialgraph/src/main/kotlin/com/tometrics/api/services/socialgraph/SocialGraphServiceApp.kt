@@ -2,6 +2,8 @@ package com.tometrics.api.services.socialgraph
 
 import com.tometrics.api.auth.configureSecurity
 import com.tometrics.api.db.di.jdbiModule
+import com.tometrics.api.services.socialgraph.domain.models.ApiException
+import com.tometrics.api.services.socialgraph.domain.models.ErrorResponse
 import com.tometrics.api.services.socialgraph.routes.socialGraphRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
@@ -16,6 +18,8 @@ import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.requestvalidation.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.jdbi.v3.core.Jdbi
@@ -45,6 +49,7 @@ fun Application.configureDI() {
                 "classpath:com/tometrics/api/db/migration",
             ),
             appModule,
+            databaseModule,
         )
     }
 
@@ -96,27 +101,23 @@ fun Application.configureHTTP() {
 }
 
 fun Application.configureRouting() {
-//    install(StatusPages) {
-//        exception<ApiException> { call, cause ->
-//            val (status, message) = when (cause) {
-//                is NotFoundException -> HttpStatusCode.NotFound to cause.message
-//                is UnauthorizedException -> HttpStatusCode.Unauthorized to cause.message
-//                is ConflictException -> HttpStatusCode.Conflict to cause.message
-//                is BadRequestException -> HttpStatusCode.BadRequest to cause.message
-//                is ForbiddenException -> HttpStatusCode.Forbidden to cause.message
-//            }
-//
-//            call.application.environment.log.warn("Handled error", cause)
-//            val error = ErrorResponse(message ?: "Unknown error")
-//            call.respond(status, error)
-//        }
-//        exception<Throwable> { call, cause ->
-//            call.application.environment.log.error("Unhandled exception", cause)
-//
-//            val error = ErrorResponse("Unexpected error")
-//            call.respond(HttpStatusCode.InternalServerError, error)
-//        }
-//    }
+    install(StatusPages) {
+        exception<ApiException> { call, cause ->
+            val (status, message) = when (cause) {
+                else -> HttpStatusCode.InternalServerError to "Internal server error"
+            }
+
+            call.application.environment.log.warn("Handled error", cause)
+            val error = ErrorResponse(message)
+            call.respond(status, error)
+        }
+        exception<Throwable> { call, cause ->
+            call.application.environment.log.error("Unhandled exception", cause)
+
+            val error = ErrorResponse("Unexpected error")
+            call.respond(HttpStatusCode.InternalServerError, error)
+        }
+    }
     install(RequestValidation) {
         validate<String> { bodyText ->
             if (!bodyText.startsWith("Hello"))

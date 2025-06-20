@@ -1,8 +1,7 @@
 package com.tometrics.api.domain.models
 
+import com.tometrics.api.common.domain.models.UserId
 import kotlinx.serialization.Serializable
-
-typealias UserId = Int
 
 @Serializable
 data class User(

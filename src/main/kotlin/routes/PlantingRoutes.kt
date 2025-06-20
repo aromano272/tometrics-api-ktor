@@ -2,7 +2,7 @@ package com.tometrics.api.routes
 
 import com.tometrics.api.domain.models.BadRequestException
 import com.tometrics.api.domain.models.Planting
-import com.tometrics.api.domain.models.requireRequester
+import com.tometrics.api.auth.domain.models.requireRequester
 import com.tometrics.api.routes.models.AddPlantingRequest
 import com.tometrics.api.routes.models.GetAllPlantingsResponse
 import com.tometrics.api.routes.models.PatchPlantingRequest

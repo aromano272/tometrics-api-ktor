@@ -1,29 +1,41 @@
 package com.tometrics.api.services.socialgraph.service
 
-import com.tometrics.api.services.socialgraph.db.SocialConnectionDao
-import com.tometrics.api.services.socialgraph.db.models.SocialConnectionEntity
-import com.tometrics.api.services.socialgraph.models.ConnectionType
-import com.tometrics.api.services.socialgraph.models.SocialConnection
-import org.jdbi.v3.core.Jdbi
+import com.tometrics.api.common.domain.models.UserId
+import com.tometrics.api.services.socialgraph.db.FollowerDao
+import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
 
+interface SocialGraphService {
 
-class SocialGraphService(private val jdbi: Jdbi) {
+    suspend fun getConnectionsByUserId(userId: UserId): SocialConnections
+    suspend fun follow(requesterId: UserId, userId: UserId)
+    suspend fun unfollow(requesterId: UserId, userId: UserId)
 
-    fun addConnection(userId: String, connectedUserId: String, connectionType: ConnectionType): SocialConnection {
-        val connection = SocialConnection(userId, connectedUserId, connectionType)
+}
 
-        return jdbi.withExtension<SocialConnection, SocialConnectionDao, Exception>(SocialConnectionDao::class.java) { dao ->
-            val entity = SocialConnectionEntity.fromDomain(connection)
-            dao.insert(entity).toDomain()
-        }
+class DefaultSocialGraphService(
+//    private val userServiceClient: UserServiceClient,
+    private val dao: FollowerDao,
+) : SocialGraphService {
+
+    override suspend fun getConnectionsByUserId(userId: UserId): SocialConnections {
+        val following = dao.getAllFollowedByUserId(userId)
+        val followers = dao.getAllFollowersOfUserId(userId)
+
+        return SocialConnections(
+            followers = followers.map { it.userId },
+            following = following.map { it.followedUserId },
+        )
     }
 
-    fun getConnections(userId: String): List<SocialConnection> {
-        TODO()
+    override suspend fun follow(requesterId: UserId, userId: UserId) {
+//        userServiceClient.validateUserIds(requesterId, userId)
+        dao.insert(requesterId, userId)
     }
 
-    fun getConnectionsByType(userId: String, connectionType: ConnectionType): List<SocialConnection> {
-        TODO()
+    override suspend fun unfollow(requesterId: UserId, userId: UserId) {
+//        userServiceClient.validateUserIds(requesterId, userId)
+        dao.delete(requesterId, userId)
     }
+
 }
 
