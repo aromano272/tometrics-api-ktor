@@ -132,7 +132,7 @@ class SocialGraphE2ETest : BaseE2ETest() {
     @Test
     fun testStatusEndpoint() = runApp {
         // Status endpoint should be accessible without authentication
-        val response = jsonClient.get("/api/v1/socialgraph/status")
+        val response = testClient.get("/api/v1/socialgraph/status")
         assertEquals(HttpStatusCode.OK, response.status)
     }
 
