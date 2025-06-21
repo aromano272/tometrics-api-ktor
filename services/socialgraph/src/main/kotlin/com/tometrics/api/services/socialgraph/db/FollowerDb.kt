@@ -21,11 +21,11 @@ interface FollowerDb {
         @Bind("followedUserId") followedUserId: UserId,
     ): Int
 
-    @SqlQuery("DELETE FROM followers WHERE user_id = :userId AND followed_user_id = :followedUserId")
+    @SqlUpdate("DELETE FROM followers WHERE user_id = :userId AND followed_user_id = :followedUserId")
     fun delete(
         @Bind("userId") userId: UserId,
         @Bind("followedUserId") followedUserId: UserId,
-    ): Int
+    )
 
     @SqlQuery("SELECT * FROM followers WHERE user_id = :userId")
     fun getAllFollowedByUserId(@Bind("userId") userId: UserId): List<FollowerEntity>

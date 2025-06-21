@@ -7,5 +7,5 @@ sealed class ApiException : RuntimeException()
 @Serializable
 data class ErrorResponse(
     val error: String,
-    val errors: List<String>,
+    val errors: List<String>? = null,
 )

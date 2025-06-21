@@ -11,9 +11,9 @@ import org.koin.ktor.ext.inject
 fun Application.configureSecurity() {
     val dotenv: Dotenv by inject()
 
-    val jwtAudience = environment.config.property("jwt.audience").getString()
-    val jwtDomain = environment.config.property("jwt.domain").getString()
-    val jwtRealm = environment.config.property("jwt.realm").getString()
+    val jwtAudience = dotenv["JWT_AUDIENCE"]
+    val jwtDomain = dotenv["JWT_DOMAIN"]
+    val jwtRealm = dotenv["JWT_REALM"]
     val jwtSecret = dotenv["JWT_SECRET"]
 
     authentication {

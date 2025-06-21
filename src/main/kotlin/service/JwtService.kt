@@ -22,8 +22,8 @@ class DefaultJwtService(
         dotenv: Dotenv,
         developmentMode: Boolean,
     ) : this(
-        jwtAudience = config.property("jwt.audience").getString(),
-        jwtDomain = config.property("jwt.domain").getString(),
+        jwtAudience = dotenv["JWT_AUDIENCE"],
+        jwtDomain = dotenv["JWT_DOMAIN"],
         jwtSecret = dotenv["JWT_SECRET"],
         developmentMode = developmentMode,
     )

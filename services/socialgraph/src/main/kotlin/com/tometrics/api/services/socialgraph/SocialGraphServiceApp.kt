@@ -1,6 +1,9 @@
 package com.tometrics.api.services.socialgraph
 
 import com.tometrics.api.auth.configureSecurity
+import com.tometrics.api.common.domain.models.CommonError
+import com.tometrics.api.common.domain.models.UnauthorizedError
+import com.tometrics.api.common.domain.models.ValidationError
 import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.services.socialgraph.domain.models.ApiException
 import com.tometrics.api.services.socialgraph.domain.models.ErrorResponse
@@ -22,9 +25,6 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
-import org.jdbi.v3.core.Jdbi
-import org.koin.core.parameter.parametersOf
-import org.koin.ktor.ext.getKoin
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
@@ -35,7 +35,6 @@ fun Application.module() {
     configureDI()
     configureMonitoring()
     configureSecurity()
-    configureSerialization()
     configureHTTP()
     configureRouting()
 }
@@ -49,23 +48,15 @@ fun Application.configureDI() {
                 "classpath:com/tometrics/api/db/migration",
             ),
             appModule,
+            serviceModule,
             databaseModule,
         )
     }
-
-    // Initialize database
-    getKoin().get<Jdbi> { parametersOf(environment) }
 }
 
 fun Application.configureMonitoring() {
     install(CallLogging) {
         level = Level.INFO
-    }
-}
-
-fun Application.configureSerialization() {
-    install(ContentNegotiation) {
-        json()
     }
 }
 
@@ -109,6 +100,17 @@ fun Application.configureRouting() {
 
             call.application.environment.log.warn("Handled error", cause)
             val error = ErrorResponse(message)
+            call.respond(status, error)
+        }
+        exception<CommonError> { call, cause ->
+            val (status, message) = when (cause) {
+                is UnauthorizedError -> HttpStatusCode.Unauthorized to "Unauthorized"
+                is ValidationError -> HttpStatusCode.BadRequest to "Validation errors"
+            }
+            val validationErrors = (cause as? ValidationError)?.errors
+
+            call.application.environment.log.warn("Handled error", cause)
+            val error = ErrorResponse(message, validationErrors)
             call.respond(status, error)
         }
         exception<Throwable> { call, cause ->

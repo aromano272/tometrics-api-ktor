@@ -4,10 +4,6 @@ services:
     container_name: tometrics-ktor-db
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: ktoruser
-      POSTGRES_PASSWORD: ktorpass
-      POSTGRES_DB: tometrics
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -18,8 +14,6 @@ services:
       no_cache: true
     container_name: tometrics-main
     env_file: .env
-    environment:
-      DATABASE_URL: jdbc:postgresql://db:5432/tometrics
     depends_on:
       - db
 
@@ -29,9 +23,9 @@ services:
       dockerfile: services/socialgraph/Dockerfile
       no_cache: true
     container_name: tometrics-socialgraph
-    env_file: ./services/socialgraph/.env
-    environment:
-      DATABASE_URL: jdbc:postgresql://db:5432/socialgraph
+    env_file:
+      - .env
+      - ./services/socialgraph/.env
     depends_on:
       - db
 

@@ -1,12 +1,12 @@
 ### Get User Profile
 GET https://localhost/api/v1/user-profile
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{access}}
 
 ### Put User Profile
 PUT https://localhost/api/v1/user-profile
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{access}}
 
 {
   "name": "John Doe",

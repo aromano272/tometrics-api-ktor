@@ -1,22 +1,22 @@
 ### Get Harvest All
 GET https://localhost/api/v1/harvest/all
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{access}}
 
 ### Get Harvest All By PlantingId
 GET https://localhost/api/v1/harvest/all?plantingId=1
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{access}}
 
 ### Get Harvest All By PlantingId
 GET https://localhost/api/v1/harvest/all?plantId=1
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{access}}
 
 ### Add Harvest
 POST https://localhost/api/v1/harvest/add
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{access}}
 
 {
   "plantingId": 1,
@@ -27,5 +27,5 @@ Authorization: Bearer {{accessToken}}
 ### Delete Harvest
 DELETE https://localhost/api/v1/harvest/1
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{access}}
 
