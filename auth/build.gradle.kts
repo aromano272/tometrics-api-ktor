@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.plugin.serialization)
 }
 
 group = "com.tometrics.api"
@@ -19,4 +20,5 @@ dependencies {
     implementation(libs.koin.ktor)
     implementation(libs.koin.logger)
     implementation(libs.dotenv)
+    implementation(libs.kotlinx.serialization.core)
 }

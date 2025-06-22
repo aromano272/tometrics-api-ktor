@@ -1,13 +1,10 @@
-package com.tometrics.api.services.socialgraph
+package com.tometrics.api.servicediscovery
 
-import com.tometrics.api.auth.configureSecurity
 import com.tometrics.api.common.domain.models.CommonError
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.ValidationError
-import com.tometrics.api.db.di.jdbiModule
-import com.tometrics.api.services.socialgraph.domain.models.ApiException
-import com.tometrics.api.services.socialgraph.domain.models.ErrorResponse
-import com.tometrics.api.services.socialgraph.routes.socialGraphRoutes
+import com.tometrics.api.servicediscovery.models.ErrorResponse
+import com.tometrics.api.servicediscovery.routes.serviceDiscoveryRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.config.SchemaGenerator
@@ -36,7 +33,6 @@ fun main(args: Array<String>): Unit {
 fun Application.module() {
     configureDI()
     configureMonitoring()
-    configureSecurity()
     configureHTTP()
     configureRouting()
 }
@@ -45,14 +41,8 @@ fun Application.configureDI() {
     install(Koin) {
         slf4jLogger()
         modules(
-            jdbiModule(
-                "classpath:db/migration",
-                "classpath:com/tometrics/api/db/migration",
-            ),
             appModule,
             serviceModule,
-            serviceClientModule,
-            databaseModule,
         )
     }
 }
@@ -74,15 +64,6 @@ fun Application.configureHTTP() {
         }
     }
 
-    routing {
-        route("/openapi/api.yaml") {
-            openApi()
-        }
-        route("/swagger") {
-            swaggerUI("/openapi/api.yaml")
-        }
-    }
-
     install(CORS) {
         allowMethod(HttpMethod.Options)
         allowMethod(HttpMethod.Put)
@@ -96,15 +77,6 @@ fun Application.configureHTTP() {
 
 fun Application.configureRouting() {
     install(StatusPages) {
-        exception<ApiException> { call, cause ->
-            val (status, message) = when (cause) {
-                else -> HttpStatusCode.InternalServerError to "Internal server error"
-            }
-
-            call.application.environment.log.warn("Handled error", cause)
-            val error = ErrorResponse(message)
-            call.respond(status, error)
-        }
         exception<CommonError> { call, cause ->
             val (status, message) = when (cause) {
                 is UnauthorizedError -> HttpStatusCode.Unauthorized to "Unauthorized"
@@ -141,8 +113,16 @@ fun Application.configureRouting() {
     }
 
     routing {
-        route("/api/v1/socialgraph") {
-            socialGraphRoutes()
+        route("/servicediscovery") {
+            serviceDiscoveryRoutes()
+
+            route("/openapi/api.yaml") {
+                openApi()
+            }
+            route("/swagger") {
+                swaggerUI("/openapi/api.yaml")
+            }
+
         }
     }
 }

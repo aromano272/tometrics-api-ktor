@@ -4,11 +4,11 @@ plugins {
     alias(libs.plugins.kotlin.plugin.serialization)
 }
 
-group = "com.tometrics.api.services.socialgraph"
+group = "com.tometrics.api.services.user"
 version = "0.0.1"
 
 application {
-    mainClass = "com.tometrics.api.services.socialgraph.SocialGraphServiceAppKt"
+    mainClass = "com.tometrics.api.services.user.UserServiceAppKt"
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
@@ -23,7 +23,6 @@ dependencies {
     implementation(project(":db"))
     implementation(project(":auth"))
     implementation(project(":common"))
-    implementation(project(":services:userclient"))
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)

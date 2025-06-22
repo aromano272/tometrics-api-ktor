@@ -23,6 +23,12 @@ import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.testcontainers.containers.PostgreSQLContainer
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 import javax.sql.DataSource
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.test.BeforeTest
@@ -68,6 +74,16 @@ abstract class BaseE2ETest : KoinTest, TestUtilMethods {
             }
             install(DefaultRequest) {
                 contentType(ContentType.Application.Json)
+            }
+            engine {
+                https {
+                    // Trust all certificates for local development with mkcert
+                    trustManager = object : javax.net.ssl.X509TrustManager {
+                        override fun checkClientTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
+                        override fun checkServerTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
+                        override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> = emptyArray()
+                    }
+                }
             }
         }
     }
@@ -247,6 +263,26 @@ abstract class BaseE2ETest : KoinTest, TestUtilMethods {
     }
 
     companion object {
+        // Configure SSL to trust all certificates for local development
+        init {
+            val trustAllCerts = arrayOf<TrustManager>(
+                object : X509TrustManager {
+                    override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+                    override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+                    override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
+                }
+            )
+
+            try {
+                val sslContext = SSLContext.getInstance("TLS")
+                sslContext.init(null, trustAllCerts, SecureRandom())
+                HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.socketFactory)
+                HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
         // Start Postgres once per class
         @JvmStatic
         protected val postgres = PostgreSQLContainer("postgres:14").apply {

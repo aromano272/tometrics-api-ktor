@@ -28,6 +28,17 @@ fun Application.configureSecurity() {
             }
         }
 
+        bearer("auth-internal") {
+            realm = "Access to the '/internal' path"
+            authenticate { tokenCredential ->
+                if (tokenCredential.token == dotenv["INTERNAL_BEARER_TOKEN"]) {
+                    Unit
+                } else {
+                    null
+                }
+            }
+        }
+
         jwt {
             realm = jwtRealm
             verifier(

@@ -54,6 +54,16 @@ fun appModule(application: Application) = module {
             install(DefaultRequest) {
                 contentType(ContentType.Application.Json)
             }
+            engine {
+                https {
+                    // Trust all certificates for local development with mkcert
+                    trustManager = object : javax.net.ssl.X509TrustManager {
+                        override fun checkClientTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
+                        override fun checkServerTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
+                        override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> = emptyArray()
+                    }
+                }
+            }
         }
     }
 

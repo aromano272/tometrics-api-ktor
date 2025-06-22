@@ -7,6 +7,26 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  servicediscovery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      no_cache: true
+    container_name: tometrics-servicediscovery
+    env_file: .env
+
+  user:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      no_cache: true
+    container_name: tometrics-user
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - servicediscovery
+
   main:
     build:
       context: .
@@ -16,6 +36,7 @@ services:
     env_file: .env
     depends_on:
       - db
+      - servicediscovery
 
   socialgraph:
     build:
@@ -28,6 +49,7 @@ services:
       - ./services/socialgraph/.env
     depends_on:
       - db
+      - servicediscovery
 
   nginx:
     image: nginx:latest
@@ -39,7 +61,7 @@ services:
       - /etc/nginx/certs:/etc/nginx/certs:ro
     depends_on:
       - main
-#      - socialgraph
+      - socialgraph
 
 volumes:
   pgdata:

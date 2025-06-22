@@ -1,17 +1,18 @@
-package com.tometrics.api.services.socialgraph
+package com.tometrics.api.user
 
 import com.tometrics.api.auth.configureSecurity
 import com.tometrics.api.common.domain.models.CommonError
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.ValidationError
 import com.tometrics.api.db.di.jdbiModule
-import com.tometrics.api.services.socialgraph.domain.models.ApiException
-import com.tometrics.api.services.socialgraph.domain.models.ErrorResponse
-import com.tometrics.api.services.socialgraph.routes.socialGraphRoutes
+import com.tometrics.api.user.domain.models.ApiException
+import com.tometrics.api.user.domain.models.ErrorResponse
+import com.tometrics.api.user.routes.internalRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.config.SchemaGenerator
 import io.github.smiley4.ktoropenapi.openApi
+import io.github.smiley4.ktoropenapi.route
 import io.github.smiley4.ktorswaggerui.swaggerUI
 import io.github.smiley4.schemakenerator.swagger.data.RefType
 import io.ktor.http.*
@@ -51,7 +52,6 @@ fun Application.configureDI() {
             ),
             appModule,
             serviceModule,
-            serviceClientModule,
             databaseModule,
         )
     }
@@ -141,8 +141,11 @@ fun Application.configureRouting() {
     }
 
     routing {
-        route("/api/v1/socialgraph") {
-            socialGraphRoutes()
+        route("/internal/user") {
+            internalRoutes()
+        }
+        route("/api/v1/user") {
+            internalRoutes()
         }
     }
 }
