@@ -3,7 +3,7 @@ ktor:
     modules:
       - com.tometrics.api.services.servicediscovery.ServiceDiscoveryServiceAppKt.module
   deployment:
-    port: 8082
+    port: 8083
 
 logging:
   level: INFO

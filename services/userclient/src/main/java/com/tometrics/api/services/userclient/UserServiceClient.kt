@@ -22,7 +22,7 @@ class HttpUserServiceClient(
 
     override suspend fun validateUserIds(vararg userIds: UserId) {
 //        val response = httpClient.post("http://tometrics-user:8082/internal/user/validate-users") {
-        val response = httpClient.post("http://localhost/internal/user/validate-users") {
+        val response = httpClient.post("http://tometrics-user:8082/internal/user/validate-users") {
             setBody(ValidateUsersRequest(userIds.toSet()))
         }
         println("boomshaka")
