@@ -24,6 +24,7 @@ val appModule = module {
 
     single {
         HttpClient(CIO) {
+            expectSuccess = true
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true
@@ -77,7 +78,10 @@ val databaseModule = module {
 val serviceClientModule = module {
 
     single<UserServiceClient> {
-        HttpUserServiceClient(httpClient = get())
+        HttpUserServiceClient(
+            dotenv = get(),
+            httpClient = get(),
+        )
     }
 
 }

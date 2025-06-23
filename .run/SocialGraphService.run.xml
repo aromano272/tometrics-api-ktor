@@ -2,6 +2,7 @@
   <configuration default="false" name="SocialGraphService" type="KtorApplicationConfigurationType" factoryName="Ktor">
     <envs>
       <env name="POSTGRES_URL" value="jdbc:postgresql://localhost:5432/socialgraph" />
+      <env name="RUNNING_LOCALLY" value="1" />
     </envs>
     <option name="envFilePaths">
       <option value="$PROJECT_DIR$/.env" />
