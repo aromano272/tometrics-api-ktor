@@ -1,7 +1,7 @@
-package com.tometrics.api.servicediscovery
+package com.tometrics.api.services.servicediscovery
 
-import com.tometrics.api.servicediscovery.service.DefaultService
-import com.tometrics.api.servicediscovery.service.Service
+import com.tometrics.api.services.servicediscovery.service.DefaultService
+import com.tometrics.api.services.servicediscovery.service.Service
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import org.koin.dsl.module

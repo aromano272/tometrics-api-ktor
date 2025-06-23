@@ -1,7 +1,7 @@
-package com.tometrics.api.user.services
+package com.tometrics.api.services.user.services
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.user.db.UserDao
+import com.tometrics.api.services.user.db.UserDao
 import io.ktor.server.plugins.*
 
 interface UserService {

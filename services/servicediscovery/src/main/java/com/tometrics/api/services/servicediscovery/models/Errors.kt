@@ -1,4 +1,4 @@
-package com.tometrics.api.servicediscovery.models
+package com.tometrics.api.services.servicediscovery.models
 
 import kotlinx.serialization.Serializable
 

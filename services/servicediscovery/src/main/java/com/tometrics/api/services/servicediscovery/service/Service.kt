@@ -1,4 +1,4 @@
-package com.tometrics.api.servicediscovery.service
+package com.tometrics.api.services.servicediscovery.service
 
 import io.ktor.util.collections.*
 import kotlinx.serialization.Serializable

@@ -1,8 +1,8 @@
-package com.tometrics.api.servicediscovery.routes
+package com.tometrics.api.services.servicediscovery.routes
 
 import com.tometrics.api.common.domain.models.ValidationError
-import com.tometrics.api.servicediscovery.service.Service
-import com.tometrics.api.servicediscovery.service.ServiceInfo
+import com.tometrics.api.services.servicediscovery.service.Service
+import com.tometrics.api.services.servicediscovery.service.ServiceInfo
 import io.ktor.http.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*

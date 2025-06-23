@@ -5,8 +5,8 @@ import com.tometrics.api.services.socialgraph.db.FollowerDao
 import com.tometrics.api.services.socialgraph.db.FollowerDb
 import com.tometrics.api.services.socialgraph.service.DefaultSocialGraphService
 import com.tometrics.api.services.socialgraph.service.SocialGraphService
-import com.tometrics.api.userclient.HttpUserServiceClient
-import com.tometrics.api.userclient.UserServiceClient
+import com.tometrics.api.services.userclient.HttpUserServiceClient
+import com.tometrics.api.services.userclient.UserServiceClient
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*

@@ -1,4 +1,4 @@
-package com.tometrics.api.userclient
+package com.tometrics.api.services.userclient
 
 import com.tometrics.api.common.domain.models.UserId
 import io.ktor.client.*
@@ -21,7 +21,8 @@ class HttpUserServiceClient(
 ) : UserServiceClient {
 
     override suspend fun validateUserIds(vararg userIds: UserId) {
-        val response = httpClient.post("/internal/user/validate-users") {
+//        val response = httpClient.post("http://tometrics-user:8082/internal/user/validate-users") {
+        val response = httpClient.post("http://localhost/internal/user/validate-users") {
             setBody(ValidateUsersRequest(userIds.toSet()))
         }
         println("boomshaka")

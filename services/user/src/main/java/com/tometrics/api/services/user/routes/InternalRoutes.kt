@@ -1,7 +1,7 @@
-package com.tometrics.api.user.routes
+package com.tometrics.api.services.user.routes
 
-import com.tometrics.api.user.routes.models.ValidateUsersRequest
-import com.tometrics.api.user.services.UserService
+import com.tometrics.api.services.user.routes.models.ValidateUsersRequest
+import com.tometrics.api.services.user.services.UserService
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -12,7 +12,15 @@ import org.koin.ktor.ext.inject
 fun Route.internalRoutes() {
     val userService: UserService by inject()
 
+    get("/test-noauth") {
+        call.respond("Test auth")
+    }
+
     authenticate("auth-internal") {
+
+        get("/test-auth") {
+            call.respond("Test auth")
+        }
 
         post("/validate-users") {
             val request = call.receive<ValidateUsersRequest>()

@@ -1,4 +1,4 @@
-package com.tometrics.api.user.domain.models
+package com.tometrics.api.services.user.domain.models
 
 import com.tometrics.api.common.domain.models.UserId
 import kotlinx.serialization.Serializable

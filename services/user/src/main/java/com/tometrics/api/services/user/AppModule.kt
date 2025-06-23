@@ -1,11 +1,11 @@
-package com.tometrics.api.user
+package com.tometrics.api.services.user
 
 
-import com.tometrics.api.user.db.DefaultUserDao
-import com.tometrics.api.user.db.UserDao
-import com.tometrics.api.user.db.UserDb
-import com.tometrics.api.user.services.DefaultUserService
-import com.tometrics.api.user.services.UserService
+import com.tometrics.api.services.user.db.DefaultUserDao
+import com.tometrics.api.services.user.db.UserDao
+import com.tometrics.api.services.user.db.UserDb
+import com.tometrics.api.services.user.services.DefaultUserService
+import com.tometrics.api.services.user.services.UserService
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import org.jdbi.v3.core.Jdbi

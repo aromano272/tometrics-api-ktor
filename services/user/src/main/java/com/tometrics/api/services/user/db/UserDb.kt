@@ -1,7 +1,7 @@
-package com.tometrics.api.user.db
+package com.tometrics.api.services.user.db
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.user.db.models.UserEntity
+import com.tometrics.api.services.user.db.models.UserEntity
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery

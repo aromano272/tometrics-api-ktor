@@ -1,7 +1,7 @@
-package com.tometrics.api.user.db
+package com.tometrics.api.services.user.db
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.user.db.models.UserEntity
+import com.tometrics.api.services.user.db.models.UserEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

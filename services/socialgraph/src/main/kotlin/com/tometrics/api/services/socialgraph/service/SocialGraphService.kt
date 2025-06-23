@@ -3,7 +3,7 @@ package com.tometrics.api.services.socialgraph.service
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.socialgraph.db.FollowerDao
 import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
-import com.tometrics.api.userclient.UserServiceClient
+import com.tometrics.api.services.userclient.UserServiceClient
 
 interface SocialGraphService {
 
