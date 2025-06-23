@@ -145,7 +145,6 @@ fun Application.configureRouting() {
             internalRoutes()
         }
         route("/api/v1/user") {
-            internalRoutes()
         }
     }
 }

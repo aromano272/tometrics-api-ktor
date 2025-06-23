@@ -21,7 +21,7 @@ class HttpUserServiceClient(
 ) : UserServiceClient {
 
     override suspend fun validateUserIds(vararg userIds: UserId) {
-        val response = httpClient.post("UNKNOWN/internal/validate-users") {
+        val response = httpClient.post("/internal/user/validate-users") {
             setBody(ValidateUsersRequest(userIds.toSet()))
         }
         println("boomshaka")
