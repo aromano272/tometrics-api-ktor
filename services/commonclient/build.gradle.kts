@@ -13,23 +13,21 @@ repositories {
 }
 
 dependencies {
-    // TODO(aromano): 
-//    idea: each service has an internal routing that has a specific bearer token, just like cron service
-//    this way we limit access to the outside for internal-only api
-//    i think we're still gonna have problems with nginx because we want to allow services to communicate internally
-//    on the /internal route with http(not https), so ill probably need to modify nginx to enable this
     implementation(project(":common"))
     implementation(project(":services:userrpc"))
+    implementation(project(":services:userclient"))
 
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlin.krpc.core)
     implementation(libs.kotlin.krpc.ktor.client)
     implementation(libs.kotlin.krpc.serialization.json)
+    implementation(libs.koin.ktor)
+    implementation(libs.koin.logger)
+    implementation(libs.ktor.server.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.logging)
     implementation(libs.dotenv)
-    implementation(libs.openapi.generator)
 
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit)

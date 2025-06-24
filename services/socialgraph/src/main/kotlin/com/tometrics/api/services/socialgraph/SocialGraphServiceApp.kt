@@ -6,9 +6,9 @@ import com.tometrics.api.common.domain.models.ErrorResponse
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.ValidationError
 import com.tometrics.api.db.di.jdbiModule
+import com.tometrics.api.services.commonclient.serviceCommonClientModule
 import com.tometrics.api.services.socialgraph.domain.models.ServiceError
 import com.tometrics.api.services.socialgraph.routes.socialGraphRoutes
-import com.tometrics.api.services.userclient.UserServiceClientError
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.config.SchemaGenerator
@@ -50,9 +50,9 @@ fun Application.configureDI() {
                 "classpath:db/migration",
                 "classpath:com/tometrics/api/db/migration",
             ),
+            serviceCommonClientModule,
             appModule,
             serviceModule,
-            serviceClientModule,
             databaseModule,
         )
     }
@@ -97,16 +97,6 @@ fun Application.configureHTTP() {
 
 fun Application.configureRouting() {
     install(StatusPages) {
-        exception<UserServiceClientError> { call, cause ->
-            val (status, message) = when (cause) {
-                is UserServiceClientError.UserIdsNotFound -> HttpStatusCode.BadRequest to cause.message
-                is UserServiceClientError.Unknown -> HttpStatusCode.InternalServerError to ""
-            }
-
-            call.application.environment.log.warn("Handled error", cause)
-            val error = ErrorResponse(message)
-            call.respond(status, error)
-        }
         exception<ServiceError> { call, cause ->
             val (status, message) = when (cause) {
                 else -> HttpStatusCode.InternalServerError to "Internal server error"

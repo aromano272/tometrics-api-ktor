@@ -9,7 +9,7 @@ import com.tometrics.api.common.to
 import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.services.user.domain.models.ServiceError
 import com.tometrics.api.services.user.domain.models.UserIdsNotFoundError
-import com.tometrics.api.services.user.routes.userInternalRoutes
+import com.tometrics.api.services.user.routes.userRpcRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.config.SchemaGenerator
@@ -27,6 +27,7 @@ import io.ktor.server.plugins.requestvalidation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.rpc.krpc.ktor.server.Krpc
 import kotlinx.serialization.json.Json
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
@@ -142,9 +143,11 @@ fun Application.configureRouting() {
         })
     }
 
+    install(Krpc)
+
     routing {
-        route("/internal/user") {
-            userInternalRoutes()
+        route("/internal") {
+            userRpcRoutes()
         }
         route("/api/v1/user") {
         }

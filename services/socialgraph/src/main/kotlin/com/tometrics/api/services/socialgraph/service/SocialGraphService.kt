@@ -3,7 +3,7 @@ package com.tometrics.api.services.socialgraph.service
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.socialgraph.db.FollowerDao
 import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
-import com.tometrics.api.services.userclient.UserServiceClient
+import com.tometrics.api.userrpc.UserRpcService
 
 interface SocialGraphService {
 
@@ -14,7 +14,7 @@ interface SocialGraphService {
 }
 
 class DefaultSocialGraphService(
-    private val userServiceClient: UserServiceClient,
+    private val userRpcService: UserRpcService,
     private val dao: FollowerDao,
 ) : SocialGraphService {
 
@@ -29,12 +29,12 @@ class DefaultSocialGraphService(
     }
 
     override suspend fun follow(requesterId: UserId, userId: UserId) {
-        userServiceClient.validateUserIds(requesterId, userId)
+        userRpcService.validateUserIds(setOf(requesterId, userId))
         dao.insert(requesterId, userId)
     }
 
     override suspend fun unfollow(requesterId: UserId, userId: UserId) {
-        userServiceClient.validateUserIds(requesterId, userId)
+        userRpcService.validateUserIds(setOf(requesterId, userId))
         dao.delete(requesterId, userId)
     }
 

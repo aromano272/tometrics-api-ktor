@@ -1,40 +1,38 @@
 package com.tometrics.api.services.userclient
 
-import com.tometrics.api.common.domain.models.ErrorResponse
 import com.tometrics.api.common.domain.models.UserId
-import io.github.cdimascio.dotenv.Dotenv
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
+import com.tometrics.api.userrpc.UserRpcRemoteService
+import com.tometrics.api.userrpc.ValidateUsersResult
 import kotlinx.serialization.Serializable
 
 interface UserServiceClient {
 
-    suspend fun validateUserIds(vararg userIds: UserId)
+    suspend fun validateUserIds(vararg userIds: UserId): ValidateUsersResult
 
 }
 
 class HttpUserServiceClient(
-    private val dotenv: Dotenv,
-    private val httpClient: HttpClient,
+    private val rpcService: UserRpcRemoteService,
 ) : UserServiceClient {
 
-    override suspend fun validateUserIds(vararg userIds: UserId) {
-        val runningLocally = dotenv["RUNNING_LOCALLY"] == "1"
-        val host = if (runningLocally) "localhost" else "tometrics-user:8082"
-        val response = httpClient.post("http://$host/internal/user/validate-users") {
-            setBody(ValidateUsersRequest(userIds.toSet()))
-        }
+    override suspend fun validateUserIds(vararg userIds: Int): ValidateUsersResult =
+        rpcService.validateUserIds(userIds.toSet())
 
-        if (!response.status.isSuccess()) {
-            val error = response.body<ErrorResponse>()
-            when (error.code) {
-                "USER_IDS_NOT_FOUND" -> throw UserServiceClientError.UserIdsNotFound(error.error)
-                else -> throw UserServiceClientError.Unknown(error.error)
-            }
-        }
-    }
+//    override suspend fun validateUserIds(vararg userIds: UserId): ValidateUsersResult {
+//        val runningLocally = dotenv["RUNNING_LOCALLY"] == "1"
+//        val host = if (runningLocally) "localhost" else "tometrics-user:8082"
+//        val response = httpClient.post("http://$host/internal/user/validate-users") {
+//            setBody(ValidateUsersRequest(userIds.toSet()))
+//        }
+//
+//        if (!response.status.isSuccess()) {
+//            val error = response.body<ErrorResponse>()
+//            when (error.code) {
+//                "USER_IDS_NOT_FOUND" -> throw UserServiceClientError.UserIdsNotFound(error.error)
+//                else -> throw UserServiceClientError.Unknown(error.error)
+//            }
+//        }
+//    }
 
 }
 

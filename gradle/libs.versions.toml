@@ -19,6 +19,7 @@ google-api-client = "2.4.0"
 jackson-kotlin = "2.19.0"
 testcontainers = "1.19.1"
 kotlin-serialization = "1.8.1"
+kotlin-krpc-version = "0.7.0"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
@@ -65,8 +66,15 @@ schema-kenerator-swagger = { module = "io.github.smiley4:schema-kenerator-swagge
 swagger-ui = { module = "io.github.smiley4:ktor-swagger-ui", version.ref = "openapi-generator" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "google-api-client" }
+kotlin-krpc-core = { module = "org.jetbrains.kotlinx:kotlinx-rpc-core", version.ref = "kotlin-krpc-version" }
+kotlin-krpc-client = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-client", version.ref = "kotlin-krpc-version" }
+kotlin-krpc-server = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-server", version.ref = "kotlin-krpc-version" }
+kotlin-krpc-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-serialization-json", version.ref = "kotlin-krpc-version" }
+kotlin-krpc-ktor-client = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-ktor-client", version.ref = "kotlin-krpc-version" }
+kotlin-krpc-ktor-server = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-ktor-server", version.ref = "kotlin-krpc-version" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+kotlin-plugin-krpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version.ref = "kotlin-krpc-version" }

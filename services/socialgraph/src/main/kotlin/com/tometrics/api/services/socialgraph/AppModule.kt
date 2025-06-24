@@ -5,8 +5,6 @@ import com.tometrics.api.services.socialgraph.db.FollowerDao
 import com.tometrics.api.services.socialgraph.db.FollowerDb
 import com.tometrics.api.services.socialgraph.service.DefaultSocialGraphService
 import com.tometrics.api.services.socialgraph.service.SocialGraphService
-import com.tometrics.api.services.userclient.HttpUserServiceClient
-import com.tometrics.api.services.userclient.UserServiceClient
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*
@@ -51,9 +49,9 @@ val appModule = module {
 
 val serviceModule = module {
 
-    single<SocialGraphService> {
+    factory<SocialGraphService> {
         DefaultSocialGraphService(
-            userServiceClient = get(),
+            userRpcService = get(),
             dao = get(),
         )
     }
@@ -70,17 +68,6 @@ val databaseModule = module {
     single<FollowerDao> {
         DefaultFollowerDao(
             db = get()
-        )
-    }
-
-}
-
-val serviceClientModule = module {
-
-    single<UserServiceClient> {
-        HttpUserServiceClient(
-            dotenv = get(),
-            httpClient = get(),
         )
     }
 
