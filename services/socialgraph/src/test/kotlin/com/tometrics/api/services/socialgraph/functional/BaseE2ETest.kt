@@ -62,7 +62,6 @@ abstract class BaseE2ETest : KoinTest, TestUtilMethods {
     lateinit var testClient: HttpClient
     val realClient: HttpClient by lazy {
         HttpClient(CIO) {
-            expectSuccess = true
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true

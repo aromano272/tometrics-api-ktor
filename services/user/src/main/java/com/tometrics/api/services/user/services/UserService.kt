@@ -2,7 +2,7 @@ package com.tometrics.api.services.user.services
 
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.user.db.UserDao
-import io.ktor.server.plugins.*
+import com.tometrics.api.services.user.domain.models.UserIdsNotFoundError
 
 interface UserService {
 
@@ -18,7 +18,7 @@ class DefaultUserService(
         val all = dao.getAllByIds(userIds)
         val foundIds = all.map { it.id }.toSet()
         val missingIds = userIds - foundIds
-        if (missingIds.isNotEmpty()) throw BadRequestException("Missing user ids: $missingIds")
+        if (missingIds.isNotEmpty()) throw UserIdsNotFoundError(missingIds)
     }
 
 }

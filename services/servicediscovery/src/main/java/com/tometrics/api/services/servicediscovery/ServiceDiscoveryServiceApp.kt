@@ -1,9 +1,9 @@
 package com.tometrics.api.services.servicediscovery
 
 import com.tometrics.api.common.domain.models.CommonError
+import com.tometrics.api.common.domain.models.ErrorResponse
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.ValidationError
-import com.tometrics.api.services.servicediscovery.models.ErrorResponse
 import com.tometrics.api.services.servicediscovery.routes.serviceDiscoveryRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat

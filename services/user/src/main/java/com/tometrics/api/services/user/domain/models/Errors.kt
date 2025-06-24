@@ -1,11 +1,7 @@
 package com.tometrics.api.services.user.domain.models
 
-import kotlinx.serialization.Serializable
+import com.tometrics.api.common.domain.models.UserId
 
-sealed class ApiException : RuntimeException()
+sealed class ServiceError : RuntimeException()
 
-@Serializable
-data class ErrorResponse(
-    val error: String,
-    val errors: List<String>? = null,
-)
+data class UserIdsNotFoundError(val missingIds: Set<UserId>) : ServiceError()

@@ -28,6 +28,7 @@ services:
     container_name: tometrics-user
     env_file:
       - .env
+      - ./services/user/.env
     networks:
       - tometrics-network
     depends_on:

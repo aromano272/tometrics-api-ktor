@@ -41,7 +41,6 @@ fun appModule(application: Application) = module {
 
     single {
         HttpClient(CIO) {
-            expectSuccess = true
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true
