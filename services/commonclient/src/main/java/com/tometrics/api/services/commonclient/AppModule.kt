@@ -1,9 +1,7 @@
 package com.tometrics.api.services.commonclient
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.userrpc.UserRpcRemoteService
-import com.tometrics.api.userrpc.UserRpcService
-import com.tometrics.api.userrpc.ValidateUsersResult
+import com.tometrics.api.userrpc.*
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*
@@ -28,7 +26,7 @@ import org.koin.core.qualifier.qualifier
 import org.koin.dsl.module
 import org.koin.ktor.ext.get
 
-private val krpcClientQualifier = qualifier("krpcClientQualifier")
+val krpcClientQualifier = qualifier("krpcClientQualifier")
 
 val serviceCommonClientModule = module {
 
@@ -50,7 +48,17 @@ val serviceCommonClientModule = module {
         UserRpcClient()
     }
 
+    single<TestRpcService> {
+        TestRpcClient()
+    }
+
 }
+
+suspend fun Route.getTestRpcService(): TestRpcRemoteService =
+    krpcClient(
+        host = "localhost",
+        port = 8082,
+    ).withService<TestRpcRemoteService>()
 
 private suspend fun Route.getUserRpcService(): UserRpcService =
     krpcClient(
@@ -58,11 +66,46 @@ private suspend fun Route.getUserRpcService(): UserRpcService =
         port = 8082,
     ).withService<UserRpcRemoteService>()
 
+private suspend fun KoinComponent.getTestRpcService(): TestRpcRemoteService =
+    krpcClient(
+        host = "localhost",
+        port = 8082,
+    ).withService<TestRpcRemoteService>()
+
 private suspend fun KoinComponent.getUserRpcService(): UserRpcRemoteService =
     krpcClient(
         host = "localhost",
         port = 8082,
     ).withService<UserRpcRemoteService>()
+
+class TestRpcClient : TestRpcService, KoinComponent {
+
+    // TODO(aromano): really unsure about these shenenigans, ie. im doing this because
+    // getting the rpcservice must be called from a suspending function, so i cannot
+    // simply register it in Koin and have it injected into my SocialGraphService, etc..
+    // I could call Route.getUserRpcService from each SocialGraphRoutes, but that would require
+    // me to build a SocialGraphService for every endpoint, having all of that boilerplate
+    // So i've created this so i can register it in Koin and have it injected into my SocialGraphService
+    private var rpcServiceDeferred: Deferred<TestRpcRemoteService>? = null
+    private val rpcServiceInitMutex = Mutex()
+    private suspend fun getService(): TestRpcRemoteService {
+        rpcServiceDeferred?.let { return it.await() }
+
+        val serviceDeferred = rpcServiceInitMutex.withLock {
+            rpcServiceDeferred?.let { return it.await() }
+            val serviceDeferred = coroutineScope {
+                async { getTestRpcService() }
+            }
+            rpcServiceDeferred = serviceDeferred
+            serviceDeferred
+        }
+        return serviceDeferred.await()
+    }
+
+    override suspend fun test(): String =
+        getService().test()
+
+}
 
 class UserRpcClient : UserRpcService, KoinComponent {
 

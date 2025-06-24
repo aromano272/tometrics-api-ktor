@@ -26,6 +26,8 @@ dependencies {
     implementation(project(":services:userrpc"))
     implementation(project(":services:commonclient"))
 
+    implementation(libs.kotlin.krpc.ktor.client)
+
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.server.content.negotiation)
