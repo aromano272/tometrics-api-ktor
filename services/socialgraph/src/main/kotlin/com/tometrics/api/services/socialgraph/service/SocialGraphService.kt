@@ -1,9 +1,10 @@
 package com.tometrics.api.services.socialgraph.service
 
 import com.tometrics.api.common.domain.models.UserId
+import com.tometrics.api.services.commonclient.UserRpcClient
 import com.tometrics.api.services.socialgraph.db.FollowerDao
 import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
-import com.tometrics.api.userrpc.UserRpcService
+import io.ktor.util.logging.*
 
 interface SocialGraphService {
 
@@ -14,7 +15,8 @@ interface SocialGraphService {
 }
 
 class DefaultSocialGraphService(
-    private val userRpcService: UserRpcService,
+    private val logger: Logger,
+    private val userRpcClient: UserRpcClient,
     private val dao: FollowerDao,
 ) : SocialGraphService {
 
@@ -29,12 +31,14 @@ class DefaultSocialGraphService(
     }
 
     override suspend fun follow(requesterId: UserId, userId: UserId) {
-        userRpcService.validateUserIds(setOf(requesterId, userId))
+        logger.info("follow(requesterId: $requesterId, userId: $userId)")
+        val result = userRpcClient.validateUserIds(setOf(requesterId, userId))
+        logger.info("follow(requesterId: $requesterId, userId: $userId) result: $result")
         dao.insert(requesterId, userId)
     }
 
     override suspend fun unfollow(requesterId: UserId, userId: UserId) {
-        userRpcService.validateUserIds(setOf(requesterId, userId))
+        userRpcClient.validateUserIds(setOf(requesterId, userId))
         dao.delete(requesterId, userId)
     }
 

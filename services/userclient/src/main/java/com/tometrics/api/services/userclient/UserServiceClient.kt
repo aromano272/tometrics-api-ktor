@@ -1,7 +1,7 @@
 package com.tometrics.api.services.userclient
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.userrpc.UserRpcRemoteService
+import com.tometrics.api.userrpc.UserRpcService
 import com.tometrics.api.userrpc.ValidateUsersResult
 import kotlinx.serialization.Serializable
 
@@ -12,7 +12,7 @@ interface UserServiceClient {
 }
 
 class HttpUserServiceClient(
-    private val rpcService: UserRpcRemoteService,
+    private val rpcService: UserRpcService,
 ) : UserServiceClient {
 
     override suspend fun validateUserIds(vararg userIds: Int): ValidateUsersResult =

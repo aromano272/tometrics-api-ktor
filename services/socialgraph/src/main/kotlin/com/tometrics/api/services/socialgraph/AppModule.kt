@@ -14,11 +14,17 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
+import io.ktor.util.logging.Logger
 import kotlinx.serialization.json.Json
 import org.jdbi.v3.core.Jdbi
 import org.koin.dsl.module
 
-val appModule = module {
+fun appModule(application: Application) = module {
+
+    single<Logger> {
+        application.environment.log
+    }
 
     single {
         HttpClient(CIO) {
@@ -51,7 +57,8 @@ val serviceModule = module {
 
     factory<SocialGraphService> {
         DefaultSocialGraphService(
-            userRpcService = get(),
+            logger = get(),
+            userRpcClient = get(),
             dao = get(),
         )
     }

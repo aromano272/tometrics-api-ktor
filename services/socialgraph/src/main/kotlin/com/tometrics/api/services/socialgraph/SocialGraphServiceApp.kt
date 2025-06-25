@@ -51,7 +51,7 @@ fun Application.configureDI() {
                 "classpath:com/tometrics/api/db/migration",
             ),
             serviceCommonClientModule,
-            appModule,
+            appModule(this@configureDI),
             serviceModule,
             databaseModule,
         )

@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 interface FollowerDao {
-    suspend fun insert(userId: UserId, followedUserId: UserId): Int
+    suspend fun insert(userId: UserId, followedUserId: UserId): Int?
     suspend fun delete(userId: UserId, followedUserId: UserId)
     suspend fun getAllFollowedByUserId(userId: UserId): List<FollowerEntity>
     suspend fun getAllFollowersOfUserId(userId: UserId): List<FollowerEntity>
@@ -16,7 +16,7 @@ class DefaultFollowerDao(
     private val db: FollowerDb
 ) : FollowerDao {
 
-    override suspend fun insert(userId: UserId, followedUserId: UserId): Int = withContext(Dispatchers.IO) {
+    override suspend fun insert(userId: UserId, followedUserId: UserId): Int? = withContext(Dispatchers.IO) {
         db.insert(userId, followedUserId)
     }
 

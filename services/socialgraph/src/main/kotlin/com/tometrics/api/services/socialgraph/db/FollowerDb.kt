@@ -14,12 +14,13 @@ interface FollowerDb {
     @SqlUpdate("""
         INSERT INTO followers (user_id, followed_user_id)
         VALUES (:userId, :followedUserId)
+        ON CONFLICT(user_id, followed_user_id) DO NOTHING
     """)
     @GetGeneratedKeys
     fun insert(
         @Bind("userId") userId: UserId,
         @Bind("followedUserId") followedUserId: UserId,
-    ): Int
+    ): Int?
 
     @SqlUpdate("DELETE FROM followers WHERE user_id = :userId AND followed_user_id = :followedUserId")
     fun delete(

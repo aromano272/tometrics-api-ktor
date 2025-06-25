@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="UserService" type="KtorApplicationConfigurationType" factoryName="Ktor">
     <envs>
+      <env name="POSTGRES_URL" value="jdbc:postgresql://localhost:5432/user" />
       <env name="RUNNING_LOCALLY" value="1" />
     </envs>
     <option name="envFilePaths">
