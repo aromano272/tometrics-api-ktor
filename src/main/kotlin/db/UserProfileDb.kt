@@ -1,9 +1,10 @@
 package com.tometrics.api.db
 
+import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.db.models.UserProfileEntity
 import com.tometrics.api.domain.models.ClimateZone
 import com.tometrics.api.domain.models.LocationInfoId
-import com.tometrics.api.domain.models.UserId
+
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys

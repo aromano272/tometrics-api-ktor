@@ -1,5 +1,6 @@
 package com.tometrics.api.db.models
 
+import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.domain.models.*
 import java.time.Instant
 

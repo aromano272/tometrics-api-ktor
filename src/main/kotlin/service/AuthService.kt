@@ -1,5 +1,7 @@
 package com.tometrics.api.service
 
+import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.auth.domain.models.Tokens
 import com.tometrics.api.db.RefreshTokenDao
 import com.tometrics.api.db.UserDao
 import com.tometrics.api.db.models.toDomain
@@ -27,6 +29,7 @@ class DefaultAuthService(
     private val refreshTokenDao: RefreshTokenDao,
 ) : AuthService {
 
+    // TODO(aromano): put all these inside transactions
     override suspend fun registerAnon(): Tokens {
         val userId = userDao.insert("", anon = true)
         val user = userDao.findById(userId)!!.toDomain()

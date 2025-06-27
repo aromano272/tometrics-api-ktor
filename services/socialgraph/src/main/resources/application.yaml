@@ -1,0 +1,9 @@
+ktor:
+  application:
+    modules:
+      - com.tometrics.api.services.socialgraph.SocialGraphServiceAppKt.module
+  deployment:
+    port: 8081
+
+logging:
+  level: INFO

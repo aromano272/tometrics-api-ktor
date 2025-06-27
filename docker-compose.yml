@@ -1,16 +1,87 @@
-version: '3.8'
 services:
   db:
     image: postgres:15
     container_name: tometrics-ktor-db
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: ktoruser
-      POSTGRES_PASSWORD: ktorpass
-      POSTGRES_DB: tometrics
+    env_file: .env
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - tometrics-network
+
+  servicediscovery:
+    build:
+      context: .
+      dockerfile: services/servicediscovery/Dockerfile
+      no_cache: true
+    container_name: tometrics-servicediscovery
+    env_file: .env
+    networks:
+      - tometrics-network
+
+  user:
+    build:
+      context: .
+      dockerfile: services/user/Dockerfile
+      no_cache: true
+    container_name: tometrics-user
+    env_file:
+      - .env
+      - ./services/user/.env
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      no_cache: true
+    container_name: tometrics-main
+    env_file: .env
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
+  socialgraph:
+    build:
+      context: .
+      dockerfile: services/socialgraph/Dockerfile
+      no_cache: true
+    container_name: tometrics-socialgraph
+    env_file:
+      - .env
+      - ./services/socialgraph/.env
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
+  nginx:
+    image: nginx:latest
+    container_name: tometrics-nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/nginx/certs:/etc/nginx/certs:ro
+    networks:
+      - tometrics-network
+    depends_on:
+      - main
+      - socialgraph
+      - user
 
 volumes:
   pgdata:
+
+networks:
+  tometrics-network:
+    driver: bridge

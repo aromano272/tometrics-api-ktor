@@ -1,14 +1,14 @@
 ### Get all plantings
-GET http://localhost:8080/api/v1/planting/all
-Authorization: Bearer {{accessToken}}
+GET https://localhost/api/v1/planting/all
+Authorization: Bearer {{access}}
 
 ### Delete planting by ID
-DELETE http://localhost:8080/api/v1/planting/2
-Authorization: Bearer {{accessToken}}
+DELETE https://localhost/api/v1/planting/2
+Authorization: Bearer {{access}}
 
 ### Patch planting by ID
-PATCH http://localhost:8080/api/v1/planting/2
-Authorization: Bearer {{accessToken}}
+PATCH https://localhost/api/v1/planting/2
+Authorization: Bearer {{access}}
 Content-Type: application/json
 
 {
@@ -16,8 +16,8 @@ Content-Type: application/json
 }
 
 ### Add a new planting
-POST http://localhost:8080/api/v1/planting/add
-Authorization: Bearer {{accessToken}}
+POST https://localhost/api/v1/planting/add
+Authorization: Bearer {{access}}
 Content-Type: application/json
 
 {

@@ -1,26 +1,25 @@
 ### Verify
-GET http://localhost:8080/api/v1/auth/verify
+GET https://localhost/api/v1/auth/verify
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{access}}
 
 ### Register anon
-POST http://localhost:8080/api/v1/auth/anon/register
+POST https://localhost/api/v1/auth/anon/register
 Content-Type: application/json
 
 ### Refresh tokens (update tokens after login)
-POST http://localhost:8080/api/v1/auth/refresh
+POST https://localhost/api/v1/auth/refresh
 Content-Type: application/json
 
 {
-  "refreshToken": "{{refreshToken}}"
+  "refreshToken": "{{refresh}}"
 }
 
 ### Logout (update tokens after login)
-POST http://localhost:8080/api/v1/auth/logout
+POST https://localhost/api/v1/auth/logout
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{access}}
 
 {
-  "refreshToken": "{{refreshToken}}"
+  "refreshToken": "{{refresh}}"
 }
-

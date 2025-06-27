@@ -1,6 +1,6 @@
 package com.tometrics.api.functional
 
-import com.tometrics.api.domain.models.Tokens
+import com.tometrics.api.auth.domain.models.Tokens
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.client.*

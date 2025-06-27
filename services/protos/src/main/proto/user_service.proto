@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_package = "com.tometrics.api.services.protos";
+option java_multiple_files = true;
+
+message ValidateUserIdsRequest {
+  repeated int32 user_ids = 1;
+}
+
+message ValidateUsersSuccess {
+}
+
+message ValidateUsersNotFound {
+  repeated int32 missing_user_ids = 1;
+}
+
+message ValidateUserIdsResponse {
+  oneof result {
+    ValidateUsersSuccess success = 1;
+    ValidateUsersNotFound not_found = 2;
+  }
+}
+
+service UserGrpcService {
+  rpc validateUserIds(ValidateUserIdsRequest) returns (ValidateUserIdsResponse);
+}

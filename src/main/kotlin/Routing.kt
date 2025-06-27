@@ -1,5 +1,6 @@
 package com.tometrics.api
 
+import com.tometrics.api.common.domain.models.ErrorResponse
 import com.tometrics.api.domain.models.*
 import com.tometrics.api.routes.*
 import io.ktor.http.*

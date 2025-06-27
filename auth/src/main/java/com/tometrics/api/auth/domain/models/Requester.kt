@@ -1,5 +1,6 @@
-package com.tometrics.api.domain.models
+package com.tometrics.api.auth.domain.models
 
+import com.tometrics.api.common.domain.models.UnauthorizedError
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.routing.*
@@ -12,10 +13,10 @@ data class Requester(
 
 private fun JWTPrincipal.asRequester(): Requester = Requester(
     userId = getClaim("userId", Int::class)
-        ?: throw UnauthorizedException("userId missing from token"),
+        ?: throw UnauthorizedError("userId missing from token"),
 )
 
 fun RoutingCall.requireRequester(): Requester = principal<JWTPrincipal>()?.asRequester()
-    ?: throw UnauthorizedException("missing jwt")
+    ?: throw UnauthorizedError("missing jwt")
 
 fun RoutingCall.requester(): Requester? = principal<JWTPrincipal>()?.asRequester()

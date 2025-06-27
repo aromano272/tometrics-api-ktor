@@ -1,7 +1,7 @@
 package com.tometrics.api.routes
 
 import com.tometrics.api.domain.models.UserProfile
-import com.tometrics.api.domain.models.requireRequester
+import com.tometrics.api.auth.domain.models.requireRequester
 import com.tometrics.api.routes.models.PutUserProfileRequest
 import com.tometrics.api.service.UserProfileService
 import io.github.smiley4.ktoropenapi.get

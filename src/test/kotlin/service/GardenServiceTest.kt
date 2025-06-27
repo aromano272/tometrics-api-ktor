@@ -1,5 +1,6 @@
 package com.tometrics.api.service
 
+import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.db.GardenDao
 import com.tometrics.api.db.models.PlantingEntity
 import com.tometrics.api.domain.models.*

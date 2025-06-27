@@ -1,7 +1,7 @@
 package com.tometrics.api.db.models
 
+import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.domain.models.User
-import com.tometrics.api.domain.models.UserId
 
 data class UserEntity(
     val id: UserId,

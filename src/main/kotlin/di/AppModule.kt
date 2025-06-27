@@ -6,6 +6,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.v2.ApacheHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.tometrics.api.db.*
+import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.external.nominatim.DefaultNominatimClient
 import com.tometrics.api.external.nominatim.NominatimClient
 import com.tometrics.api.service.*
@@ -28,7 +29,6 @@ import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.LoggerFactory
-import javax.sql.DataSource
 
 val qualifierLoggerUnmatchedPlaces = qualifier("loggerUnmatchedPlaces")
 
@@ -53,6 +53,16 @@ fun appModule(application: Application) = module {
             }
             install(DefaultRequest) {
                 contentType(ContentType.Application.Json)
+            }
+            engine {
+                https {
+                    // Trust all certificates for local development with mkcert
+                    trustManager = object : javax.net.ssl.X509TrustManager {
+                        override fun checkClientTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
+                        override fun checkServerTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
+                        override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> = emptyArray()
+                    }
+                }
             }
         }
     }
@@ -80,18 +90,7 @@ fun appModule(application: Application) = module {
 
 }
 
-fun databaseModule(application: Application) = module {
-
-    single<DataSource> {
-        application.createHikariDataSource(
-            dotenv = get(),
-        ).runMigrations()
-    }
-
-    single<Jdbi> {
-        val dataSource: DataSource = get()
-        dataSource.createJdbi()
-    }
+val databaseModule = module {
 
     single<UserDb> {
         val jdbi: Jdbi = get()
@@ -292,9 +291,15 @@ fun Application.configureDI() {
 
     install(Koin) {
         slf4jLogger()
-        modules(appModule(app))
-        modules(databaseModule(app))
-        modules(serviceModule(app))
-        modules(externalModule)
+        modules(
+            appModule(app),
+            jdbiModule(
+                "classpath:db/migration",
+                "classpath:com/tometrics/api/db/migration",
+            ),
+            databaseModule,
+            serviceModule(app),
+            externalModule,
+        )
     }
 }

@@ -1,51 +1,48 @@
-# 🌱 Tometrics API
+# Tometrics
 
-**Tometrics** is an advanced gardening metrics API designed to help users **plan gardens, manage plantings, track harvests**, and record critical data like **diseases, pests, and climate insights**. What sets Tometrics apart is its strong **focus on metrics** — empowering users to analyze and compare multiple plantings of the same vegetable over time to optimize yields and strategies.
+## Local Development Setup
 
-## 🚀 Features
+### Accessing Internal Services
 
-- 🧑‍🌾 **Garden Planning**: Organize and plan garden layouts and planting schedules.
-- 🌿 **Planting Management**: Record multiple plantings of the same crop and track their individual outcomes.
-- 📈 **Harvest Tracking**: Log harvests and analyze yields across seasons and plantings.
-- 🐛 **Disease & Pest Logging**: Record occurrences of diseases and pests to monitor their impact.
-- 🌍 **Geo & Climate Enrichment**: Automatically enrich records with:
-  - Geographic location
-  - Climate zone
-  - Real-time and historical weather data
-- 📊 **Comparative Metrics Engine**: Core focus on metrics — enables meaningful comparisons between plantings to drive gardening insights.
+To access internal services using the same URLs from both inside and outside Docker, follow these steps:
 
-## 🧪 Tech Stack
+1. Add the following entries to your `/etc/hosts` file:
 
-Tometrics is built with a robust, modern Kotlin backend stack:
+```
+127.0.0.1 tometrics-user
+127.0.0.1 tometrics-servicediscovery
+127.0.0.1 tometrics-socialgraph
+127.0.0.1 tometrics-main
+```
 
-- ⚙️ **Ktor**: Lightweight asynchronous web framework for Kotlin.
-- 💾 **PostgreSQL**: Primary database, accessed via:
-  - **JDBI**: SQL convenience layer for clean, fluent database interactions.
-  - **HikariCP**: High-performance JDBC connection pooling.
-- 🛠️ **Flyway**: Schema migrations made easy.
-- 🔐 **Authentication**:
-  - **JWT**: Token-based authentication.
-  - **Identity Provider Integration**: Support for OAuth/OpenID identity providers.
-- 🔄 **Cron Jobs**: Scheduled tasks for data enrichment and background jobs.
-- 🧾 **Mustache**: Templating for human-readable output or templated views.
-- 📃 **OpenAPI + Swagger**: Automatically documented, interactive API docs.
-- 🧪 **Testing Frameworks**:
-  - **Testcontainers**: Real integration testing using containerized Postgres.
-  - **Kotlin Test**: Unit and integration testing made easy.
+2. Start the Docker containers:
 
-## 📘 API Documentation
-
-Interactive API docs are available via Swagger/OpenAPI at:
-
-https://tometrics-api.onrender.com/swagger
-
-## 📦 Development & Setup
-
-1. Clone the repository
-2. Configure environment variables
-3. Start the server with your preferred build tool
-4. Access Swagger at `localhost:8080/swagger` to begin exploring
-
-### Run tests
 ```bash
-./gradlew test
+docker-compose up -d
+```
+
+3. Now you can access the services using the same URLs from both inside and outside Docker:
+
+- User service: `http://tometrics-user/internal/user`
+- Service Discovery: `http://tometrics-servicediscovery/internal/servicediscovery`
+- Social Graph: `http://tometrics-socialgraph/internal/socialgraph`
+- Main service: `http://tometrics-main/internal/main`
+
+This configuration allows you to use the same code for both local development and Docker environments without changing URLs.
+
+## How It Works
+
+The solution works by:
+
+1. Adding server blocks in nginx.conf that listen for requests to service hostnames
+2. Adding host entries to map service hostnames to localhost
+3. Using nginx as a reverse proxy to route all traffic to the appropriate services
+
+When you make a request to `http://tometrics-user/internal/user` from your local machine:
+
+1. The host entry maps `tometrics-user` to `127.0.0.1`
+2. The request goes to nginx running on port 80
+3. Nginx matches the server_name `tometrics-user` and forwards the request to the user service
+4. The user service processes the request and returns the response
+
+This allows you to use the same URLs in your code regardless of whether it's running inside or outside Docker.

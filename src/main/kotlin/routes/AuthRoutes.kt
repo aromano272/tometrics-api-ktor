@@ -1,10 +1,14 @@
 package com.tometrics.api.routes
 
+import com.tometrics.api.auth.domain.models.Tokens
+import com.tometrics.api.auth.domain.models.requester
+import com.tometrics.api.auth.domain.models.requireRequester
 import com.tometrics.api.domain.models.BadRequestException
 import com.tometrics.api.domain.models.IdProviderPayload
-import com.tometrics.api.domain.models.requester
-import com.tometrics.api.domain.models.requireRequester
-import com.tometrics.api.routes.models.*
+import com.tometrics.api.routes.models.AuthFacebookLoginRequest
+import com.tometrics.api.routes.models.AuthGoogleLoginRequest
+import com.tometrics.api.routes.models.LogoutRequest
+import com.tometrics.api.routes.models.RefreshTokenRequest
 import com.tometrics.api.service.AuthService
 import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.post
@@ -44,7 +48,7 @@ fun Route.authRoutes() {
             response {
                 HttpStatusCode.OK to {
                     description = "Tokens for the newly registered anonymous user"
-                    body<TokensResponse>()
+                    body<Tokens>()
                 }
             }
         }) {
@@ -63,7 +67,7 @@ fun Route.authRoutes() {
                 response {
                     HttpStatusCode.OK to {
                         description = "Tokens for the authenticated user"
-                        body<TokensResponse>()
+                        body<Tokens>()
                     }
                     HttpStatusCode.BadRequest to {
                         description = "Invalid CSRF token or other bad request"
@@ -92,7 +96,7 @@ fun Route.authRoutes() {
                 response {
                     HttpStatusCode.OK to {
                         description = "Tokens for the authenticated user"
-                        body<TokensResponse>()
+                        body<Tokens>()
                     }
                     HttpStatusCode.BadRequest to {
                         description = "Invalid CSRF token or other bad request"
@@ -121,7 +125,7 @@ fun Route.authRoutes() {
                 response {
                     HttpStatusCode.OK to {
                         description = "New tokens generated"
-                        body<TokensResponse>()
+                        body<Tokens>()
                     }
                     HttpStatusCode.Unauthorized to {
                         description = "Invalid refresh token"

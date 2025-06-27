@@ -8,10 +8,5 @@ ktor:
       - classes
   development: true
 
-jwt:
-  domain: "tometrics.com"
-  audience: "tometrics-users"
-  realm: "Tometrics"
-
 postgres:
   maxPoolSize: 10
