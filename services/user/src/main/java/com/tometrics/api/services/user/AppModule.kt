@@ -5,6 +5,7 @@ import com.tometrics.api.services.user.db.DefaultUserDao
 import com.tometrics.api.services.user.db.UserDao
 import com.tometrics.api.services.user.db.UserDb
 import com.tometrics.api.services.user.services.DefaultUserService
+import com.tometrics.api.services.user.services.UserGrpcService
 import com.tometrics.api.services.user.services.UserService
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
@@ -34,6 +35,12 @@ val serviceModule = module {
         DefaultUserService(
             logger = get(),
             dao = get(),
+        )
+    }
+
+    single<UserGrpcService> {
+        UserGrpcService(
+            userService = get(),
         )
     }
 

@@ -58,7 +58,7 @@ val serviceModule = module {
     factory<SocialGraphService> {
         DefaultSocialGraphService(
             logger = get(),
-            userRpcClient = get(),
+            userGrpcClient = get(),
             dao = get(),
         )
     }

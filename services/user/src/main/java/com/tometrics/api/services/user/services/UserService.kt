@@ -2,7 +2,6 @@ package com.tometrics.api.services.user.services
 
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.user.db.UserDao
-import com.tometrics.api.userrpc.ValidateUsersResult
 import io.ktor.util.logging.*
 
 interface UserService {
@@ -25,4 +24,10 @@ class DefaultUserService(
         return ValidateUsersResult.Success
     }
 
+}
+
+// TODO(aromano): probably migrate all service(data layer)-level methods to Outcome
+sealed interface ValidateUsersResult {
+    data object Success : ValidateUsersResult
+    data class UserIdsNotFound(val missingUserIds: Set<UserId>) : ValidateUsersResult
 }

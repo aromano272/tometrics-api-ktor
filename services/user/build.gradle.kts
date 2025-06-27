@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
-    alias(libs.plugins.kotlin.plugin.krpc)
+    alias(libs.plugins.google.protobuf)
 }
 
 group = "com.tometrics.api.services.user"
@@ -24,7 +24,7 @@ dependencies {
     implementation(project(":db"))
     implementation(project(":auth"))
     implementation(project(":common"))
-    implementation(project(":services:userrpc"))
+    implementation(project(":services:protos"))
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)
@@ -62,11 +62,8 @@ dependencies {
     implementation(libs.schema.kenerator.swagger)
     implementation(libs.google.api.client)
 
-    implementation(libs.kotlin.krpc.ktor.server)
-    implementation(libs.kotlin.krpc.serialization.json)
+    implementation(libs.grpc.netty)
 
-    testImplementation(libs.kotlin.krpc.client)
-    testImplementation(libs.kotlin.krpc.ktor.client)
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit)
     testImplementation(libs.ktor.server.test.host)

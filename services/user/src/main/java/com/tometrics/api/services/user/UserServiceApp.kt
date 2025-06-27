@@ -9,7 +9,7 @@ import com.tometrics.api.common.to
 import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.services.user.domain.models.ServiceError
 import com.tometrics.api.services.user.domain.models.UserIdsNotFoundError
-import com.tometrics.api.services.user.routes.userRpcRoutes
+import com.tometrics.api.services.user.services.UserGrpcService
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.config.SchemaGenerator
@@ -17,9 +17,12 @@ import io.github.smiley4.ktoropenapi.openApi
 import io.github.smiley4.ktoropenapi.route
 import io.github.smiley4.ktorswaggerui.swaggerUI
 import io.github.smiley4.schemakenerator.swagger.data.RefType
+import io.grpc.ServerBuilder
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
@@ -27,14 +30,42 @@ import io.ktor.server.plugins.requestvalidation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.rpc.krpc.ktor.server.Krpc
 import kotlinx.serialization.json.Json
+import org.koin.java.KoinJavaComponent.get
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
 
 fun main(args: Array<String>): Unit {
-    io.ktor.server.netty.EngineMain.main(args)
+    embeddedServer(
+        factory = Netty,
+        configure = {
+            val cliConfig = CommandLineConfig(args)
+            takeFrom(cliConfig.engineConfig)
+            loadCommonConfiguration(cliConfig.rootConfig.environment.config)
+        },
+    ) {
+        module()
+    }.start(wait = false)
+
+    var attempt = 0
+    while (true) {
+        try {
+            val grpcService: UserGrpcService = get(UserGrpcService::class.java)
+            val grpcServer = ServerBuilder
+                .forPort(9082)
+                .addService(grpcService)
+                .build()
+                .start()
+
+            println("gRPC started on port 9082")
+            grpcServer.awaitTermination()
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            println("gRPC stoped on port 9082")
+            Thread.sleep(2000L * attempt++)
+        }
+    }
 }
 
 fun Application.module() {
@@ -143,12 +174,7 @@ fun Application.configureRouting() {
         })
     }
 
-    install(Krpc)
-
     routing {
-        route("/internal") {
-            userRpcRoutes()
-        }
         route("/api/v1/user") {
         }
     }

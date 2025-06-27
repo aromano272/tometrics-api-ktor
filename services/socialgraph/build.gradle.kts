@@ -23,10 +23,7 @@ dependencies {
     implementation(project(":db"))
     implementation(project(":auth"))
     implementation(project(":common"))
-    implementation(project(":services:userrpc"))
     implementation(project(":services:commonclient"))
-
-    implementation(libs.kotlin.krpc.ktor.client)
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)

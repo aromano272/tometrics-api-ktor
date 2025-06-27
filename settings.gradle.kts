@@ -1,11 +1,17 @@
 rootProject.name = "tometrics"
 
-include("services:socialgraph")
 include("db")
 include("auth")
 include("common")
+include("services:protos")
+include("services:commonclient")
 include("services:user")
 include("services:servicediscovery")
-include("services:userclient")
-include("services:userrpc")
-include("services:commonclient")
+include("services:socialgraph")
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
