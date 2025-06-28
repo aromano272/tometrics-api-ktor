@@ -14,7 +14,8 @@ fun Route.cronjobRoutes() {
         route("/cronjob") {
 
             post("daily-harvest") {
-                cronjobService.checkForDailyHarvests()
+                // NOCHECKIN:
+//                cronjobService.checkForDailyHarvests()
                 call.respond(HttpStatusCode.OK)
             }
 

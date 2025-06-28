@@ -8,10 +8,6 @@ import com.tometrics.api.common.domain.models.ValidationError
 import com.tometrics.api.common.to
 import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.services.garden.domain.models.*
-import com.tometrics.api.services.garden.routes.authRoutes
-import com.tometrics.api.services.garden.routes.geolocationRoutes
-import com.tometrics.api.services.garden.routes.gardenRoutes
-import com.tometrics.api.services.garden.services.GardenGrpcService
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.config.SchemaGenerator
@@ -25,6 +21,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
@@ -37,6 +34,7 @@ import org.koin.java.KoinJavaComponent.get
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
+import kotlin.jvm.java
 
 fun main(args: Array<String>): Unit {
     embeddedServer(
@@ -89,7 +87,6 @@ fun Application.configureDI() {
             appModule(this@configureDI),
             serviceModule(this@configureDI),
             databaseModule,
-            externalModule,
         )
     }
 }
@@ -147,8 +144,12 @@ fun Application.configureRouting() {
         }
         exception<CommonError> { call, cause ->
             val (status, message) = when (cause) {
+                is ValidationError -> HttpStatusCode.BadRequest to "Validation error"
+                is NotFoundError -> HttpStatusCode.NotFound to "Not found"
                 is UnauthorizedError -> HttpStatusCode.Unauthorized to "Unauthorized"
-                is ValidationError -> HttpStatusCode.BadRequest to "Validation errors"
+                is ConflictError -> HttpStatusCode.Conflict to "Conflict"
+                is BadRequestError -> HttpStatusCode.BadRequest to "Bad request"
+                is ForbiddenError -> HttpStatusCode.Forbidden to "Forbidden"
             }
             val validationErrors = (cause as? ValidationError)?.errors
 

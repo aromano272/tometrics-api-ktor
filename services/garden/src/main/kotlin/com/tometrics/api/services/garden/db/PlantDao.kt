@@ -1,7 +1,7 @@
-package com.tometrics.api.db
+package com.tometrics.api.services.garden.db
 
-import com.tometrics.api.db.models.PlantEntity
-import com.tometrics.api.domain.models.PlantId
+import com.tometrics.api.services.garden.db.models.PlantEntity
+import com.tometrics.api.services.garden.domain.models.PlantId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

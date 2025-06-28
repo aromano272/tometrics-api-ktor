@@ -1,7 +1,7 @@
 package com.tometrics.api.services.socialgraph.service
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.services.protos.UserGrpcServiceGrpcKt
+import com.tometrics.api.services.commonclient.UserGrpcClient
 import com.tometrics.api.services.protos.validateUserIdsRequest
 import com.tometrics.api.services.socialgraph.db.FollowerDao
 import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
@@ -17,7 +17,7 @@ interface SocialGraphService {
 
 class DefaultSocialGraphService(
     private val logger: Logger,
-    private val userGrpcClient: UserGrpcServiceGrpcKt.UserGrpcServiceCoroutineStub,
+    private val userGrpcClient: UserGrpcClient,
     private val dao: FollowerDao,
 ) : SocialGraphService {
 

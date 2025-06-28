@@ -1,9 +1,9 @@
-package com.tometrics.api.db.models
+package com.tometrics.api.services.garden.db.models
 
-import com.tometrics.api.domain.models.Harvest
-import com.tometrics.api.domain.models.HarvestId
-import com.tometrics.api.domain.models.PlantingId
-import com.tometrics.api.domain.models.YieldUnit
+import com.tometrics.api.services.garden.domain.models.Harvest
+import com.tometrics.api.services.garden.domain.models.HarvestId
+import com.tometrics.api.services.garden.domain.models.PlantingId
+import com.tometrics.api.services.garden.domain.models.YieldUnit
 import java.time.Instant
 
 data class HarvestEntity(

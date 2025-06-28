@@ -1,14 +1,13 @@
 package com.tometrics.api.services.email.services.templates
 
-import com.tometrics.api.domain.models.Planting
-import com.tometrics.api.domain.models.YieldUnit
+import com.tometrics.api.services.commonclient.models.garden.GrpcPlanting
+import com.tometrics.api.services.commonclient.models.garden.GrpcYieldUnit
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import kotlin.collections.map
 
 data class HarvestNotificationTemplate(
-    private val plantings: List<Planting>,
+    private val plantings: List<GrpcPlanting>,
 ) : Template {
     override val _filename: String = "harvest_notification.mustache"
 
@@ -21,21 +20,21 @@ data class HarvestNotificationTemplate(
         )
     }
 
-    fun Planting.plantingFormattedTotalYield(): String =
+    fun GrpcPlanting.plantingFormattedTotalYield(): String =
         "${totalYield.from.formatted()}-${totalYield.to.formatted()}${totalYield.unit.string()} (${areaSqM} m²)"
 
-    fun Planting.plantingFormattedDate(): String = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    fun GrpcPlanting.plantingFormattedDate(): String = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         .withZone(ZoneId.of("UTC"))
         .format(Instant.ofEpochMilli(createdAt))
 
     private fun Float.formatted(): String = "%.${if (this % 1 == 0f) 0 else 1}f".format(this)
 
-    private fun YieldUnit.string() = when (this) {
-        YieldUnit.UNIT -> " units"
-        YieldUnit.KG -> " kg"
-        YieldUnit.GRAMS -> "g"
-        YieldUnit.LB -> " lb"
-        YieldUnit.OZ -> " oz"
+    private fun GrpcYieldUnit.string() = when (this) {
+        GrpcYieldUnit.UNIT -> " units"
+        GrpcYieldUnit.KG -> " kg"
+        GrpcYieldUnit.GRAMS -> "g"
+        GrpcYieldUnit.LB -> " lb"
+        GrpcYieldUnit.OZ -> " oz"
     }
 
     data class PlantingTemplate(

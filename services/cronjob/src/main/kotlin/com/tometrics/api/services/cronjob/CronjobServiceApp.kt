@@ -1,8 +1,12 @@
 package com.tometrics.api.services.cronjob
 
 import com.tometrics.api.auth.configureSecurity
+import com.tometrics.api.common.domain.models.BadRequestError
 import com.tometrics.api.common.domain.models.CommonError
+import com.tometrics.api.common.domain.models.ConflictError
 import com.tometrics.api.common.domain.models.ErrorResponse
+import com.tometrics.api.common.domain.models.ForbiddenError
+import com.tometrics.api.common.domain.models.NotFoundError
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.ValidationError
 import com.tometrics.api.services.cronjob.routes.cronjobRoutes
@@ -92,9 +96,14 @@ fun Application.configureRouting() {
     install(StatusPages) {
         exception<CommonError> { call, cause ->
             val (status, message) = when (cause) {
+                is ValidationError -> HttpStatusCode.BadRequest to "Validation error"
+                is NotFoundError -> HttpStatusCode.NotFound to "Not found"
                 is UnauthorizedError -> HttpStatusCode.Unauthorized to "Unauthorized"
-                is ValidationError -> HttpStatusCode.BadRequest to "Validation errors"
+                is ConflictError -> HttpStatusCode.Conflict to "Conflict"
+                is BadRequestError -> HttpStatusCode.BadRequest to "Bad request"
+                is ForbiddenError -> HttpStatusCode.Forbidden to "Forbidden"
             }
+
             val validationErrors = (cause as? ValidationError)?.errors
 
             call.application.environment.log.warn("Handled error", cause)

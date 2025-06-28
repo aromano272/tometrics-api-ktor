@@ -1,8 +1,8 @@
-package com.tometrics.api.db
+package com.tometrics.api.services.garden.db
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.db.models.HarvestEntity
-import com.tometrics.api.domain.models.*
+import com.tometrics.api.services.garden.db.models.HarvestEntity
+import com.tometrics.api.services.garden.domain.models.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant

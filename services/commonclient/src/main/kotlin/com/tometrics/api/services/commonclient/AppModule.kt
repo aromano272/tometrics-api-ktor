@@ -7,6 +7,9 @@ import io.github.cdimascio.dotenv.dotenv
 import io.grpc.ManagedChannelBuilder
 import org.koin.dsl.module
 
+typealias UserGrpcClient = UserGrpcServiceGrpcKt.UserGrpcServiceCoroutineStub
+typealias GardenGrpcClient = GardenGrpcServiceGrpcKt.GardenGrpcServiceCoroutineStub
+
 val serviceCommonClientModule = module {
 
     single<Dotenv> {

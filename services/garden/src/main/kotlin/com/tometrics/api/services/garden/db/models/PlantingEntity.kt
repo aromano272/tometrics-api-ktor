@@ -1,7 +1,7 @@
-package com.tometrics.api.db.models
+package com.tometrics.api.services.garden.db.models
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.domain.models.*
+import com.tometrics.api.services.garden.domain.models.*
 import java.time.Instant
 
 data class PlantingEntity(

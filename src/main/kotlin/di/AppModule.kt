@@ -2,9 +2,7 @@ package com.tometrics.api.di
 
 import com.github.mustachejava.DefaultMustacheFactory
 import com.github.mustachejava.MustacheFactory
-import com.tometrics.api.db.*
 import com.tometrics.api.db.di.jdbiModule
-import com.tometrics.api.service.*
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*
@@ -17,7 +15,6 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.util.logging.Logger
 import kotlinx.serialization.json.Json
-import org.jdbi.v3.core.Jdbi
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
@@ -69,68 +66,9 @@ fun appModule(application: Application) = module {
 
 val databaseModule = module {
 
-    single<GardenDb> {
-        val jdbi: Jdbi = get()
-        jdbi.onDemand(GardenDb::class.java)
-    }
-
-    single<GardenDao> {
-        DefaultGardenDao(
-            db = get()
-        )
-    }
-
-    single<PlantDb> {
-        val jdbi: Jdbi = get()
-        jdbi.onDemand(PlantDb::class.java)
-    }
-
-    single<PlantDao> {
-        DefaultPlantDao(
-            db = get()
-        )
-    }
-
-    single<HarvestDb> {
-        val jdbi: Jdbi = get()
-        jdbi.onDemand(HarvestDb::class.java)
-    }
-
-    single<HarvestDao> {
-        DefaultHarvestDao(
-            db = get()
-        )
-    }
-
 }
 
 fun serviceModule(application: Application) = module {
-
-    single<PlantService> {
-        DefaultPlantService(
-            plantDao = get()
-        )
-    }
-
-    single<GardenService> {
-        DefaultGardenService(
-            gardenDao = get(),
-            plantService = get(),
-        )
-    }
-
-    single<DesignerService> {
-        DefaultDesignerService(
-            plantService = get(),
-        )
-    }
-
-    single<HarvestService> {
-        DefaultHarvestService(
-            gardenService = get(),
-            harvestDao = get(),
-        )
-    }
 
 }
 
