@@ -1,4 +1,4 @@
-package com.tometrics.api.service.templates
+package com.tometrics.api.services.email.services.templates
 
 interface Template {
     @Suppress("PropertyName")

@@ -119,32 +119,9 @@ fun serviceModule(application: Application) = module {
         )
     }
 
-    single<EmailService> {
-        MailgunEmailService(
-            dotenv = get(),
-            httpClient = get(),
-            emailTemplateRenderer = get(),
-            logger = get(),
-        )
-    }
-
-    single<EmailTemplateRenderer> {
-        MustacheEmailTemplateRenderer(
-            mustacheFactory = get()
-        )
-    }
-
     single<DesignerService> {
         DefaultDesignerService(
             plantService = get(),
-        )
-    }
-
-    single<CronjobService> {
-        DefaultCronjobService(
-            gardenService = get(),
-            emailService = get(),
-            logger = get(),
         )
     }
 

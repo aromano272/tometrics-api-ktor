@@ -1,10 +1,11 @@
-package com.tometrics.api.service.templates
+package com.tometrics.api.services.email.services.templates
 
 import com.tometrics.api.domain.models.Planting
 import com.tometrics.api.domain.models.YieldUnit
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import kotlin.collections.map
 
 data class HarvestNotificationTemplate(
     private val plantings: List<Planting>,

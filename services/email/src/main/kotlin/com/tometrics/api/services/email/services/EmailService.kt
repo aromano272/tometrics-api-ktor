@@ -1,6 +1,6 @@
-package com.tometrics.api.service
+package com.tometrics.api.services.email.services
 
-import com.tometrics.api.service.templates.Template
+import com.tometrics.api.services.email.services.templates.Template
 import io.github.cdimascio.dotenv.Dotenv
 import io.ktor.client.*
 import io.ktor.client.request.*

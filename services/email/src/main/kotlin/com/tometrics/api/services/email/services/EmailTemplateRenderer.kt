@@ -1,7 +1,7 @@
-package com.tometrics.api.service
+package com.tometrics.api.services.email.services
 
 import com.github.mustachejava.MustacheFactory
-import com.tometrics.api.service.templates.Template
+import com.tometrics.api.services.email.services.templates.Template
 import java.io.StringWriter
 
 interface EmailTemplateRenderer {

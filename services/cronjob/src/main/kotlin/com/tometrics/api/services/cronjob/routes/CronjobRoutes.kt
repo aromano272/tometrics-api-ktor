@@ -1,6 +1,6 @@
-package com.tometrics.api.routes
+package com.tometrics.api.services.cronjob.routes
 
-import com.tometrics.api.service.CronjobService
+import com.tometrics.api.services.cronjob.services.CronjobService
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
