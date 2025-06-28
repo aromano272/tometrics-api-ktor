@@ -8,7 +8,6 @@ class UserGrpcService(
 ) : UserGrpcServiceGrpcKt.UserGrpcServiceCoroutineImplBase() {
 
     override suspend fun validateUserIds(request: ValidateUserIdsRequest): ValidateUserIdsResponse {
-        println("UserGrpcService.validateUserIds($request)")
         return userService.validateUserIds(request.userIdsList.toSet()).let {
             validateUserIdsResponse {
                 when (it) {

@@ -10,6 +10,7 @@ include("services:servicediscovery")
 include("services:socialgraph")
 include("services:cronjob")
 include("services:email")
+include("services:garden")
 
 pluginManagement {
     repositories {

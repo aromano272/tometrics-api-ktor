@@ -1,0 +1,267 @@
+syntax = "proto3";
+
+option java_package = "com.tometrics.api.services.protos";
+option java_multiple_files = true;
+
+message Empty {
+}
+
+enum YieldUnit {
+  UNIT = 0;
+  KG = 1;
+  GRAMS = 2;
+  LB = 3;
+  OZ = 4;
+}
+
+enum SpacingRequirement {
+  VERY_CLOSE = 0;
+  CLOSE = 1;
+  MODERATE = 2;
+  WIDE = 3;
+  VERY_WIDE = 4;
+}
+
+enum SunlightRequirement {
+  FULL_SUN = 0;
+  PARTIAL_SUN = 1;
+  PARTIAL_SHADE = 2;
+  FULL_SHADE = 3;
+}
+
+enum DailySunlightRequirement {
+  LOW = 0;
+  MEDIUM = 1;
+  HIGH = 2;
+}
+
+enum SoilType {
+  SANDY = 0;
+  LOAMY = 1;
+  CLAY = 2;
+  PEATY = 3;
+  CHALKY = 4;
+  SILTY = 5;
+}
+
+enum WaterRequirement {
+  WATER_LOW = 0;
+  WATER_MEDIUM = 1;
+  WATER_HIGH = 2;
+}
+
+enum GrowthHabit {
+  DETERMINATE = 0;
+  INDETERMINATE = 1;
+  BUSH = 2;
+  VINING = 3;
+  UPRIGHT = 4;
+  ROSETTE = 5;
+  CLUMPING = 6;
+  SPREADING = 7;
+  MOUNDING = 8;
+}
+
+enum GrowingTip {
+  PRUNE_SUCKERS = 0;
+  PROVIDE_SUPPORT = 1;
+  MULCH_SOIL = 2;
+  WATER_AT_BASE = 3;
+  CROP_ROTATION = 4;
+  HILL_SOIL = 5;
+  PLANT_DEEP = 6;
+  AVOID_LIGHT_EXPOSURE = 7;
+  HARVEST_AFTER_FLOWERING = 8;
+  COOL_STORAGE = 9;
+  LOOSEN_SOIL = 10;
+  THIN_SEEDLINGS = 11;
+  CONSISTENT_MOISTURE = 12;
+  AVOID_ROCKY_SOIL = 13;
+  PREVENT_GREENING = 14;
+  PLANT_TIPS_UP = 15;
+  REDUCE_WATERING_AT_MATURITY = 16;
+  CURE_AFTER_HARVEST = 17;
+  DAY_LENGTH_SENSITIVE = 18;
+  SUPPORT_WHEN_FRUITING = 19;
+  HARVEST_WHEN_FIRM = 20;
+  PREVENT_BLOSSOM_END_ROT = 21;
+  PRODUCES_UNTIL_FROST = 22;
+  SUCCESSION_PLANTING = 23;
+  DIRECT_SOW = 24;
+  COLD_HARDY = 25;
+  HEAT_SENSITIVE = 26;
+  HEAT_TOLERANT = 27;
+  PINCH_FLOWERS = 28;
+  DEADHEAD = 29;
+  REQUIRES_POLLINATION = 30;
+  HAND_POLLINATE = 31;
+  AVOID_OVERHEAD_WATERING = 32;
+  PLANT_IN_BLOCKS = 33;
+  HARVEST_REGULARLY = 34;
+  BLANCHING = 35;
+  ACIDIC_SOIL = 36;
+  ALKALINE_SOIL = 37;
+  DEEP_ROOT_SYSTEM = 38;
+  SHALLOW_ROOT_SYSTEM = 39;
+  MOUND_PLANTING = 40;
+  TRENCH_PLANTING = 41;
+  REQUIRES_STAKING = 42;
+  NITROGEN_FIXING = 43;
+  CUT_AND_COME_AGAIN = 44;
+  PERENNIAL_CROP = 45;
+  HARVEST_SELECTIVELY = 46;
+  DROUGHT_RESISTANT = 47;
+  AVOID_TRANSPLANTING = 48;
+  COMPANION_BENEFICIAL = 49;
+  SHADE_TOLERANT = 50;
+  EARLY_SPRING_CROP = 51;
+  FALL_CROP = 52;
+  OVERWINTER = 53;
+  COOL_WEATHER_CROP = 54;
+  REMOVE_LOWER_LEAVES = 55;
+  FERTILE_SOIL = 56;
+  NEEDS_SUPPORT_CAGE = 57;
+  FLOATING_ROW_COVER = 58;
+  SLOW_TO_GERMINATE = 59;
+  SOAK_SEEDS = 60;
+  PINCH_GROWING_TIPS = 61;
+  STRATIFICATION = 62;
+  START_INDOORS = 63;
+  LOOSE_SOIL = 64;
+  HARVEST_WHEN_SMALL = 65;
+  MINIMAL_COMPANIONS = 66;
+  FROST_IMPROVES_FLAVOR = 67;
+  AVOID_HARVESTING_FIRST_YEAR = 68;
+  REMOVE_FLOWER_STALKS = 69;
+  DIVIDE_EVERY_FEW_YEARS = 70;
+  DIVIDE_BULBS = 71;
+  NEEDS_CONSTANT_MOISTURE = 72;
+  AQUATIC_FRIENDLY = 73;
+  HARVEST_AFTER_FROST = 74;
+  CONTAIN_SPREAD = 75;
+  NEEDS_SPACE = 76;
+  FULL_MATURITY_FOR_STORAGE = 77;
+  HARVEST_IN_FALL_OR_SPRING = 78;
+  NEEDS_LONG_SEASON = 79;
+  PROPER_PROCESSING_REQUIRED = 80;
+  SUBMERGED_PLANTING = 81;
+  SPECIAL_GROWING_CONDITIONS = 82;
+  SLOW_GROWING = 83;
+  WAIT_FOR_WARM_SOIL = 84;
+  AVOID_RICH_SOIL = 85;
+  SHALLOW_PLANTING = 86;
+  EDIBLE_ROOTS_ONLY = 87;
+  LONG_GROWING_SEASON = 88;
+  PREVENT_FLOWERING = 89;
+  ACIDIC_FLAVOR = 90;
+  CELERY_FLAVOR = 91;
+  SIMILAR_TO_ARTICHOKE = 92;
+  INVASIVE_TENDENCIES = 93;
+  PEST_RESISTANT = 94;
+  COLORFUL_TUBERS = 95;
+  PLANT_WHOLE_FRUIT = 96;
+  PERENNIAL_IN_TROPICS = 97;
+  MEDICINAL_PROPERTIES = 98;
+  EDIBLE_WHEN_YOUNG = 99;
+  DRY_FOR_SPONGES = 100;
+  ALL_PARTS_EDIBLE = 101;
+  NUTRITIOUS_LEAVES = 102;
+  TREE_VEGETABLE = 103;
+  PLANT_MULTIPLES = 104;
+  HARVEST_WHEN_HUSKS_SPLIT = 105;
+  REMOVE_HUSKS_BEFORE_USE = 106;
+  SAPONIN_REMOVAL = 107;
+  EDIBLE_LEAVES = 108;
+  GRAIN_AND_LEAF_CROP = 109;
+  QUICK_GROWING = 110;
+  EXCELLENT_COVER_CROP = 111;
+  ATTRACTS_POLLINATORS = 112;
+  IMPROVES_SOIL = 113;
+  SEED_CLEANING_REQUIRED = 114;
+  BIRD_PROTECTION_NEEDED = 115;
+  OIL_AND_FIBER_CROP = 116;
+  HARVEST_FOR_SEEDS = 117;
+  FORCED_FOR_CHICONS = 118;
+  COFFEE_SUBSTITUTE = 119;
+  BITTER_FLAVOR = 120;
+  MULTIPLE_ROOTS = 121;
+  SWEET_FLAVOR = 122;
+  MULTI_USE_PLANT = 123;
+  SPINACH_SUBSTITUTE = 124;
+  SLOW_TO_ESTABLISH = 125;
+  COASTAL_NATIVE = 126;
+  SALT_TOLERANT = 127;
+  HARVEST_STEMS_AND_LEAVES = 128;
+  HEAT_TOLERANT_BRASSICA = 129;
+  EDIBLE_FLOWERS = 130;
+  PEST_DETERRENT = 131;
+  COLORFUL_LEAVES = 132;
+  SELF_SEEDING = 133;
+  HUMIDITY_TOLERANT = 134;
+  MUCILAGINOUS_TEXTURE = 135;
+  FAST_GROWING = 136;
+  SHORT_DAY_TUBER_FORMATION = 137;
+  BIRD_PROTECTION = 138;
+  INOCULANT_BENEFICIAL = 139;
+  DROUGHT_TOLERANT = 140;
+}
+
+message ClimateZones {
+  repeated int32 temperate = 1;
+  repeated int32 mediterranean = 2;
+  repeated int32 continental = 3;
+  repeated int32 tropical = 4;
+  repeated int32 arid = 5;
+}
+
+message PlantYield {
+  float from = 1;
+  float to = 2;
+  YieldUnit unit = 3;
+}
+
+message PlantRef {
+  int32 id = 1;
+  string name = 2;
+}
+
+message Plant {
+  int32 id = 1;
+  string name = 2;
+  int32 time_to_harvest = 3;
+  PlantYield yield_per_plant = 4;
+  PlantYield yield_per_sq_m = 5;
+  repeated string companion_plants = 6;
+  ClimateZones climate_zones = 7;
+  SpacingRequirement spacing = 8;
+  SunlightRequirement sunlight = 9;
+  DailySunlightRequirement daily_sunlight = 10;
+  repeated SoilType soil_type = 11;
+  WaterRequirement water_requirement = 12;
+  GrowthHabit growth_habit = 13;
+  repeated GrowingTip growing_tips = 14;
+}
+
+message Planting {
+  int32 id = 1;
+  string name = 2;
+  Plant plant = 3;
+  int32 area_sq_m = 4;
+  PlantYield total_yield = 5;
+  int32 quantity = 6;
+  int64 created_at = 7;
+  int64 ready_to_harvest_at = 8;
+  string diary = 9;
+  bool harvested = 10;
+}
+
+message GetAllReadyForHarvestTodayResponse {
+  map<int32, Planting> results = 1;
+}
+
+message GetAllReadyForHarvestTodayRequest {
+}
+
+service GardenGrpcService {
+  rpc getAllReadyForHarvestToday(GetAllReadyForHarvestTodayRequest) returns (GetAllReadyForHarvestTodayResponse);
+}
