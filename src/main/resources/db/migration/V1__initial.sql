@@ -1,22 +1,3 @@
-CREATE TABLE users
-(
-    id                 SERIAL PRIMARY KEY,
-    name               TEXT    NOT NULL,
-    idp_google_email   TEXT UNIQUE,
-    idp_facebook_id    TEXT UNIQUE,
-    idp_facebook_email TEXT,
-    anon               BOOLEAN NOT NULL
-);
-
-CREATE TABLE refresh_tokens
-(
-    id         SERIAL PRIMARY KEY,
-    user_id    INT REFERENCES users (id),
-    token      TEXT UNIQUE NOT NULL,
-    expires_at TIMESTAMP   NOT NULL,
-    created_at TIMESTAMP DEFAULT now()
-);
-
 CREATE TABLE plants
 (
     id                   SERIAL PRIMARY KEY,
@@ -45,6 +26,18 @@ CREATE TABLE plantings
     user_id             INT REFERENCES users (id) ON DELETE CASCADE,
     plant_id            INT REFERENCES plants (id) ON DELETE CASCADE,
     quantity            INT       NOT NULL,
+    name                TEXT,
+    diary               TEXT NOT NULL DEFAULT '',
+    harvested           BOOLEAN NOT NULL DEFAULT false,
     created_at          TIMESTAMP DEFAULT now(),
     ready_to_harvest_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE harvests
+(
+    id                 SERIAL PRIMARY KEY,
+    planting_id        INT REFERENCES plantings (id) ON DELETE CASCADE,
+    quantity           FLOAT  NOT NULL,
+    unit               TEXT NOT NULL,
+    created_at         TIMESTAMP DEFAULT now()
 );

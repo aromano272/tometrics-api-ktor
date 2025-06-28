@@ -55,13 +55,10 @@ fun Application.configureRouting() {
     routing {
         route("/api/v1") {
             cronjobRoutes()
-            authRoutes()
             plantRoutes()
             plantingRoutes()
             designerRoutes()
-            geolocationRoutes()
             harvestRoutes()
-            userProfileRoutes()
         }
     }
 }

@@ -1,0 +1,14 @@
+### Get User
+GET https://localhost/api/v1/user-profile
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+### Put User
+PUT https://localhost/api/v1/user-profile
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+{
+  "name": "John Doe",
+  "locationId": 3040051
+}

@@ -1,4 +1,4 @@
-package com.tometrics.api.functional
+package functional
 
 import com.tometrics.api.domain.models.Planting
 import com.tometrics.api.routes.models.AddPlantingRequest

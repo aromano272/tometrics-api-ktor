@@ -1,9 +1,12 @@
-package com.tometrics.api.service
+package service
 
 import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.db.GardenDao
 import com.tometrics.api.db.models.PlantingEntity
 import com.tometrics.api.domain.models.*
+import com.tometrics.api.service.DefaultGardenService
+import com.tometrics.api.service.GardenService
+import com.tometrics.api.service.PlantService
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
