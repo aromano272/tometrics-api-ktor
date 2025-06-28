@@ -1,27 +1,69 @@
 package com.tometrics.api.services.user.services
 
+import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.common.domain.models.UserId
+import com.tometrics.api.services.user.db.GeoNameCity500Dao
 import com.tometrics.api.services.user.db.UserDao
+import com.tometrics.api.services.user.db.models.toDomain
+import com.tometrics.api.services.user.db.models.toLocationInfo
+import com.tometrics.api.services.user.domain.models.ClimateZone
+import com.tometrics.api.services.user.domain.models.User
 import io.ktor.util.logging.*
 
 interface UserService {
 
     suspend fun validateUserIds(userIds: Set<UserId>): ValidateUsersResult
 
+    suspend fun get(requester: Requester): User
+    suspend fun get(userId: UserId): User
+    suspend fun update(
+        requester: Requester,
+        name: String?,
+        locationId: LocationInfoId?,
+        metricUnits: Boolean?,
+        climateZone: ClimateZone?,
+    ): User
+
 }
 
 class DefaultUserService(
     private val logger: Logger,
-    private val dao: UserDao,
+    private val userDao: UserDao,
+    private val city500Dao: GeoNameCity500Dao,
 ) : UserService {
 
     override suspend fun validateUserIds(userIds: Set<UserId>): ValidateUsersResult {
         logger.info("validateUserIds(userIds: {})", userIds)
-        val all = dao.getAllByIds(userIds)
+        val all = userDao.getAllByIds(userIds)
         val foundIds = all.map { it.id }.toSet()
         val missingIds = userIds - foundIds
         if (missingIds.isNotEmpty()) return ValidateUsersResult.UserIdsNotFound(missingIds)
         return ValidateUsersResult.Success
+    }
+
+
+    override suspend fun get(requester: Requester): User =
+        get(requester.userId)
+
+    override suspend fun get(userId: UserId): User {
+        val entity = (userDao.findById(userId)
+            ?: throw IllegalStateException("User not found: $userId"))
+
+        val location = entity.locationId?.let { city500Dao.getById(it) }?.toLocationInfo()
+
+        return entity.toDomain(location)
+    }
+
+    override suspend fun update(
+        requester: Requester,
+        name: String?,
+        locationId: LocationInfoId?,
+        metricUnits: Boolean?,
+        climateZone: ClimateZone?,
+    ): User {
+        userDao.update(requester.userId, name, null, null, null, null, locationId, metricUnits, climateZone)
+        return get(requester)
     }
 
 }

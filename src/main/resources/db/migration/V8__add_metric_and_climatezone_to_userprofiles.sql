@@ -1,3 +1,0 @@
-ALTER TABLE userprofiles
-ADD COLUMN metric_units BOOLEAN DEFAULT TRUE,
-ADD COLUMN climate_zone TEXT DEFAULT NULL;

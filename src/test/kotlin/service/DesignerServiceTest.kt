@@ -1,6 +1,9 @@
-package com.tometrics.api.service
+package service
 
 import com.tometrics.api.domain.models.*
+import com.tometrics.api.service.DefaultDesignerService
+import com.tometrics.api.service.DesignerService
+import com.tometrics.api.service.PlantService
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest

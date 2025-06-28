@@ -1,0 +1,126 @@
+package service
+
+import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.services.user.db.GeoNameCity500Dao
+import com.tometrics.api.services.user.db.UserDao
+import com.tometrics.api.services.user.db.models.UserEntity
+import com.tometrics.api.services.user.domain.models.User
+import com.tometrics.api.services.user.services.DefaultUserService
+import io.ktor.util.logging.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import java.time.Instant
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class UserServiceTest {
+
+    private val logger: Logger = mockk()
+    private val userDao: UserDao = mockk()
+    private val city500Dao: GeoNameCity500Dao = mockk()
+    private val userService = DefaultUserService(
+        logger,
+        userDao,
+        city500Dao,
+    )
+
+    @Test
+    fun `given user exists when get profile then return it`() = runTest {
+        val requester = Requester(1)
+
+        val entity = UserEntity(
+            id = 1,
+            name = "Test User",
+            idpGoogleEmail = null,
+            idpFacebookId = null,
+            idpFacebookEmail = null,
+            anon = false,
+            locationId = null,
+            metricUnits = true,
+            climateZone = null,
+            updatedAt = Instant.now(),
+        )
+        coEvery { userDao.findById(1) }.returns(entity)
+
+        val actual = userService.get(requester)
+
+        assertEquals(
+            User(
+                id = 1,
+                name = "Test User",
+                idpGoogleEmail = null,
+                idpFacebookId = null,
+                idpFacebookEmail = null,
+                anon = false,
+                location = null,
+                metricUnits = true,
+                climateZone = null,
+                updatedAt = actual.updatedAt, // ignoring updatedAt checking
+            ),
+            actual,
+        )
+    }
+
+    @Test
+    fun `given user exists when update profile then return updated profile`() = runTest {
+        val requester = Requester(1)
+
+        val originalEntity = UserEntity(
+            id = 1,
+            name = "Test User",
+            idpGoogleEmail = null,
+            idpFacebookId = null,
+            idpFacebookEmail = null,
+            anon = false,
+            locationId = null,
+            metricUnits = true,
+            climateZone = null,
+            updatedAt = Instant.now(),
+        )
+
+        val updatedEntity = UserEntity(
+            id = 1,
+            name = "Updated Name",
+            idpGoogleEmail = null,
+            idpFacebookId = null,
+            idpFacebookEmail = null,
+            anon = false,
+            locationId = null,
+            metricUnits = false,
+            climateZone = null,
+            updatedAt = Instant.now(),
+        )
+
+        coEvery { userDao.update(1, "Updated Name", null, null, null, null, 123, false, null) }.returns(1)
+        coEvery { userDao.findById(1) }.returns(updatedEntity)
+
+        val actual = userService.update(
+            requester,
+            name = "Updated Name",
+            locationId = 123,
+            metricUnits = false,
+            climateZone = null,
+        )
+
+        coVerify { userDao.update(1, "Updated Name", null, null, null, null, 123, false, null) }
+
+        assertEquals(
+            User(
+                id = 1,
+                name = "Updated Name",
+                idpGoogleEmail = null,
+                idpFacebookId = null,
+                idpFacebookEmail = null,
+                anon = false,
+                location = null,
+                metricUnits = false,
+                climateZone = null,
+                updatedAt = actual.updatedAt, // ignoring updatedAt checking
+            ),
+            actual,
+        )
+    }
+
+}

@@ -80,7 +80,7 @@ abstract class BaseE2ETest : KoinTest, TestUtilMethods {
             .cleanDisabled(false)
             .locations(
                 "classpath:db/migration",
-                "classpath:com/tometrics/api/db/migration",
+                "classpath:com/tometrics/api/services/user/db/migration",
             )
             .load()
             .run {

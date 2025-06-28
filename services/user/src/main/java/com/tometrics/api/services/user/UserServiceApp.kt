@@ -7,8 +7,10 @@ import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.ValidationError
 import com.tometrics.api.common.to
 import com.tometrics.api.db.di.jdbiModule
-import com.tometrics.api.services.user.domain.models.ServiceError
-import com.tometrics.api.services.user.domain.models.UserIdsNotFoundError
+import com.tometrics.api.services.user.domain.models.*
+import com.tometrics.api.services.user.routes.authRoutes
+import com.tometrics.api.services.user.routes.geolocationRoutes
+import com.tometrics.api.services.user.routes.userRoutes
 import com.tometrics.api.services.user.services.UserGrpcService
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
@@ -82,11 +84,12 @@ fun Application.configureDI() {
         modules(
             jdbiModule(
                 "classpath:db/migration",
-                "classpath:com/tometrics/api/db/migration",
+                "classpath:com/tometrics/api/services/user/db/migration",
             ),
             appModule(this@configureDI),
-            serviceModule,
+            serviceModule(this@configureDI),
             databaseModule,
+            externalModule,
         )
     }
 }
@@ -133,6 +136,9 @@ fun Application.configureRouting() {
         exception<ServiceError> { call, cause ->
             val (status, message, code) = when (cause) {
                 is UserIdsNotFoundError -> HttpStatusCode.BadRequest to "Missing user ids: ${cause.missingIds}" to "USER_IDS_NOT_FOUND"
+                is ConflictException -> HttpStatusCode.Conflict to cause.message to "TODO"
+                is UnauthorizedException -> HttpStatusCode.Unauthorized to cause.message to "TODO"
+                is BadRequestException -> HttpStatusCode.BadRequest to cause.message to "TODO"
             }
 
             call.application.environment.log.warn("Handled error", cause)
@@ -175,7 +181,10 @@ fun Application.configureRouting() {
     }
 
     routing {
-        route("/api/v1/user") {
+        route("/api/v1") {
+            authRoutes()
+            geolocationRoutes()
+            userRoutes()
         }
     }
 }
