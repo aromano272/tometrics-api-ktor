@@ -10,20 +10,19 @@ interface JwtService {
 }
 
 class DefaultJwtService(
+    private val developmentMode: Boolean,
     private val jwtAudience: String,
     private val jwtDomain: String,
     private val jwtSecret: String,
-    private val developmentMode: Boolean,
 ) : JwtService {
 
     constructor(
         dotenv: Dotenv,
-        developmentMode: Boolean,
     ) : this(
+        developmentMode = dotenv["DEVELOPMENT"] != null,
         jwtAudience = dotenv["JWT_AUDIENCE"],
         jwtDomain = dotenv["JWT_DOMAIN"],
         jwtSecret = dotenv["JWT_SECRET"],
-        developmentMode = developmentMode,
     )
 
     override fun create(userId: Int, anon: Boolean): String = JWT.create()

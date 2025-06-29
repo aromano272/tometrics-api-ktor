@@ -4,15 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.plugin.serialization)
 }
 
-group = "com.tometrics.api.services.socialgraph"
+group = "com.tometrics.api.services.commonservice"
 version = "0.0.1"
-
-application {
-    mainClass = "com.tometrics.api.services.socialgraph.SocialGraphServiceAppKt"
-
-    val isDevelopment: Boolean = project.ext.has("development")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
-}
 
 repositories {
     mavenCentral()
@@ -23,14 +16,11 @@ dependencies {
     implementation(project(":db"))
     implementation(project(":auth"))
     implementation(project(":common"))
-    implementation(project(":services:commongrpc"))
-    implementation(project(":services:commonservice"))
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.postgresql)
-    implementation(libs.h2)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.logging)
@@ -60,7 +50,6 @@ dependencies {
     implementation(libs.openapi.generator)
     implementation(libs.swagger.ui)
     implementation(libs.schema.kenerator.swagger)
-    implementation(libs.google.api.client)
 
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit)

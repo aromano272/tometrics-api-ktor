@@ -21,6 +21,7 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
+    implementation(project(":services:commonservice"))
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)

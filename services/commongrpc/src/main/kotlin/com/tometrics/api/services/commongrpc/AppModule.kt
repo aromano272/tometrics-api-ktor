@@ -11,7 +11,7 @@ import io.github.cdimascio.dotenv.dotenv
 import io.grpc.ManagedChannelBuilder
 import org.koin.dsl.module
 
-val serviceCommonGrpcModule = module {
+val commonServicesGrpcModule = module {
 
     single<Dotenv> {
         dotenv {

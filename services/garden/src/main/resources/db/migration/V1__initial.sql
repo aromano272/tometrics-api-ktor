@@ -1,6 +1,6 @@
 CREATE TABLE plants
 (
-    id                   SERIAL PRIMARY KEY,
+    id                   INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name                 TEXT    NOT NULL,
     time_to_harvest      INTEGER NOT NULL,
     yield_per_plant_from FLOAT   NOT NULL,
@@ -22,9 +22,9 @@ CREATE TABLE plants
 
 CREATE TABLE plantings
 (
-    id                  SERIAL PRIMARY KEY,
-    user_id             INT REFERENCES users (id) ON DELETE CASCADE,
-    plant_id            INT REFERENCES plants (id) ON DELETE CASCADE,
+    id                  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id             INT NOT NULL,
+    plant_id            INT NOT NULL REFERENCES plants (id) ON DELETE CASCADE,
     quantity            INT       NOT NULL,
     name                TEXT,
     diary               TEXT NOT NULL DEFAULT '',
@@ -35,8 +35,8 @@ CREATE TABLE plantings
 
 CREATE TABLE harvests
 (
-    id                 SERIAL PRIMARY KEY,
-    planting_id        INT REFERENCES plantings (id) ON DELETE CASCADE,
+    id                 INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    planting_id        INT NOT NULL REFERENCES plantings (id) ON DELETE CASCADE,
     quantity           FLOAT  NOT NULL,
     unit               TEXT NOT NULL,
     created_at         TIMESTAMP DEFAULT now()

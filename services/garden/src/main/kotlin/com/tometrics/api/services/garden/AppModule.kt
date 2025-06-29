@@ -1,31 +1,14 @@
 package com.tometrics.api.services.garden
 
 
+import com.tometrics.api.services.commongrpc.services.GardenGrpcService
 import com.tometrics.api.services.garden.db.*
 import com.tometrics.api.services.garden.services.*
-import io.github.cdimascio.dotenv.Dotenv
-import io.github.cdimascio.dotenv.dotenv
-import io.ktor.server.application.*
-import io.ktor.util.logging.*
 import org.jdbi.v3.core.Jdbi
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
-fun appModule(application: Application) = module {
-
-    single<Dotenv> {
-        dotenv {
-            ignoreIfMissing = true
-        }
-    }
-
-    // TODO(aromano): move this to commonservice module, along with dotenv for eg.
-    factory<Logger> {
-        application.environment.log
-    }
-
-}
-
-fun serviceModule(application: Application) = module {
+val serviceModule = module {
 
     single<PlantService> {
         DefaultPlantService(
@@ -44,7 +27,7 @@ fun serviceModule(application: Application) = module {
             gardenDao = get(),
             plantService = get(),
         )
-    }
+    }.bind(GardenGrpcService::class)
 
     single<DesignerService> {
         DefaultDesignerService(

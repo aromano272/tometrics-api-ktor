@@ -4,89 +4,31 @@ package com.tometrics.api.services.user
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.v2.ApacheHttpTransport
 import com.google.api.client.json.gson.GsonFactory
+import com.tometrics.api.services.commongrpc.services.UserGrpcService
 import com.tometrics.api.services.user.db.*
 import com.tometrics.api.services.user.nominatim.DefaultNominatimClient
 import com.tometrics.api.services.user.nominatim.NominatimClient
 import com.tometrics.api.services.user.services.*
 import com.tometrics.api.services.user.services.geolocation.*
 import io.github.cdimascio.dotenv.Dotenv
-import io.github.cdimascio.dotenv.dotenv
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.application.*
-import io.ktor.util.logging.Logger
-import kotlinx.serialization.json.Json
+import io.ktor.util.logging.*
 import org.jdbi.v3.core.Jdbi
 import org.koin.core.qualifier.qualifier
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.slf4j.LoggerFactory
 
 val qualifierLoggerUnmatchedPlaces = qualifier("loggerUnmatchedPlaces")
 
-fun appModule(application: Application) = module {
-
-    single<Dotenv> {
-        dotenv {
-            ignoreIfMissing = true
-        }
-    }
-
-    // TODO(aromano): move this to commonservice module, along with dotenv for eg.
-    factory<Logger> {
-        application.environment.log
-    }
+val appModule = module {
 
     factory<Logger>(qualifierLoggerUnmatchedPlaces) {
         LoggerFactory.getLogger("UnmatchedPlaceLogger")
     }
 
-    factory<GoogleIdTokenVerifier> {
-        val dotenv: Dotenv = get()
-        val transport = ApacheHttpTransport()
-        val jsonFactory = GsonFactory.getDefaultInstance()
-        GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-            .setAudience(listOf(dotenv["GOOGLE_OAUTH_CLIENT_ID"]))
-            .build()
-    }
-
-    // TODO(aromano): move to commonservices or something
-    single {
-        HttpClient(CIO) {
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                })
-            }
-            install(Logging) {
-                level = LogLevel.INFO
-            }
-            install(DefaultRequest) {
-                contentType(ContentType.Application.Json)
-            }
-            // TODO(aromano): probably no longer needed
-            engine {
-                https {
-                    // Trust all certificates for local development with mkcert
-                    trustManager = object : javax.net.ssl.X509TrustManager {
-                        override fun checkClientTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
-                        override fun checkServerTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
-                        override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> = emptyArray()
-                    }
-                }
-            }
-        }
-    }
-
 }
 
-fun serviceModule(application: Application) = module {
+val serviceModule = module {
 
     single<UserService> {
         DefaultUserService(
@@ -94,7 +36,7 @@ fun serviceModule(application: Application) = module {
             userDao = get(),
             city500Dao = get(),
         )
-    }
+    }.bind(UserGrpcService::class)
 
     single<DefaultUserGrpcService> {
         DefaultUserGrpcService(
@@ -105,7 +47,6 @@ fun serviceModule(application: Application) = module {
     single<JwtService> {
         DefaultJwtService(
             dotenv = get(),
-            developmentMode = application.developmentMode,
         )
     }
 
@@ -190,6 +131,15 @@ val externalModule = module {
         DefaultNominatimClient(
             client = get(),
         )
+    }
+
+    factory<GoogleIdTokenVerifier> {
+        val dotenv: Dotenv = get()
+        val transport = ApacheHttpTransport()
+        val jsonFactory = GsonFactory.getDefaultInstance()
+        GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+            .setAudience(listOf(dotenv["GOOGLE_OAUTH_CLIENT_ID"]))
+            .build()
     }
 
 }
