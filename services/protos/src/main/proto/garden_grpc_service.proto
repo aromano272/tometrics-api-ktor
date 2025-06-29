@@ -256,12 +256,12 @@ message Planting {
 }
 
 message GetAllReadyForHarvestTodayResponse {
-  map<int32, Planting> results = 1;
-}
-
-message GetAllReadyForHarvestTodayRequest {
+  message ListPlanting {
+    repeated Planting planting = 1;
+  }
+  map<int32, ListPlanting> results = 1;
 }
 
 service GardenGrpcService {
-  rpc getAllReadyForHarvestToday(GetAllReadyForHarvestTodayRequest) returns (GetAllReadyForHarvestTodayResponse);
+  rpc getAllReadyForHarvestToday(Empty) returns (GetAllReadyForHarvestTodayResponse);
 }

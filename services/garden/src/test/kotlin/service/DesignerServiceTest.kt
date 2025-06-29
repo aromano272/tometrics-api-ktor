@@ -1,17 +1,17 @@
 package service
 
+import com.tometrics.api.common.domain.models.BadRequestError
+import com.tometrics.api.common.domain.models.NotFoundError
 import com.tometrics.api.services.garden.domain.models.*
-import com.tometrics.api.service.DefaultDesignerService
-import com.tometrics.api.service.DesignerService
-import com.tometrics.api.service.PlantService
+import com.tometrics.api.services.garden.services.DefaultDesignerService
+import com.tometrics.api.services.garden.services.DesignerService
+import com.tometrics.api.services.garden.services.PlantService
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import kotlin.collections.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.text.toInt
 
 class DesignerServiceTest {
     private val plantService: PlantService = mockk()
@@ -73,7 +73,7 @@ class DesignerServiceTest {
             )
         )
 
-        assertFailsWith<BadRequestException> {
+        assertFailsWith<BadRequestError> {
             designerService.update(cells)
         }
     }
@@ -90,7 +90,7 @@ class DesignerServiceTest {
         )
         coEvery { plantService.getAllByIds(setOf(999)) } returns emptyList()
 
-        assertFailsWith<NotFoundException> {
+        assertFailsWith<NotFoundError> {
             designerService.update(cells)
         }
     }

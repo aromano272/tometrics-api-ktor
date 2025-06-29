@@ -2,14 +2,7 @@ package com.tometrics.api.services.garden
 
 
 import com.tometrics.api.services.garden.db.*
-import com.tometrics.api.services.garden.services.DefaultDesignerService
-import com.tometrics.api.services.garden.services.DefaultGardenService
-import com.tometrics.api.services.garden.services.DefaultHarvestService
-import com.tometrics.api.services.garden.services.DefaultPlantService
-import com.tometrics.api.services.garden.services.DesignerService
-import com.tometrics.api.services.garden.services.GardenService
-import com.tometrics.api.services.garden.services.HarvestService
-import com.tometrics.api.services.garden.services.PlantService
+import com.tometrics.api.services.garden.services.*
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.server.application.*
@@ -37,6 +30,12 @@ fun serviceModule(application: Application) = module {
     single<PlantService> {
         DefaultPlantService(
             plantDao = get()
+        )
+    }
+
+    single {
+        DefaultGardenGrpcService(
+            service = get(),
         )
     }
 

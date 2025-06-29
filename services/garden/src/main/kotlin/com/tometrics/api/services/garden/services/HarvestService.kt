@@ -1,9 +1,12 @@
 package com.tometrics.api.services.garden.services
 
 import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.common.domain.models.ConflictError
 import com.tometrics.api.common.domain.models.Millis
-import com.tometrics.api.db.HarvestDao
+import com.tometrics.api.services.garden.db.HarvestDao
+import com.tometrics.api.services.garden.db.models.toDomain
 import com.tometrics.api.services.garden.domain.models.*
+import io.ktor.server.plugins.*
 import java.time.Instant
 
 interface HarvestService {
@@ -65,7 +68,7 @@ class DefaultHarvestService(
             createdAt = createdAt?.let { Instant.ofEpochMilli(it) },
         )
         val harvest = harvestDao.findById(id)
-            ?: throw ConflictException("Couldn't create harvest")
+            ?: throw ConflictError("Couldn't create harvest")
 
         return harvest.toDomain()
     }

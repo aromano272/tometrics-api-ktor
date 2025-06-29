@@ -1,8 +1,8 @@
 package com.tometrics.api.services.garden.routes
 
-import com.tometrics.api.domain.models.GardenCellRef
-import com.tometrics.api.domain.models.GardenDesign
-import com.tometrics.api.service.DesignerService
+import com.tometrics.api.services.garden.domain.models.GardenCellRef
+import com.tometrics.api.services.garden.domain.models.GardenDesign
+import com.tometrics.api.services.garden.services.DesignerService
 import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.put
 import io.github.smiley4.ktoropenapi.route

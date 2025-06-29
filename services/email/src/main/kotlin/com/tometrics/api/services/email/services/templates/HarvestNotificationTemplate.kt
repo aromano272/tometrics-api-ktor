@@ -1,7 +1,7 @@
 package com.tometrics.api.services.email.services.templates
 
-import com.tometrics.api.services.commonclient.models.garden.GrpcPlanting
-import com.tometrics.api.services.commonclient.models.garden.GrpcYieldUnit
+import com.tometrics.api.services.commongrpc.models.garden.GrpcPlanting
+import com.tometrics.api.services.commongrpc.models.garden.GrpcYieldUnit
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

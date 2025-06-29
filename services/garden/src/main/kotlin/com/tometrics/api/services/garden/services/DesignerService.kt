@@ -1,8 +1,8 @@
 package com.tometrics.api.services.garden.services
 
+import com.tometrics.api.common.domain.models.BadRequestError
+import com.tometrics.api.common.domain.models.NotFoundError
 import com.tometrics.api.services.garden.domain.models.*
-import io.ktor.server.plugins.BadRequestException
-import io.ktor.server.plugins.NotFoundException
 
 interface DesignerService {
     suspend fun get(): GardenDesign
@@ -60,7 +60,7 @@ class DefaultDesignerService(
 
         cells.forEachIndexed { y, row ->
             row.forEachIndexed { x, cell ->
-                if (cell.x != x || cell.y != y) throw BadRequestException("Cells are not ordered")
+                if (cell.x != x || cell.y != y) throw BadRequestError("Cells are not ordered")
                 if (!visited[y][x] && cell.plantId != null) {
                     val result = dfs(x, y, cell)
                     plantedContiguous += result
@@ -72,7 +72,7 @@ class DefaultDesignerService(
         val resolvedCells = cells.map { rows ->
             rows.map { cell ->
                 val plant = plants[cell.plantId]
-                if (cell.plantId != null && plant == null) throw NotFoundException("Plant #${cell.plantId} not found")
+                if (cell.plantId != null && plant == null) throw NotFoundError("Plant #${cell.plantId} not found")
                 cell.toDomain(plant)
             }
         }

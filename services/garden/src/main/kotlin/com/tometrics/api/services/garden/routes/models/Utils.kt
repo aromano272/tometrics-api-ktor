@@ -1,6 +1,6 @@
 package com.tometrics.api.services.garden.routes.models
 
-import com.tometrics.api.domain.models.BadRequestException
+import com.tometrics.api.common.domain.models.BadRequestError
 import io.ktor.http.*
 
 inline fun <reified T : Enum<T>> Parameters.getAndValidateEnum(name: String): T? =
@@ -16,6 +16,6 @@ inline fun <reified T : Enum<T>> Parameters.getAllAndValidateEnum(name: String):
 inline fun <reified T : Enum<T>> enumValueOfOrThrowBadRequest(name: String, field: String): T = try {
     enumValueOf<T>(name.uppercase())
 } catch (ex: Exception) {
-    throw BadRequestException("Invalid $field value, expected: ${T::class.java.enumConstants.toList()}, got: ${name.uppercase()}")
+    throw BadRequestError("Invalid $field value, expected: ${T::class.java.enumConstants.toList()}, got: ${name.uppercase()}")
 }
 

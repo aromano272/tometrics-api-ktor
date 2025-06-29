@@ -1,11 +1,11 @@
 package com.tometrics.api.services.garden.db.migration
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.tometrics.api.services.protos.YieldUnit
+import com.tometrics.api.services.garden.db.models.toEntity
+import com.tometrics.api.services.garden.domain.models.*
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 import org.postgresql.util.PGobject
-import com.tometrics.api.services.garden.domain.models.*
 
 @Suppress("unused", "ClassName")
 class V2__insert_initial_plants : BaseJavaMigration() {

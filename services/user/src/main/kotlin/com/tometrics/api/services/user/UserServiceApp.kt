@@ -15,7 +15,7 @@ import com.tometrics.api.services.user.domain.models.*
 import com.tometrics.api.services.user.routes.authRoutes
 import com.tometrics.api.services.user.routes.geolocationRoutes
 import com.tometrics.api.services.user.routes.userRoutes
-import com.tometrics.api.services.user.services.UserGrpcService
+import com.tometrics.api.services.user.services.DefaultUserGrpcService
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.config.SchemaGenerator
@@ -57,7 +57,7 @@ fun main(args: Array<String>): Unit {
     var attempt = 0
     while (true) {
         try {
-            val grpcService: UserGrpcService = get(UserGrpcService::class.java)
+            val grpcService: DefaultUserGrpcService = get(DefaultUserGrpcService::class.java)
             val grpcServer = ServerBuilder
                 .forPort(9082)
                 .addService(grpcService)

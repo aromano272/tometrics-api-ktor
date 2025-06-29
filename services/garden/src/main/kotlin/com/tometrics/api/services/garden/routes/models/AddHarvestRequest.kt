@@ -1,8 +1,8 @@
 package com.tometrics.api.services.garden.routes.models
 
 import com.tometrics.api.common.domain.models.Millis
-import com.tometrics.api.domain.models.PlantingId
-import com.tometrics.api.domain.models.YieldUnit
+import com.tometrics.api.services.garden.domain.models.PlantingId
+import com.tometrics.api.services.garden.domain.models.YieldUnit
 import kotlinx.serialization.Serializable
 
 @Serializable

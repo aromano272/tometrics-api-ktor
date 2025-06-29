@@ -1,8 +1,7 @@
 package com.tometrics.api.services.socialgraph.service
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.services.commonclient.UserGrpcClient
-import com.tometrics.api.services.protos.validateUserIdsRequest
+import com.tometrics.api.services.commongrpc.services.UserGrpcClient
 import com.tometrics.api.services.socialgraph.db.FollowerDao
 import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
 import io.ktor.util.logging.*
@@ -33,18 +32,14 @@ class DefaultSocialGraphService(
 
     override suspend fun follow(requesterId: UserId, userId: UserId) {
         logger.info("follow(requesterId: $requesterId, userId: $userId)")
-        val result = userGrpcClient.validateUserIds(validateUserIdsRequest {
-            userIds += setOf(requesterId, userId)
-        })
+        val result = userGrpcClient.validateUserIds(setOf(requesterId, userId))
         logger.info("follow(requesterId: $requesterId, userId: $userId) result: $result")
         dao.insert(requesterId, userId)
     }
 
     override suspend fun unfollow(requesterId: UserId, userId: UserId) {
         logger.info("unfollow(requesterId: $requesterId, userId: $userId)")
-        val result = userGrpcClient.validateUserIds(validateUserIdsRequest {
-            userIds += setOf(requesterId, userId)
-        })
+        val result = userGrpcClient.validateUserIds(setOf(requesterId, userId))
         logger.info("unfollow(requesterId: $requesterId, userId: $userId) result: $result")
         dao.delete(requesterId, userId)
     }

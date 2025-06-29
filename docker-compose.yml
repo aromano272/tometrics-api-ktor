@@ -35,19 +35,6 @@ services:
       - db
       - servicediscovery
 
-  main:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      no_cache: true
-    container_name: tometrics-main
-    env_file: .env
-    networks:
-      - tometrics-network
-    depends_on:
-      - db
-      - servicediscovery
-
   socialgraph:
     build:
       context: .

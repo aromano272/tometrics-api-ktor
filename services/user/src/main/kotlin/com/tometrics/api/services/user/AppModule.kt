@@ -96,9 +96,9 @@ fun serviceModule(application: Application) = module {
         )
     }
 
-    single<UserGrpcService> {
-        UserGrpcService(
-            userService = get(),
+    single<DefaultUserGrpcService> {
+        DefaultUserGrpcService(
+            service = get(),
         )
     }
 

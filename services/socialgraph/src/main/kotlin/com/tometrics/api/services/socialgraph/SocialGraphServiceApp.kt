@@ -10,7 +10,7 @@ import com.tometrics.api.common.domain.models.NotFoundError
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.ValidationError
 import com.tometrics.api.db.di.jdbiModule
-import com.tometrics.api.services.commonclient.serviceCommonClientModule
+import com.tometrics.api.services.commongrpc.serviceCommonGrpcModule
 import com.tometrics.api.services.socialgraph.domain.models.ServiceError
 import com.tometrics.api.services.socialgraph.routes.socialGraphRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
@@ -54,7 +54,7 @@ fun Application.configureDI() {
                 "classpath:db/migration",
                 "classpath:com/tometrics/api/db/migration",
             ),
-            serviceCommonClientModule,
+            serviceCommonGrpcModule,
             appModule(this@configureDI),
             serviceModule,
             databaseModule,

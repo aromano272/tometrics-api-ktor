@@ -1,6 +1,8 @@
 package com.tometrics.api.services.email
 
 
+import com.github.mustachejava.DefaultMustacheFactory
+import com.github.mustachejava.MustacheFactory
 import com.tometrics.api.services.email.services.EmailService
 import com.tometrics.api.services.email.services.EmailTemplateRenderer
 import com.tometrics.api.services.email.services.MailgunEmailService
@@ -30,6 +32,10 @@ fun appModule(application: Application) = module {
     // TODO(aromano): move this to commonservice module, along with dotenv for eg.
     factory<Logger> {
         application.environment.log
+    }
+
+    single<MustacheFactory> {
+        DefaultMustacheFactory("templates")
     }
 
     // TODO(aromano): move to commonservices or something

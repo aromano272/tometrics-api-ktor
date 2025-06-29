@@ -1,20 +1,19 @@
 package com.tometrics.api.services.garden.routes
 
-import com.tometrics.api.domain.models.BadRequestException
-import com.tometrics.api.domain.models.Planting
 import com.tometrics.api.auth.domain.models.requireRequester
-import com.tometrics.api.service.GardenService
+import com.tometrics.api.services.garden.domain.models.Planting
 import com.tometrics.api.services.garden.routes.models.AddPlantingRequest
 import com.tometrics.api.services.garden.routes.models.GetAllPlantingsResponse
 import com.tometrics.api.services.garden.routes.models.PatchPlantingRequest
+import com.tometrics.api.services.garden.services.GardenService
 import io.github.smiley4.ktoropenapi.*
 import io.ktor.http.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
-import kotlin.compareTo
 
 fun Route.plantingRoutes() {
     val gardenService: GardenService by inject()
@@ -117,7 +116,7 @@ fun Route.plantingRoutes() {
                 val requester = call.requireRequester()
                 // TODO if the wrong data comes in it throws a 500, it should print a nicer error and not a 500
                 val request = call.receive<AddPlantingRequest>()
-                if (request.quantity compareTo 0) throw BadRequestException("quantity needs to be greater than 0")
+                if (request.quantity <= 0) throw BadRequestException("quantity needs to be greater than 0")
 
                 val planting = gardenService.add(requester, request.plantId, request.quantity)
                 call.respond(planting)

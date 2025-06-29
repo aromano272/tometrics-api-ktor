@@ -3,6 +3,8 @@ package com.tometrics.api.services.user.services
 import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.common.domain.models.UserId
+import com.tometrics.api.services.commongrpc.models.user.GrpcValidateUsersResult
+import com.tometrics.api.services.commongrpc.services.UserGrpcService
 import com.tometrics.api.services.user.db.GeoNameCity500Dao
 import com.tometrics.api.services.user.db.UserDao
 import com.tometrics.api.services.user.db.models.toDomain
@@ -11,9 +13,7 @@ import com.tometrics.api.services.user.domain.models.ClimateZone
 import com.tometrics.api.services.user.domain.models.User
 import io.ktor.util.logging.*
 
-interface UserService {
-
-    suspend fun validateUserIds(userIds: Set<UserId>): ValidateUsersResult
+interface UserService : UserGrpcService {
 
     suspend fun get(requester: Requester): User
     suspend fun get(userId: UserId): User
@@ -33,13 +33,13 @@ class DefaultUserService(
     private val city500Dao: GeoNameCity500Dao,
 ) : UserService {
 
-    override suspend fun validateUserIds(userIds: Set<UserId>): ValidateUsersResult {
+    override suspend fun validateUserIds(userIds: Set<UserId>): GrpcValidateUsersResult {
         logger.info("validateUserIds(userIds: {})", userIds)
         val all = userDao.getAllByIds(userIds)
         val foundIds = all.map { it.id }.toSet()
         val missingIds = userIds - foundIds
-        if (missingIds.isNotEmpty()) return ValidateUsersResult.UserIdsNotFound(missingIds)
-        return ValidateUsersResult.Success
+        if (missingIds.isNotEmpty()) return GrpcValidateUsersResult.UserIdsNotFound(missingIds)
+        return GrpcValidateUsersResult.Success
     }
 
 

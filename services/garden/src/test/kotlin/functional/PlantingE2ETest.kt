@@ -4,7 +4,7 @@ import com.tometrics.api.services.garden.domain.models.Planting
 import com.tometrics.api.services.garden.routes.models.AddPlantingRequest
 import com.tometrics.api.services.garden.routes.models.GetAllPlantingsResponse
 import com.tometrics.api.services.garden.routes.models.PatchPlantingRequest
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,7 +12,7 @@ class PlantingE2ETest : BaseE2ETest() {
 
     @Test
     fun `complete planting CRUD flow`() = runApp {
-        val (accessToken, _) = registerAnon()
+        val (accessToken, _) = registerAnon().second
 
         // Create first planting
         val planting1: Planting = postAndAssert(
@@ -74,8 +74,8 @@ class PlantingE2ETest : BaseE2ETest() {
 
     @Test
     fun `error cases for planting operations`() = runApp {
-        val (accessToken, _) = registerAnon()
-        val (otherUserToken, _) = registerAnon()
+        val (accessToken, _) = registerAnon().second
+        val (otherUserToken, _) = registerAnon().second
 
         // Create a planting to test with
         val planting: Planting = postAndAssert(

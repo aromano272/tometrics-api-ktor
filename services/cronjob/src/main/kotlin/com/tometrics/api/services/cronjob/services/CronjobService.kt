@@ -1,7 +1,7 @@
 package com.tometrics.api.services.cronjob.services
 
-import com.tometrics.api.services.commonclient.GardenGrpcClient
-import com.tometrics.api.services.commonclient.UserGrpcClient
+import com.tometrics.api.services.commongrpc.services.GardenGrpcClient
+import com.tometrics.api.services.commongrpc.services.UserGrpcClient
 import io.ktor.util.logging.*
 
 interface CronjobService {

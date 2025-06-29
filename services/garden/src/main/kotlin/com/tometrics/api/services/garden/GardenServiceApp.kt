@@ -1,13 +1,15 @@
 package com.tometrics.api.services.garden
 
 import com.tometrics.api.auth.configureSecurity
-import com.tometrics.api.common.domain.models.CommonError
-import com.tometrics.api.common.domain.models.ErrorResponse
-import com.tometrics.api.common.domain.models.UnauthorizedError
-import com.tometrics.api.common.domain.models.ValidationError
+import com.tometrics.api.common.domain.models.*
 import com.tometrics.api.common.to
 import com.tometrics.api.db.di.jdbiModule
-import com.tometrics.api.services.garden.domain.models.*
+import com.tometrics.api.services.garden.domain.models.ServiceError
+import com.tometrics.api.services.garden.routes.designerRoutes
+import com.tometrics.api.services.garden.routes.harvestRoutes
+import com.tometrics.api.services.garden.routes.plantRoutes
+import com.tometrics.api.services.garden.routes.plantingRoutes
+import com.tometrics.api.services.garden.services.DefaultGardenGrpcService
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.config.SchemaGenerator
@@ -21,7 +23,6 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
@@ -34,7 +35,6 @@ import org.koin.java.KoinJavaComponent.get
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
-import kotlin.jvm.java
 
 fun main(args: Array<String>): Unit {
     embeddedServer(
@@ -51,7 +51,7 @@ fun main(args: Array<String>): Unit {
     var attempt = 0
     while (true) {
         try {
-            val grpcService: GardenGrpcService = get(GardenGrpcService::class.java)
+            val grpcService: DefaultGardenGrpcService = get(DefaultGardenGrpcService::class.java)
             val grpcServer = ServerBuilder
                 .forPort(9086)
                 .addService(grpcService)
@@ -132,10 +132,7 @@ fun Application.configureRouting() {
     install(StatusPages) {
         exception<ServiceError> { call, cause ->
             val (status, message, code) = when (cause) {
-                is GardenIdsNotFoundError -> HttpStatusCode.BadRequest to "Missing user ids: ${cause.missingIds}" to "USER_IDS_NOT_FOUND"
-                is ConflictException -> HttpStatusCode.Conflict to cause.message to "TODO"
-                is UnauthorizedException -> HttpStatusCode.Unauthorized to cause.message to "TODO"
-                is BadRequestException -> HttpStatusCode.BadRequest to cause.message to "TODO"
+                else -> HttpStatusCode.InternalServerError to "" to ""
             }
 
             call.application.environment.log.warn("Handled error", cause)
@@ -183,6 +180,10 @@ fun Application.configureRouting() {
 
     routing {
         route("/api/v1") {
+            designerRoutes()
+            harvestRoutes()
+            plantingRoutes()
+            plantRoutes()
         }
     }
 }

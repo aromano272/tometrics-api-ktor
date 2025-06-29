@@ -23,7 +23,7 @@ dependencies {
     implementation(project(":auth"))
     implementation(project(":common"))
     implementation(project(":services:protos"))
-    implementation(project(":services:commonclient"))
+    implementation(project(":services:commongrpc"))
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)
