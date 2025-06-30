@@ -2,6 +2,8 @@ package com.tometrics.api.services.commonservice
 
 import com.tometrics.api.auth.configureSecurity
 import com.tometrics.api.common.domain.models.*
+import com.tometrics.api.services.commongrpc.commonServicesGrpcModule
+import com.tometrics.api.services.commongrpc.services.ServiceDiscoveryGrpcClient
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.config.SchemaGenerator
@@ -17,14 +19,16 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.KoinApplication
+import org.koin.ktor.ext.get
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
 
 fun Application.commonModule(
-    serviceUrlPrefix: String,
+    serviceInfo: ServiceInfo,
     configureDI: KoinApplication.() -> Unit,
     configureMonitoring: CallLoggingConfig.() -> Unit = {},
     configureStatusPages: StatusPagesConfig.() -> Unit = {},
@@ -32,9 +36,16 @@ fun Application.commonModule(
     commonConfigureDI(configureDI)
     commonConfigureMonitoring(configureMonitoring)
     configureSecurity()
-    commonConfigureHTTP(serviceUrlPrefix)
+    commonConfigureHTTP(serviceInfo.prefix)
     commonConfigureStatusPages(configureStatusPages)
     commonContentNegotiation()
+
+    val serviceDiscoveryGrpcClient: ServiceDiscoveryGrpcClient = get()
+    monitor.subscribe(ApplicationStarted) {
+        launch {
+            serviceDiscoveryGrpcClient.register(serviceInfo)
+        }
+    }
 }
 
 fun Application.commonConfigureDI(
@@ -42,7 +53,10 @@ fun Application.commonConfigureDI(
 ) {
     install(Koin) {
         slf4jLogger()
-        appModule(this@commonConfigureDI)
+        modules(
+            appModule(this@commonConfigureDI),
+            commonServicesGrpcModule,
+        )
         block()
     }
 }

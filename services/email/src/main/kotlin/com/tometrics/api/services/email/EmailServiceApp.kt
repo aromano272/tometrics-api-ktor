@@ -1,5 +1,7 @@
 package com.tometrics.api.services.email
 
+import com.tometrics.api.common.domain.models.ServiceInfo
+import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.services.commonservice.commonModule
 import io.github.smiley4.ktoropenapi.route
 import io.ktor.server.application.*
@@ -13,10 +15,16 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     commonModule(
-        serviceUrlPrefix = "/email",
+        serviceInfo = ServiceInfo(
+            prefix = "/email",
+            host = "localhost",
+            port = this.environment.config.port,
+            type = ServiceType.EMAIL,
+        ),
         configureDI = configureDI,
     )
     configureRouting()
+
 }
 
 val configureDI: KoinApplication.() -> Unit

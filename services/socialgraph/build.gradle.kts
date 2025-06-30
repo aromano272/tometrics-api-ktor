@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.schema.kenerator.swagger)
     implementation(libs.google.api.client)
 
+    testImplementation(project(":services:commonservicetest"))
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit)
     testImplementation(libs.ktor.server.test.host)

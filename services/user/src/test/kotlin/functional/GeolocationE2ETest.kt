@@ -1,5 +1,6 @@
 package functional
 
+import com.tometrics.api.services.commonservicetest.functional.BaseE2ETest
 import com.tometrics.api.services.user.domain.models.LocationInfo
 import com.tometrics.api.services.user.routes.models.GetGeolocationAutocompleteResponse
 import io.ktor.client.call.*
@@ -14,9 +15,9 @@ class GeolocationE2ETest : BaseE2ETest() {
 
     @Test
     fun `test geolocation autocomplete endpoint`() = runApp {
-        val (accessToken, _) = registerAnon()
+        val (accessToken, _) = registerAnon().second
 
-        val response = jsonClient.get("/api/v1/geolocation/autocomplete?searchQuery=london") {
+        val response = client.get("/api/v1/geolocation/autocomplete?searchQuery=london") {
             bearerAuth(accessToken)
         }
 
@@ -31,9 +32,9 @@ class GeolocationE2ETest : BaseE2ETest() {
 
     @Test
     fun `test geolocation reverse-geocoding endpoint`() = runApp {
-        val (accessToken, _) = registerAnon()
+        val (accessToken, _) = registerAnon().second
 
-        val response = jsonClient.get("/api/v1/geolocation/reverse-geocoding?lat=51.5074&lon=-0.1278") {
+        val response = client.get("/api/v1/geolocation/reverse-geocoding?lat=51.5074&lon=-0.1278") {
             bearerAuth(accessToken)
         }
 
@@ -42,12 +43,12 @@ class GeolocationE2ETest : BaseE2ETest() {
         assertEquals("City of Westminster", first.city)
         assertEquals("United Kingdom", first.country)
 
-        val missingLatResponse = jsonClient.get("/api/v1/geolocation/reverse-geocoding") {
+        val missingLatResponse = client.get("/api/v1/geolocation/reverse-geocoding") {
             bearerAuth(accessToken)
         }
         assertEquals(HttpStatusCode.BadRequest, missingLatResponse.status)
 
-        val missingLonResponse = jsonClient.get("/api/v1/geolocation/reverse-geocoding?lat=51.5074") {
+        val missingLonResponse = client.get("/api/v1/geolocation/reverse-geocoding?lat=51.5074") {
             bearerAuth(accessToken)
         }
         assertEquals(HttpStatusCode.BadRequest, missingLonResponse.status)

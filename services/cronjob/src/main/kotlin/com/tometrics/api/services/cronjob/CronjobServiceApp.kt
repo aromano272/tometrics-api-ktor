@@ -1,5 +1,7 @@
 package com.tometrics.api.services.cronjob
 
+import com.tometrics.api.common.domain.models.ServiceInfo
+import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.services.commonservice.commonModule
 import com.tometrics.api.services.cronjob.routes.cronjobRoutes
 import io.ktor.server.application.*
@@ -13,7 +15,12 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     commonModule(
-        serviceUrlPrefix = "/cronjob",
+        serviceInfo = ServiceInfo(
+            prefix = "/cronjob",
+            host = "localhost",
+            port = this.environment.config.port,
+            type = ServiceType.CRONJOB,
+        ),
         configureDI = configureDI,
     )
     configureRouting()

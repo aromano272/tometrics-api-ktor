@@ -1,6 +1,8 @@
 package com.tometrics.api.services.user
 
 import com.tometrics.api.common.domain.models.ErrorResponse
+import com.tometrics.api.common.domain.models.ServiceInfo
+import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.common.to
 import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.services.commonservice.commonModule
@@ -55,7 +57,12 @@ fun main(args: Array<String>): Unit {
 
 fun Application.module() {
     commonModule(
-        serviceUrlPrefix = "/user",
+        serviceInfo = ServiceInfo(
+            prefix = "/user",
+            host = "localhost",
+            port = this.environment.config.port,
+            type = ServiceType.USER,
+        ),
         configureDI = configureDI,
         configureStatusPages = configureStatusPages,
     )

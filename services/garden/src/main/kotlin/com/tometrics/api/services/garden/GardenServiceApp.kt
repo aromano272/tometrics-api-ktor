@@ -1,9 +1,10 @@
 package com.tometrics.api.services.garden
 
 import com.tometrics.api.common.domain.models.ErrorResponse
+import com.tometrics.api.common.domain.models.ServiceInfo
+import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.common.to
 import com.tometrics.api.db.di.jdbiModule
-import com.tometrics.api.services.commongrpc.commonServicesGrpcModule
 import com.tometrics.api.services.commonservice.commonModule
 import com.tometrics.api.services.garden.domain.models.ServiceError
 import com.tometrics.api.services.garden.routes.designerRoutes
@@ -57,7 +58,12 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     commonModule(
-        serviceUrlPrefix = "/socialgraph",
+        serviceInfo = ServiceInfo(
+            prefix = "/garden",
+            host = "localhost",
+            port = this.environment.config.port,
+            type = ServiceType.GARDEN,
+        ),
         configureDI = configureDI,
         configureStatusPages = configureStatusPages,
     )
@@ -67,7 +73,6 @@ fun Application.module() {
 val configureDI: KoinApplication.() -> Unit
     get() = {
         modules(
-            commonServicesGrpcModule,
             jdbiModule(
                 "classpath:db/migration",
                 "classpath:com/tometrics/api/services/garden/db/migration",

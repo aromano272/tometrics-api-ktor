@@ -1,23 +1,13 @@
 package com.tometrics.api.services.commongrpc
 
-import com.tometrics.api.services.commongrpc.services.DefaultGardenGrpcClient
-import com.tometrics.api.services.commongrpc.services.DefaultUserGrpcClient
-import com.tometrics.api.services.commongrpc.services.GardenGrpcClient
-import com.tometrics.api.services.commongrpc.services.UserGrpcClient
+import com.tometrics.api.services.commongrpc.services.*
 import com.tometrics.api.services.protos.GardenGrpcServiceGrpcKt
+import com.tometrics.api.services.protos.ServiceDiscoveryGrpcServiceGrpcKt
 import com.tometrics.api.services.protos.UserGrpcServiceGrpcKt
-import io.github.cdimascio.dotenv.Dotenv
-import io.github.cdimascio.dotenv.dotenv
 import io.grpc.ManagedChannelBuilder
 import org.koin.dsl.module
 
 val commonServicesGrpcModule = module {
-
-    single<Dotenv> {
-        dotenv {
-            ignoreIfMissing = true
-        }
-    }
 
     single<UserGrpcClient> {
         val channel = ManagedChannelBuilder
@@ -38,6 +28,17 @@ val commonServicesGrpcModule = module {
 
         DefaultGardenGrpcClient(
             service = GardenGrpcServiceGrpcKt.GardenGrpcServiceCoroutineStub(channel)
+        )
+    }
+
+    single<ServiceDiscoveryGrpcClient> {
+        val channel = ManagedChannelBuilder
+            .forAddress("localhost", 9083)
+            .usePlaintext()
+            .build()
+
+        DefaultServiceDiscoveryGrpcClient(
+            service = ServiceDiscoveryGrpcServiceGrpcKt.ServiceDiscoveryGrpcServiceCoroutineStub(channel)
         )
     }
 

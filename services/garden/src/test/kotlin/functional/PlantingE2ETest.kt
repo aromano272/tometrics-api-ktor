@@ -1,5 +1,6 @@
 package functional
 
+import com.tometrics.api.services.commonservicetest.functional.BaseE2ETest
 import com.tometrics.api.services.garden.domain.models.Planting
 import com.tometrics.api.services.garden.routes.models.AddPlantingRequest
 import com.tometrics.api.services.garden.routes.models.GetAllPlantingsResponse
@@ -8,6 +9,10 @@ import io.ktor.http.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+//setup ci/cd after dealing with this
+//* it should run tests
+//* maybe run lint?
+//* block on nocheckin found in code
 class PlantingE2ETest : BaseE2ETest() {
 
     @Test

@@ -23,7 +23,7 @@ CREATE TABLE refresh_tokens
 
 CREATE TABLE geoname_cities_500
 (
-    geonameid                INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,  -- integer id of record in geonames database
+    geonameid         INT NOT NULL PRIMARY KEY,  -- integer id of record in geonames database
     name              VARCHAR(200) NOT NULL, -- name of geographical point (utf8)
     asciiname         VARCHAR(200) NOT NULL, -- name of geographical point in plain ascii characters
     alternatenames    VARCHAR(10000), -- alternatenames, comma separated
@@ -54,5 +54,5 @@ CREATE INDEX idx_geoname_cities_500_asciiadmin1 ON geoname_cities_500 (asciiadmi
 CREATE INDEX idx_geoname_cities_500_asciiadmin2 ON geoname_cities_500 (asciiadmin2);
 CREATE INDEX idx_geoname_cities_500_population ON geoname_cities_500 (population DESC);
 
-CREATE EXTENSION pg_trgm;
-CREATE EXTENSION unaccent;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS unaccent;

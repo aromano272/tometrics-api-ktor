@@ -5,6 +5,8 @@ include("auth")
 include("common")
 include("services:protos")
 include("services:commongrpc")
+include("services:commonservice")
+include("services:commonservicetest")
 include("services:user")
 include("services:servicediscovery")
 include("services:socialgraph")
@@ -18,4 +20,3 @@ pluginManagement {
         mavenCentral()
     }
 }
-include("services:commonservice")

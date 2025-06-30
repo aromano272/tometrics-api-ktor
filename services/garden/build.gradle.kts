@@ -66,6 +66,7 @@ dependencies {
 
     implementation(libs.grpc.netty)
 
+    testImplementation(project(":services:commonservicetest"))
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit)
     testImplementation(libs.ktor.server.test.host)

@@ -21,6 +21,8 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
+    implementation(project(":services:protos"))
+    implementation(project(":services:commongrpc"))
     implementation(project(":services:commonservice"))
 
     implementation(libs.ktor.server.core)

@@ -1,8 +1,9 @@
 package com.tometrics.api.services.socialgraph
 
 import com.tometrics.api.common.domain.models.ErrorResponse
+import com.tometrics.api.common.domain.models.ServiceInfo
+import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.db.di.jdbiModule
-import com.tometrics.api.services.commongrpc.commonServicesGrpcModule
 import com.tometrics.api.services.commonservice.commonModule
 import com.tometrics.api.services.socialgraph.domain.models.ServiceError
 import com.tometrics.api.services.socialgraph.routes.socialGraphRoutes
@@ -20,7 +21,12 @@ fun main(args: Array<String>): Unit {
 
 fun Application.module() {
     commonModule(
-        serviceUrlPrefix = "/socialgraph",
+        serviceInfo = ServiceInfo(
+            prefix = "/socialgraph",
+            host = "localhost",
+            port = this.environment.config.port,
+            type = ServiceType.SOCIALGRAPH,
+        ),
         configureDI = configureDI,
         configureStatusPages = configureStatusPages,
     )
@@ -34,7 +40,6 @@ val configureDI: KoinApplication.() -> Unit
                 "classpath:db/migration",
                 "classpath:com/tometrics/api/services/socialgraph/db/migration",
             ),
-            commonServicesGrpcModule,
             serviceModule,
             databaseModule,
         )
