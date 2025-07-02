@@ -19,7 +19,7 @@ class DefaultServiceDiscoveryGrpcService(
     override suspend fun get(request: GetServiceInfoRequest): GetServiceInfoResponse {
         val type = request.serviceType.fromNetwork() ?: throw UnsupportedOperationException("couldn't parse $request")
         val info = service.get(type) ?: return getServiceInfoResponse {}
-        return getServiceInfoResponse { info.toNetwork() }
+        return getServiceInfoResponse { serviceInfo = info.toNetwork() }
     }
 
 }

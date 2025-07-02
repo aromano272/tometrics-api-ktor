@@ -69,12 +69,6 @@ fun Route.geolocationRoutes() {
                     }
                 }
             }) {
-                try {
-                    val a = geolocationService
-                } catch (ex: Exception) {
-                    println("boomshaka")
-                    ex.printStackTrace()
-                }
                 val requester = call.requireRequester()
                 val lat = call.request.queryParameters["lat"]?.toDoubleOrNull()
                     ?: throw BadRequestException("lat query param missing or invalid")

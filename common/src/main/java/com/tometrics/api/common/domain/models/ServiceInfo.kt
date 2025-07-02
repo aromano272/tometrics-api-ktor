@@ -8,7 +8,9 @@ data class ServiceInfo(
     val host: String,
     val port: Int,
     val type: ServiceType,
-)
+) {
+    val grpcPort = port + 1000
+}
 
 enum class ServiceType {
     SERVICEDISCOVERY,

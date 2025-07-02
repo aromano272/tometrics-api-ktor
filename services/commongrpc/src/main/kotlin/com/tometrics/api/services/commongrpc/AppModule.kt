@@ -1,44 +1,49 @@
 package com.tometrics.api.services.commongrpc
 
+import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.services.commongrpc.services.*
 import com.tometrics.api.services.protos.GardenGrpcServiceGrpcKt
 import com.tometrics.api.services.protos.ServiceDiscoveryGrpcServiceGrpcKt
 import com.tometrics.api.services.protos.UserGrpcServiceGrpcKt
 import io.grpc.ManagedChannelBuilder
+import io.ktor.util.logging.*
 import org.koin.dsl.module
 
 val commonServicesGrpcModule = module {
 
     single<UserGrpcClient> {
-        val channel = ManagedChannelBuilder
-            .forAddress("localhost", 9082)
-            .usePlaintext()
-            .build()
-
         DefaultUserGrpcClient(
-            service = UserGrpcServiceGrpcKt.UserGrpcServiceCoroutineStub(channel)
+            client = GrpcLazyClient(
+                stubConstructor = {
+                    UserGrpcServiceGrpcKt.UserGrpcServiceCoroutineStub(it)
+                },
+                type = ServiceType.USER,
+                serviceDiscovery = get(),
+            )
         )
     }
 
     single<GardenGrpcClient> {
-        val channel = ManagedChannelBuilder
-            .forAddress("localhost", 9086)
-            .usePlaintext()
-            .build()
-
         DefaultGardenGrpcClient(
-            service = GardenGrpcServiceGrpcKt.GardenGrpcServiceCoroutineStub(channel)
+            client = GrpcLazyClient(
+                stubConstructor = {
+                    GardenGrpcServiceGrpcKt.GardenGrpcServiceCoroutineStub(it)
+                },
+                type = ServiceType.GARDEN,
+                serviceDiscovery = get(),
+            )
         )
     }
 
     single<ServiceDiscoveryGrpcClient> {
+        val logger: Logger = get()
         val channel = ManagedChannelBuilder
             .forAddress("localhost", 9083)
             .usePlaintext()
             .build()
 
         DefaultServiceDiscoveryGrpcClient(
-            service = ServiceDiscoveryGrpcServiceGrpcKt.ServiceDiscoveryGrpcServiceCoroutineStub(channel)
+            client = ServiceDiscoveryGrpcServiceGrpcKt.ServiceDiscoveryGrpcServiceCoroutineStub(channel)
         )
     }
 

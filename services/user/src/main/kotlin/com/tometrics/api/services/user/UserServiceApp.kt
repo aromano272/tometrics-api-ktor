@@ -23,7 +23,8 @@ import io.ktor.server.routing.*
 import org.koin.core.KoinApplication
 import org.koin.java.KoinJavaComponent.get
 
-fun main(args: Array<String>): Unit {
+fun main(args: Array<String>) {
+    var serviceInfo: ServiceInfo? = null
     embeddedServer(
         factory = Netty,
         configure = {
@@ -32,7 +33,13 @@ fun main(args: Array<String>): Unit {
             loadCommonConfiguration(cliConfig.rootConfig.environment.config)
         },
     ) {
-        module()
+        serviceInfo = ServiceInfo(
+            prefix = "/user",
+            host = "localhost",
+            port = this.environment.config.port,
+            type = ServiceType.USER,
+        )
+        module(serviceInfo)
     }.start(wait = false)
 
     var attempt = 0
@@ -40,7 +47,7 @@ fun main(args: Array<String>): Unit {
         try {
             val grpcService: DefaultUserGrpcService = get(DefaultUserGrpcService::class.java)
             val grpcServer = ServerBuilder
-                .forPort(9082)
+                .forPort(serviceInfo!!.grpcPort)
                 .addService(grpcService)
                 .build()
                 .start()
@@ -55,14 +62,9 @@ fun main(args: Array<String>): Unit {
     }
 }
 
-fun Application.module() {
+fun Application.module(serviceInfo: ServiceInfo) {
     commonModule(
-        serviceInfo = ServiceInfo(
-            prefix = "/user",
-            host = "localhost",
-            port = this.environment.config.port,
-            type = ServiceType.USER,
-        ),
+        serviceInfo = serviceInfo,
         configureDI = configureDI,
         configureStatusPages = configureStatusPages,
     )

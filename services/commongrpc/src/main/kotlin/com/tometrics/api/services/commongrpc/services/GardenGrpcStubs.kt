@@ -12,11 +12,11 @@ interface GardenGrpcService {
 interface GardenGrpcClient : GardenGrpcService
 
 class DefaultGardenGrpcClient(
-    private val service: GardenGrpcServiceGrpcKt.GardenGrpcServiceCoroutineStub,
+    private val client: GrpcLazyClient<GardenGrpcServiceGrpcKt.GardenGrpcServiceCoroutineStub>,
 ) : GardenGrpcClient {
 
     override suspend fun getAllReadyForHarvestToday(): Map<UserId, List<GrpcPlanting>> =
-        service.getAllReadyForHarvestToday(empty {}).let { response ->
+        client.await().getAllReadyForHarvestToday(empty {}).let { response ->
             response.resultsMap.mapValues { (_, plantings) ->
                 plantings.plantingList.map { planting ->
                     GrpcPlanting.Companion.fromNetwork(planting)

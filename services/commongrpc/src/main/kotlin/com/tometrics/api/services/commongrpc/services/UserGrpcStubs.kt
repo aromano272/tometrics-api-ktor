@@ -12,11 +12,11 @@ interface UserGrpcService {
 interface UserGrpcClient : UserGrpcService
 
 class DefaultUserGrpcClient(
-    private val service: UserGrpcServiceGrpcKt.UserGrpcServiceCoroutineStub,
+    private val client: GrpcLazyClient<UserGrpcServiceGrpcKt.UserGrpcServiceCoroutineStub>,
 ) : UserGrpcClient {
 
     override suspend fun validateUserIds(userIds: Set<UserId>): GrpcValidateUsersResult {
-        val response = service.validateUserIds(validateUserIdsRequest {
+        val response = client.await().validateUserIds(validateUserIdsRequest {
             this.userIds += userIds
         })
         return GrpcValidateUsersResult.fromNetwork(response)

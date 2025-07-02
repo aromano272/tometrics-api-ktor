@@ -19,6 +19,7 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.KoinApplication
@@ -40,10 +41,12 @@ fun Application.commonModule(
     commonConfigureStatusPages(configureStatusPages)
     commonContentNegotiation()
 
-    val serviceDiscoveryGrpcClient: ServiceDiscoveryGrpcClient = get()
-    monitor.subscribe(ApplicationStarted) {
-        launch {
-            serviceDiscoveryGrpcClient.register(serviceInfo)
+    if (serviceInfo.type != ServiceType.SERVICEDISCOVERY) {
+        val serviceDiscoveryGrpcClient: ServiceDiscoveryGrpcClient = get()
+        monitor.subscribe(ApplicationStarted) {
+            launch(Dispatchers.IO) {
+                serviceDiscoveryGrpcClient.register(serviceInfo)
+            }
         }
     }
 }
@@ -144,3 +147,4 @@ fun Application.commonContentNegotiation() {
         })
     }
 }
+

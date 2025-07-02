@@ -16,15 +16,15 @@ interface ServiceDiscoveryGrpcService {
 interface ServiceDiscoveryGrpcClient : ServiceDiscoveryGrpcService
 
 class DefaultServiceDiscoveryGrpcClient(
-    private val service: ServiceDiscoveryGrpcServiceGrpcKt.ServiceDiscoveryGrpcServiceCoroutineStub,
+    private val client: ServiceDiscoveryGrpcServiceGrpcKt.ServiceDiscoveryGrpcServiceCoroutineStub,
 ) : ServiceDiscoveryGrpcClient {
 
     override suspend fun register(info: ServiceInfo) {
-        service.register(info.toNetwork())
+        client.register(info.toNetwork())
     }
 
     override suspend fun get(type: ServiceType): ServiceInfo? =
-        service.get(getServiceInfoRequest { serviceType = type.toNetwork() })
+        client.get(getServiceInfoRequest { serviceType = type.toNetwork() })
             .serviceInfoOrNull
             ?.fromNetwork()
 

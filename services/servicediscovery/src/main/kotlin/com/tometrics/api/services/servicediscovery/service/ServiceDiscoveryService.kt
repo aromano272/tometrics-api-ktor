@@ -1,8 +1,8 @@
 package com.tometrics.api.services.servicediscovery.service
 
-import com.tometrics.api.services.commongrpc.services.ServiceDiscoveryGrpcService
 import com.tometrics.api.common.domain.models.ServiceInfo
 import com.tometrics.api.common.domain.models.ServiceType
+import com.tometrics.api.services.commongrpc.services.ServiceDiscoveryGrpcService
 import io.ktor.util.collections.*
 
 interface ServiceDiscoveryService : ServiceDiscoveryGrpcService {
