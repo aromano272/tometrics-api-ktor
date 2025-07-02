@@ -23,7 +23,8 @@ dependencies {
     implementation(project(":db"))
     implementation(project(":auth"))
     implementation(project(":common"))
-    implementation(project(":services:commonclient"))
+    implementation(project(":services:commongrpc"))
+    implementation(project(":services:commonservice"))
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)
@@ -61,6 +62,7 @@ dependencies {
     implementation(libs.schema.kenerator.swagger)
     implementation(libs.google.api.client)
 
+    testImplementation(project(":services:commonservicetest"))
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit)
     testImplementation(libs.ktor.server.test.host)

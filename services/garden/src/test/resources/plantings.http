@@ -1,0 +1,27 @@
+### Get all plantings
+GET http://localhost:8086/api/v1/planting/all
+Authorization: Bearer {{access}}
+
+### Delete planting by ID
+DELETE http://localhost:8086/api/v1/planting/1
+Authorization: Bearer {{access}}
+
+### Patch planting by ID
+PATCH http://localhost:8086/api/v1/planting/1
+Authorization: Bearer {{access}}
+Content-Type: application/json
+
+{
+  "newQuantity": 7
+}
+
+### Add a new planting
+POST http://localhost:8086/api/v1/planting/add
+Authorization: Bearer {{access}}
+Content-Type: application/json
+
+{
+  "plantId": 1,
+  "quantity": 5
+}
+

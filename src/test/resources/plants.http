@@ -1,9 +1,0 @@
-@access = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ0b21ldHJpY3MtdXNlcnMiLCJpc3MiOiJ0b21ldHJpY3MuY29tIiwidXNlcklkIjoxLCJleHAiOjE3NDg2OTUzNjZ9.FvDV_fCO2Z8eQyk1jFJy8nwuTG-x3vi_jIpHxAGCaGM
-
-### Get all plants
-GET https://localhost/api/v1/plant/all
-Authorization: Bearer {{access}}
-
-### Get plant by ID
-GET https://localhost/api/v1/plant/1
-Authorization: Bearer {{access}}

@@ -1,0 +1,7 @@
+### Get all plants
+GET http://localhost:8086/api/v1/plant/all
+Authorization: Bearer {{access}}
+
+### Get plant by ID
+GET http://localhost:8086/api/v1/plant/1
+Authorization: Bearer {{access}}
