@@ -19,4 +19,5 @@ enum class ServiceType {
     GARDEN,
     SOCIALGRAPH,
     USER,
+    MEDIA,
 }

@@ -1,6 +1,8 @@
 package com.tometrics.api.services.socialgraph.service
 
+import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.UserId
+import com.tometrics.api.services.commongrpc.models.user.GrpcValidateUsersResult
 import com.tometrics.api.services.commongrpc.services.UserGrpcClient
 import com.tometrics.api.services.socialgraph.db.FollowerDao
 import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
@@ -31,16 +33,16 @@ class DefaultSocialGraphService(
     }
 
     override suspend fun follow(requesterId: UserId, userId: UserId) {
-        logger.info("follow(requesterId: $requesterId, userId: $userId)")
         val result = userGrpcClient.validateUserIds(setOf(requesterId, userId))
-        logger.info("follow(requesterId: $requesterId, userId: $userId) result: $result")
+            .takeIf { it !is GrpcValidateUsersResult.Success }
+            ?.let { throw UnauthorizedError("") }
         dao.insert(requesterId, userId)
     }
 
     override suspend fun unfollow(requesterId: UserId, userId: UserId) {
-        logger.info("unfollow(requesterId: $requesterId, userId: $userId)")
         val result = userGrpcClient.validateUserIds(setOf(requesterId, userId))
-        logger.info("unfollow(requesterId: $requesterId, userId: $userId) result: $result")
+            .takeIf { it !is GrpcValidateUsersResult.Success }
+            ?.let { throw UnauthorizedError("") }
         dao.delete(requesterId, userId)
     }
 

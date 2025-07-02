@@ -23,6 +23,7 @@ google-protobuf-plugin-version = "0.9.4"
 grpc-java-version = "1.71.0"
 grpc-kotlin-version = "1.4.3"
 protobuf-version = "4.30.2"
+aws-kotlin-version = "1.4.117"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
@@ -77,6 +78,8 @@ protobuf-kotlin = { module = "com.google.protobuf:protobuf-kotlin", version.ref 
 protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf-version" }
 protoc-gen-grpc-java = { module = "io.grpc:protoc-gen-grpc-java", version.ref = "grpc-java-version" }
 protoc-gen-grpc-kotlin = { module = "io.grpc:protoc-gen-grpc-kotlin", version.ref = "grpc-kotlin-version" }
+aws-kotlin-core = { module = "aws.sdk.kotlin:aws-core", version.ref = "aws-kotlin-version" }
+aws-kotlin-s3 = { module = "aws.sdk.kotlin:s3", version.ref = "aws-kotlin-version" }
 
 
 [plugins]

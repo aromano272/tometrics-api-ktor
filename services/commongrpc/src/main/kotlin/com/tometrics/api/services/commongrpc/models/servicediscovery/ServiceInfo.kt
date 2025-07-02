@@ -28,6 +28,7 @@ fun ServiceType.fromNetwork() = when (this) {
     ServiceType.GARDEN -> DomainServiceType.GARDEN
     ServiceType.SOCIALGRAPH -> DomainServiceType.SOCIALGRAPH
     ServiceType.USER -> DomainServiceType.USER
+    ServiceType.MEDIA -> DomainServiceType.MEDIA
     ServiceType.UNRECOGNIZED -> null
 }
 
@@ -38,4 +39,5 @@ fun DomainServiceType.toNetwork() = when (this) {
     DomainServiceType.GARDEN -> ServiceType.GARDEN
     DomainServiceType.SOCIALGRAPH -> ServiceType.SOCIALGRAPH
     DomainServiceType.USER -> ServiceType.USER
+    DomainServiceType.MEDIA -> ServiceType.MEDIA
 }

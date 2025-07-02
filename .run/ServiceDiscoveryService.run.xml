@@ -1,19 +1,15 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="UserService" type="KtorApplicationConfigurationType" factoryName="Ktor">
-    <envs>
-      <env name="POSTGRES_URL" value="jdbc:postgresql://localhost:5432/user" />
-      <env name="RUNNING_LOCALLY" value="1" />
-    </envs>
+  <configuration default="false" name="ServiceDiscoveryService" type="KtorApplicationConfigurationType" factoryName="Ktor">
     <option name="envFilePaths">
       <option value="$PROJECT_DIR$/.env" />
     </option>
-    <option name="MAIN_CLASS_NAME" value="com.tometrics.api.services.user.UserServiceAppKt" />
-    <module name="tometrics.services.user.main" />
+    <option name="MAIN_CLASS_NAME" value="com.tometrics.api.services.servicediscovery.ServiceDiscoveryServiceAppKt" />
+    <module name="tometrics.services.servicediscovery.main" />
     <option name="VM_PARAMETERS" value="-Dio.grpc.internal.ChannelExecutor.debug=true -Dio.grpc.internal.ForkJoinPool.DEBUG=true " />
     <option name="alternativeJrePath" />
     <option name="alternativeJrePathEnabled" value="false" />
     <option name="includeProvidedScope" value="false" />
-    <option name="mainClass" value="com.tometrics.api.services.user.UserServiceAppKt" />
+    <option name="mainClass" value="com.tometrics.api.services.servicediscovery.ServiceDiscoveryServiceAppKt" />
     <option name="passParentEnvs" value="true" />
     <option name="programParameters" value="" />
     <option name="shortenCommandLine" />
