@@ -15,15 +15,23 @@ import org.koin.core.KoinApplication
 import org.koin.java.KoinJavaComponent.get
 
 fun main(args: Array<String>) {
+    val serviceInfo = ServiceInfo(
+        prefix = "/servicediscovery",
+        host = "localhost",
+        port = 8083,
+        type = ServiceType.SERVICEDISCOVERY,
+    )
+
     embeddedServer(
         factory = Netty,
         configure = {
-            val cliConfig = CommandLineConfig(args)
-            takeFrom(cliConfig.engineConfig)
-            loadCommonConfiguration(cliConfig.rootConfig.environment.config)
+            connector {
+                host = serviceInfo.host
+                port = serviceInfo.port
+            }
         },
     ) {
-        module()
+        module(serviceInfo)
     }.start(wait = false)
 
     var attempt = 0
@@ -46,14 +54,9 @@ fun main(args: Array<String>) {
     }
 }
 
-fun Application.module() {
+fun Application.module(serviceInfo: ServiceInfo) {
     commonModule(
-        serviceInfo = ServiceInfo(
-            prefix = "/servicediscovery",
-            host = "localhost",
-            port = this.environment.config.port,
-            type = ServiceType.SERVICEDISCOVERY,
-        ),
+        serviceInfo = serviceInfo,
         configureDI = configureDI,
     )
     configureRouting()

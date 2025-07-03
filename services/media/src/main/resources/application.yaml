@@ -1,9 +1,0 @@
-ktor:
-  application:
-    modules:
-      - com.tometrics.api.services.media.MediaServiceAppKt.module
-  deployment:
-    port: 8087
-
-logging:
-  level: INFO

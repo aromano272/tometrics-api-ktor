@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+
+option java_package = "com.tometrics.api.services.protos";
+option java_multiple_files = true;
+
+message ValidateMediaUrlRequest {
+  int32 requesterId = 1;
+  string url = 2;
+}
+
+service MediaGrpcService {
+  rpc validateMediaUrl(ValidateMediaUrlRequest) returns (google.protobuf.BoolValue);
+}
