@@ -1,11 +1,11 @@
-package com.tometrics.api.services.servicediscovery
+package com.tometrics.api.services.media
 
 import com.tometrics.api.common.domain.models.ServiceInfo
 import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.services.commonservice.commonModule
-import com.tometrics.api.services.servicediscovery.service.DefaultServiceDiscoveryGrpcService
-import io.github.smiley4.ktoropenapi.openApi
-import io.github.smiley4.ktorswaggerui.swaggerUI
+import com.tometrics.api.services.media.routes.mediaRoutes
+import com.tometrics.api.services.media.services.DefaultMediaGrpcService
+import io.github.smiley4.ktoropenapi.route
 import io.grpc.ServerBuilder
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -16,12 +16,11 @@ import org.koin.java.KoinJavaComponent.get
 
 fun main(args: Array<String>) {
     val serviceInfo = ServiceInfo(
-        prefix = "/servicediscovery",
+        prefix = "/media",
         host = "localhost",
-        port = 8083,
-        type = ServiceType.SERVICEDISCOVERY,
+        port = 8087,
+        type = ServiceType.MEDIA,
     )
-
     embeddedServer(
         factory = Netty,
         configure = {
@@ -37,18 +36,19 @@ fun main(args: Array<String>) {
     var attempt = 0
     while (true) {
         try {
-            val grpcService: DefaultServiceDiscoveryGrpcService = get(DefaultServiceDiscoveryGrpcService::class.java)
+            val grpcPort = serviceInfo.grpcPort
+            val grpcService: DefaultMediaGrpcService = get(DefaultMediaGrpcService::class.java)
             val grpcServer = ServerBuilder
-                .forPort(9083)
+                .forPort(grpcPort)
                 .addService(grpcService)
                 .build()
                 .start()
 
-            println("gRPC started on port 9083")
+            println("gRPC started on port $grpcPort")
             grpcServer.awaitTermination()
         } catch (ex: Exception) {
             ex.printStackTrace()
-            println("gRPC stoped on port 9083")
+            println("gRPC stopped")
             Thread.sleep(2000L * attempt++)
         }
     }
@@ -65,20 +65,15 @@ fun Application.module(serviceInfo: ServiceInfo) {
 val configureDI: KoinApplication.() -> Unit
     get() = {
         modules(
+            appModule,
             serviceModule,
         )
     }
 
 fun Application.configureRouting() {
     routing {
-        route("/servicediscovery") {
-            route("/openapi/api.yaml") {
-                openApi()
-            }
-            route("/swagger") {
-                swaggerUI("/openapi/api.yaml")
-            }
-
+        route("/api/v1") {
+            mediaRoutes()
         }
     }
 }

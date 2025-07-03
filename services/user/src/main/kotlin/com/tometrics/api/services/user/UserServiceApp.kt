@@ -24,39 +24,40 @@ import org.koin.core.KoinApplication
 import org.koin.java.KoinJavaComponent.get
 
 fun main(args: Array<String>) {
-    var serviceInfo: ServiceInfo? = null
+    val serviceInfo = ServiceInfo(
+        prefix = "/user",
+        host = "localhost",
+        port = 8082,
+        type = ServiceType.USER,
+    )
     embeddedServer(
         factory = Netty,
         configure = {
-            val cliConfig = CommandLineConfig(args)
-            takeFrom(cliConfig.engineConfig)
-            loadCommonConfiguration(cliConfig.rootConfig.environment.config)
+            connector {
+                host = serviceInfo.host
+                port = serviceInfo.port
+            }
         },
     ) {
-        serviceInfo = ServiceInfo(
-            prefix = "/user",
-            host = "localhost",
-            port = this.environment.config.port,
-            type = ServiceType.USER,
-        )
         module(serviceInfo)
     }.start(wait = false)
 
     var attempt = 0
     while (true) {
         try {
+            val grpcPort = serviceInfo.grpcPort
             val grpcService: DefaultUserGrpcService = get(DefaultUserGrpcService::class.java)
             val grpcServer = ServerBuilder
-                .forPort(serviceInfo!!.grpcPort)
+                .forPort(grpcPort)
                 .addService(grpcService)
                 .build()
                 .start()
 
-            println("gRPC started on port 9082")
+            println("gRPC started on port $grpcPort")
             grpcServer.awaitTermination()
         } catch (ex: Exception) {
             ex.printStackTrace()
-            println("gRPC stoped on port 9082")
+            println("gRPC stopped")
             Thread.sleep(2000L * attempt++)
         }
     }

@@ -1,9 +1,0 @@
-ktor:
-  application:
-    modules:
-      - com.tometrics.api.services.garden.GardenServiceAppKt.module
-  deployment:
-    port: 8086
-
-logging:
-  level: INFO

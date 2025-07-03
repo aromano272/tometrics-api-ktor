@@ -20,3 +20,4 @@ pluginManagement {
         mavenCentral()
     }
 }
+include("services:media")

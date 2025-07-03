@@ -9,5 +9,5 @@
     </root>
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
-    <logger name="com.tometrics.api.services.email" level="TRACE"/>
+    <logger name="com.tometrics.api.services.media" level="TRACE"/>
 </configuration>

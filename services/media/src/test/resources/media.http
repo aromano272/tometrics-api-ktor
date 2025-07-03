@@ -1,0 +1,5 @@
+### Get Presigned url
+GET http://localhost:8087/api/v1/media/generate-presigned-url
+Accept: application/json
+Authorization: Bearer {{access}}
+
