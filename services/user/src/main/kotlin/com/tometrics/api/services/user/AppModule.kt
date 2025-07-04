@@ -35,6 +35,7 @@ val serviceModule = module {
             logger = get(),
             userDao = get(),
             city500Dao = get(),
+            socialGraphGrpcClient = get(),
         )
     }.bind(UserGrpcService::class)
 

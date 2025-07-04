@@ -1,7 +1,9 @@
 package com.tometrics.api.services.user.routes
 
 import com.tometrics.api.auth.domain.models.requireRequester
+import com.tometrics.api.common.domain.models.ValidationError
 import com.tometrics.api.services.user.domain.models.User
+import com.tometrics.api.services.user.domain.models.UserWithSocialConnections
 import com.tometrics.api.services.user.routes.models.PutUserRequest
 import com.tometrics.api.services.user.services.UserService
 import io.github.smiley4.ktoropenapi.get
@@ -27,12 +29,29 @@ fun Route.userRoutes() {
                 response {
                     HttpStatusCode.OK to {
                         description = "The user's profile."
-                        body<User>()
+                        body<UserWithSocialConnections>()
                     }
                 }
             }) {
                 val requester = call.requireRequester()
                 val profile = userService.get(requester)
+
+                call.respond(profile)
+            }
+
+            get("/{userId}", {
+                description = "Retrieves the profile of a user."
+                response {
+                    HttpStatusCode.OK to {
+                        description = "The user's profile."
+                        body<UserWithSocialConnections>()
+                    }
+                }
+            }) {
+                val userId = call.pathParameters["userId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                    "`userId` is required"
+                ))
+                val profile = userService.get(userId)
 
                 call.respond(profile)
             }
