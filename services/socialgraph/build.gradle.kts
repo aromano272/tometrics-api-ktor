@@ -23,6 +23,7 @@ dependencies {
     implementation(project(":db"))
     implementation(project(":auth"))
     implementation(project(":common"))
+    implementation(project(":services:protos"))
     implementation(project(":services:commongrpc"))
     implementation(project(":services:commonservice"))
 

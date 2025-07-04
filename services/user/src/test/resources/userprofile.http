@@ -1,5 +1,5 @@
 ### Get User
-GET https://localhost/api/v1/user
+GET http://localhost:8082/api/v1/user
 Content-Type: application/json
 Authorization: Bearer {{access}}
 

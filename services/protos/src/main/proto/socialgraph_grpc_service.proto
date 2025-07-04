@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option java_package = "com.tometrics.api.services.protos";
+option java_multiple_files = true;
+
+message SocialConnections {
+  repeated int32 followers = 1;
+  repeated int32 following = 2;
+}
+
+service SocialGraphGrpcService {
+  rpc getConnectionsByUserId(google.protobuf.Int32Value) returns (SocialConnections);
+}

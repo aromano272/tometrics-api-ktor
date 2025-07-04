@@ -4,9 +4,9 @@ import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.services.commongrpc.services.*
 import com.tometrics.api.services.protos.GardenGrpcServiceGrpcKt
 import com.tometrics.api.services.protos.ServiceDiscoveryGrpcServiceGrpcKt
+import com.tometrics.api.services.protos.SocialGraphGrpcServiceGrpcKt
 import com.tometrics.api.services.protos.UserGrpcServiceGrpcKt
 import io.grpc.ManagedChannelBuilder
-import io.ktor.util.logging.*
 import org.koin.dsl.module
 
 val commonServicesGrpcModule = module {
@@ -35,8 +35,19 @@ val commonServicesGrpcModule = module {
         )
     }
 
+    single<SocialGraphGrpcClient> {
+        DefaultSocialGraphGrpcClient(
+            client = GrpcLazyClient(
+                stubConstructor = {
+                    SocialGraphGrpcServiceGrpcKt.SocialGraphGrpcServiceCoroutineStub(it)
+                },
+                type = ServiceType.SOCIALGRAPH,
+                serviceDiscovery = get(),
+            )
+        )
+    }
+
     single<ServiceDiscoveryGrpcClient> {
-        val logger: Logger = get()
         val channel = ManagedChannelBuilder
             .forAddress("localhost", 9083)
             .usePlaintext()
