@@ -1,12 +1,14 @@
 package com.tometrics.api.services.user.db
 
+import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.services.user.db.models.GeoNameCity500Entity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 interface GeoNameCity500Dao {
     suspend fun getAll(): List<GeoNameCity500Entity>
-    suspend fun getById(id: Int): GeoNameCity500Entity?
+    suspend fun getById(id: LocationInfoId): GeoNameCity500Entity?
+    suspend fun getAllByIds(ids: Set<LocationInfoId>): List<GeoNameCity500Entity>
     suspend fun getByName(name: String): List<GeoNameCity500Entity>
     suspend fun getByCountryCode(countryCode: String): List<GeoNameCity500Entity>
     suspend fun findByNameAndAdmin1Similarity(
@@ -25,8 +27,12 @@ class DefaultGeoNameCity500Dao(
         db.getAll()
     }
 
-    override suspend fun getById(id: Int): GeoNameCity500Entity? = withContext(Dispatchers.IO) {
+    override suspend fun getById(id: LocationInfoId): GeoNameCity500Entity? = withContext(Dispatchers.IO) {
         db.getById(id)
+    }
+
+    override suspend fun getAllByIds(ids: Set<LocationInfoId>): List<GeoNameCity500Entity> = withContext(Dispatchers.IO) {
+        db.getAllByIds(ids)
     }
 
     override suspend fun getByName(name: String): List<GeoNameCity500Entity> = withContext(Dispatchers.IO) {

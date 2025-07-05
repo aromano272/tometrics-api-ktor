@@ -17,6 +17,7 @@ enum class ServiceType {
     CRONJOB,
     EMAIL,
     GARDEN,
+    SOCIALFEED,
     SOCIALGRAPH,
     USER,
     MEDIA,

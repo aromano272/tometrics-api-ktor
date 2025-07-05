@@ -2,9 +2,12 @@ package com.tometrics.api.services.user.routes
 
 import com.tometrics.api.auth.domain.models.requireRequester
 import com.tometrics.api.common.domain.models.ValidationError
+import com.tometrics.api.common.route.models.UserDto
 import com.tometrics.api.services.user.domain.models.User
-import com.tometrics.api.services.user.domain.models.UserWithSocialConnections
+import com.tometrics.api.services.user.domain.models.toDto
 import com.tometrics.api.services.user.routes.models.PutUserRequest
+import com.tometrics.api.services.user.routes.models.UserWithSocialConnectionsDto
+import com.tometrics.api.services.user.routes.models.toDto
 import com.tometrics.api.services.user.services.UserService
 import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.put
@@ -29,12 +32,12 @@ fun Route.userRoutes() {
                 response {
                     HttpStatusCode.OK to {
                         description = "The user's profile."
-                        body<UserWithSocialConnections>()
+                        body<UserWithSocialConnectionsDto>()
                     }
                 }
             }) {
                 val requester = call.requireRequester()
-                val profile = userService.get(requester)
+                val profile = userService.get(requester).toDto()
 
                 call.respond(profile)
             }
@@ -44,14 +47,14 @@ fun Route.userRoutes() {
                 response {
                     HttpStatusCode.OK to {
                         description = "The user's profile."
-                        body<UserWithSocialConnections>()
+                        body<UserWithSocialConnectionsDto>()
                     }
                 }
             }) {
                 val userId = call.pathParameters["userId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                     "`userId` is required"
                 ))
-                val profile = userService.get(userId)
+                val profile = userService.get(userId).toDto()
 
                 call.respond(profile)
             }
@@ -66,7 +69,7 @@ fun Route.userRoutes() {
                 response {
                     HttpStatusCode.OK to {
                         description = "The updated user profile."
-                        body<User>()
+                        body<UserDto>()
                     }
                 }
             }) {
@@ -78,7 +81,7 @@ fun Route.userRoutes() {
                     request.locationId,
                     request.metricUnits,
                     request.climateZone,
-                )
+                ).toDto()
 
                 call.respond(profile)
             }
@@ -87,3 +90,14 @@ fun Route.userRoutes() {
     }
 
 }
+
+fun User.toDto() = UserDto(
+    id = id,
+    name = name,
+    // TODO(aromano): we'll probably need to split UserDto into UserDto and UserProfileDto, the latter
+    // being the requester user profile with all of the info such as idp statuses, complete location info, etc..
+    location = location?.toDto(),
+    climateZone = climateZone,
+    updatedAt = updatedAt.toEpochMilli(),
+)
+

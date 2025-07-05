@@ -3,17 +3,23 @@ package com.tometrics.api.services.user.services
 import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.common.domain.models.UserId
+import com.tometrics.api.services.commongrpc.models.user.GrpcClimateZone
+import com.tometrics.api.services.commongrpc.models.user.GrpcLocationInfo
+import com.tometrics.api.services.commongrpc.models.user.GrpcUser
 import com.tometrics.api.services.commongrpc.models.user.GrpcValidateUsersResult
 import com.tometrics.api.services.commongrpc.services.SocialGraphGrpcClient
 import com.tometrics.api.services.commongrpc.services.UserGrpcService
 import com.tometrics.api.services.user.db.GeoNameCity500Dao
 import com.tometrics.api.services.user.db.UserDao
+import com.tometrics.api.services.user.db.models.GeoNameCity500Entity
+import com.tometrics.api.services.user.db.models.UserEntity
 import com.tometrics.api.services.user.db.models.toDomain
 import com.tometrics.api.services.user.db.models.toLocationInfo
-import com.tometrics.api.services.user.domain.models.ClimateZone
+import com.tometrics.api.common.domain.models.ClimateZone
 import com.tometrics.api.services.user.domain.models.User
 import com.tometrics.api.services.user.domain.models.UserWithSocialConnections
 import io.ktor.util.logging.*
+import java.util.*
 
 interface UserService : UserGrpcService {
 
@@ -43,6 +49,18 @@ class DefaultUserService(
         val missingIds = userIds - foundIds
         if (missingIds.isNotEmpty()) return GrpcValidateUsersResult.UserIdsNotFound(missingIds)
         return GrpcValidateUsersResult.Success
+    }
+
+    override suspend fun getAllByIds(userIds: Set<UserId>): List<GrpcUser> {
+        val users = userDao.getAllByIds(userIds)
+        val locationsMap = city500Dao.getAllByIds(users.mapNotNull { it.locationId }.toSet())
+            .associateBy { it.geonameid }
+
+        val grpcUsers = users.map { user ->
+            val location = locationsMap[user.locationId]
+            user.toGrpc(location)
+        }
+        return grpcUsers
     }
 
 
@@ -92,4 +110,27 @@ class DefaultUserService(
 sealed interface ValidateUsersResult {
     data object Success : ValidateUsersResult
     data class UserIdsNotFound(val missingUserIds: Set<UserId>) : ValidateUsersResult
+}
+
+private fun UserEntity.toGrpc(location: GeoNameCity500Entity?): GrpcUser = GrpcUser(
+    id = id,
+    name = name,
+    location = location?.toGrpc(),
+    climateZone = climateZone?.toGrpc(),
+    updatedAt = updatedAt.toEpochMilli(),
+)
+
+private fun GeoNameCity500Entity.toGrpc(requesterLocaleIso2: String? = null): GrpcLocationInfo = GrpcLocationInfo(
+    id = geonameid!!,
+    city = name,
+    country = Locale(requesterLocaleIso2.orEmpty(), countryCode).displayCountry,
+    countryCode = countryCode,
+)
+
+private fun ClimateZone.toGrpc(): GrpcClimateZone = when (this) {
+    ClimateZone.TEMPERATE -> GrpcClimateZone.TEMPERATE
+    ClimateZone.MEDITERRANEAN -> GrpcClimateZone.MEDITERRANEAN
+    ClimateZone.CONTINENTAL -> GrpcClimateZone.CONTINENTAL
+    ClimateZone.TROPICAL -> GrpcClimateZone.TROPICAL
+    ClimateZone.ARID -> GrpcClimateZone.ARID
 }

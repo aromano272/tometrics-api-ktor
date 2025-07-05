@@ -1,9 +1,11 @@
 package com.tometrics.api.services.user.db
 
+import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.services.user.db.models.GeoNameCity500Entity
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
+import org.jetbrains.annotations.Blocking
 
 @RegisterKotlinMapper(GeoNameCity500Entity::class)
 interface GeoNameCity500Db {
@@ -17,7 +19,12 @@ interface GeoNameCity500Db {
         WHERE geonameid = :id
         """
     )
-    fun getById(@Bind("id") id: Int): GeoNameCity500Entity?
+    fun getById(@Bind("id") id: LocationInfoId): GeoNameCity500Entity?
+
+    @Blocking
+    @SqlQuery("SELECT * FROM geoname_cities_500 WHERE geonameid = ANY(:ids)")
+    fun getAllByIds(@Bind("ids") ids: Set<LocationInfoId>): List<GeoNameCity500Entity>
+
 
     @SqlQuery(
         """

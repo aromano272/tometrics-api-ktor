@@ -2,9 +2,7 @@ package com.tometrics.api.services.user.services
 
 import com.tometrics.api.services.commongrpc.models.user.toNetwork
 import com.tometrics.api.services.commongrpc.services.UserGrpcService
-import com.tometrics.api.services.protos.UserGrpcServiceGrpcKt
-import com.tometrics.api.services.protos.ValidateUserIdsRequest
-import com.tometrics.api.services.protos.ValidateUserIdsResponse
+import com.tometrics.api.services.protos.*
 
 
 class DefaultUserGrpcService(
@@ -14,4 +12,11 @@ class DefaultUserGrpcService(
     override suspend fun validateUserIds(request: ValidateUserIdsRequest): ValidateUserIdsResponse =
         service.validateUserIds(request.userIdsList.toSet()).toNetwork()
 
+    override suspend fun getAllByIds(request: GetAllByIdsRequest): GetAllByIdsResponse {
+        val result = service.getAllByIds(request.userIdsList.toSet())
+        val protos = result.map { it.toNetwork() }
+        return GetAllByIdsResponse.newBuilder()
+            .addAllUsers(protos)
+            .build()
+    }
 }

@@ -1,10 +1,9 @@
 package com.tometrics.api.services.user.domain.models
 
-import com.tometrics.api.common.domain.models.Millis
+import com.tometrics.api.common.domain.models.ClimateZone
 import com.tometrics.api.common.domain.models.UserId
-import kotlinx.serialization.Serializable
+import java.time.Instant
 
-@Serializable
 data class User(
     val id: UserId,
     val name: String,
@@ -18,5 +17,5 @@ data class User(
     val metricUnits: Boolean,
     val climateZone: ClimateZone?,
 
-    val updatedAt: Millis,
+    val updatedAt: Instant,
 )

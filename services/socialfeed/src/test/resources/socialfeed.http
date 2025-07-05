@@ -1,0 +1,27 @@
+### SocialFeed API Endpoints
+nocheckin
+
+### Status endpoint (no authentication required)
+GET https://localhost/api/v1/socialfeed/status
+Accept: application/json
+
+### Get connections for authenticated user
+GET http://localhost:8081/api/v1/socialfeed/connections
+Accept: application/json
+Authorization: Bearer {{access}}
+
+### Get connections for a specific user
+GET https://localhost/api/v1/socialfeed/connections/123
+Accept: application/json
+Authorization: Bearer {{access}}
+
+### Follow a user
+POST http://localhost:8081/api/v1/socialfeed/follow/1
+Accept: application/json
+Authorization: Bearer {{access}}
+
+### Unfollow a user
+DELETE https://localhost/api/v1/socialfeed/follow/123
+Accept: application/json
+Authorization: Bearer {{access}}
+

@@ -3,6 +3,37 @@ syntax = "proto3";
 option java_package = "com.tometrics.api.services.protos";
 option java_multiple_files = true;
 
+enum ClimateZone {
+  CLIMATE_ZONE_TEMPERATE = 0;
+  CLIMATE_ZONE_MEDITERRANEAN = 1;
+  CLIMATE_ZONE_CONTINENTAL = 2;
+  CLIMATE_ZONE_TROPICAL = 3;
+  CLIMATE_ZONE_ARID = 4;
+}
+
+message LocationInfo {
+  int32 id = 1;
+  optional string city = 2;
+  optional string country = 3;
+  optional string country_code = 4;
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+  optional LocationInfo location = 3;
+  optional ClimateZone climate_zone = 4;
+  int64 updated_at = 5;
+}
+
+message GetAllByIdsRequest {
+  repeated int32 user_ids = 1;
+}
+
+message GetAllByIdsResponse {
+  repeated User users = 1;
+}
+
 message ValidateUserIdsRequest {
   repeated int32 user_ids = 1;
 }
@@ -23,4 +54,5 @@ message ValidateUserIdsResponse {
 
 service UserGrpcService {
   rpc validateUserIds(ValidateUserIdsRequest) returns (ValidateUserIdsResponse);
+  rpc getAllByIds(GetAllByIdsRequest) returns (GetAllByIdsResponse);
 }

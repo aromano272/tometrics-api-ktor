@@ -11,9 +11,10 @@ enum ServiceType {
   CRONJOB = 1;
   EMAIL = 2;
   GARDEN = 3;
-  SOCIALGRAPH = 4;
-  USER = 5;
-  MEDIA = 6;
+  SOCIALFEED = 4;
+  SOCIALGRAPH = 5;
+  USER = 6;
+  MEDIA = 7;
 }
 
 message ServiceInfo {

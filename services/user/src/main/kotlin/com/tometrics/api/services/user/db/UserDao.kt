@@ -3,7 +3,7 @@ package com.tometrics.api.services.user.db
 import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.user.db.models.UserEntity
-import com.tometrics.api.services.user.domain.models.ClimateZone
+import com.tometrics.api.common.domain.models.ClimateZone
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
