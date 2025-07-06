@@ -15,6 +15,5 @@ data class Comment(
     val reactionsCount: Int,
     val reactions: List<Reaction>,
 
-
     val createdAt: Millis,
 )

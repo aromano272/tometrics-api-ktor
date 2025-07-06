@@ -3,6 +3,7 @@ package com.tometrics.api.services.user.routes
 import com.tometrics.api.auth.domain.models.requireRequester
 import com.tometrics.api.services.user.domain.models.BadRequestException
 import com.tometrics.api.services.user.domain.models.LocationInfo
+import com.tometrics.api.services.user.domain.models.toDto
 import com.tometrics.api.services.user.routes.models.GetGeolocationAutocompleteResponse
 import com.tometrics.api.services.user.services.geolocation.GeolocationService
 import io.github.smiley4.ktoropenapi.get
@@ -41,6 +42,7 @@ fun Route.geolocationRoutes() {
                 val searchQuery = call.request.queryParameters["searchQuery"].orEmpty()
 
                 val locations = geolocationService.search(searchQuery)
+                    .map { it.toDto() }
                 call.respond(GetGeolocationAutocompleteResponse(locations))
             }
 

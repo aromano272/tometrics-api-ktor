@@ -1,5 +1,5 @@
 package com.tometrics.api.services.socialfeed.domain.models
 
 enum class Reaction {
-    ThumbsUp,
+    THUMBS_UP,
 }
