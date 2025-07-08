@@ -1,7 +1,7 @@
-package com.tometrics.api.services.socialfeed.functional
+package com.tometrics.api.services.socialgraph.functional
 
 import com.tometrics.api.services.commonservicetest.functional.BaseE2ETest
-import com.tometrics.api.services.socialfeed.domain.models.SocialConnections
+import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlin.test.Test

@@ -28,10 +28,17 @@ interface PostReactionDao {
         olderThan: Instant,
         pageSize: Int,
     ): List<PostReactionEntity>
+    suspend fun getAllByPostIdsAndUserId(
+        postIds: Set<PostId>,
+        userId: UserId,
+    ): List<PostReactionEntity>
+    suspend fun getLatestDistinctByPostId(
+        postIds: Set<PostId>,
+    ): List<PostReactionEntity>
     suspend fun findByPostIdAndUserId(
         postId: PostId,
         userId: UserId,
-    ): List<PostReactionEntity>
+    ): PostReactionEntity?
 }
 
 class DefaultPostReactionDao(
@@ -84,10 +91,26 @@ class DefaultPostReactionDao(
         )
     }
 
+    override suspend fun getAllByPostIdsAndUserId(
+        postIds: Set<PostId>,
+        userId: UserId,
+    ): List<PostReactionEntity> = withContext(Dispatchers.IO) {
+        db.getAllByPostIdsAndUserId(
+            postIds = postIds,
+            userId = userId,
+        )
+    }
+
+    override suspend fun getLatestDistinctByPostId(
+        postIds: Set<PostId>,
+    ): List<PostReactionEntity> = withContext(Dispatchers.IO) {
+        db.getLatestDistinctByPostId(postIds = postIds)
+    }
+
     override suspend fun findByPostIdAndUserId(
         postId: PostId,
         userId: UserId,
-    ): List<PostReactionEntity> = withContext(Dispatchers.IO) {
+    ): PostReactionEntity? = withContext(Dispatchers.IO) {
         db.findByPostIdAndUserId(
             postId = postId,
             userId = userId,

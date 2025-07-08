@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/wrappers.proto";
+
 option java_package = "com.tometrics.api.services.protos";
 option java_multiple_files = true;
 
@@ -55,4 +57,5 @@ message ValidateUserIdsResponse {
 service UserGrpcService {
   rpc validateUserIds(ValidateUserIdsRequest) returns (ValidateUserIdsResponse);
   rpc getAllByIds(GetAllByIdsRequest) returns (GetAllByIdsResponse);
+  rpc findLocationById(google.protobuf.Int32Value) returns (LocationInfo);
 }

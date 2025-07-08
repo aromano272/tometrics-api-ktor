@@ -1,32 +1,22 @@
 package com.tometrics.api.services.socialfeed
 
-import com.tometrics.api.services.socialfeed.db.DefaultLocationInfoDao
-import com.tometrics.api.services.socialfeed.db.DefaultPostDao
-import com.tometrics.api.services.socialfeed.db.DefaultPostReactionDao
-import com.tometrics.api.services.socialfeed.db.DefaultUserDao
-import com.tometrics.api.services.socialfeed.db.LocationInfoDao
-import com.tometrics.api.services.socialfeed.db.LocationInfoDb
-import com.tometrics.api.services.socialfeed.db.PostDao
-import com.tometrics.api.services.socialfeed.db.PostDb
-import com.tometrics.api.services.socialfeed.db.PostReactionDao
-import com.tometrics.api.services.socialfeed.db.PostReactionDb
-import com.tometrics.api.services.socialfeed.db.UserDao
-import com.tometrics.api.services.socialfeed.db.UserDb
+import com.tometrics.api.services.socialfeed.db.*
 import com.tometrics.api.services.socialfeed.service.CommentService
 import com.tometrics.api.services.socialfeed.service.DefaultCommentService
 import com.tometrics.api.services.socialfeed.service.DefaultPostService
 import com.tometrics.api.services.socialfeed.service.PostService
 import org.jdbi.v3.core.Jdbi
 import org.koin.dsl.module
-import kotlin.jvm.java
 
 val serviceModule = module {
 
     factory<PostService> {
         DefaultPostService(
             logger = get(),
-            userGrpcClient = get(),
-            dao = get(),
+            postDao = get(),
+            userDao = get(),
+            locationInfoDao = get(),
+            postReactionDao = get(),
         )
     }
 
@@ -58,6 +48,28 @@ val databaseModule = module {
 
     single<PostReactionDao> {
         DefaultPostReactionDao(
+            db = get()
+        )
+    }
+
+    single<CommentDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(CommentDb::class.java)
+    }
+
+    single<CommentDao> {
+        DefaultCommentDao(
+            db = get()
+        )
+    }
+
+    single<CommentReactionDb> {
+        val jdbi: Jdbi = get()
+        jdbi.onDemand(CommentReactionDb::class.java)
+    }
+
+    single<CommentReactionDao> {
+        DefaultCommentReactionDao(
             db = get()
         )
     }

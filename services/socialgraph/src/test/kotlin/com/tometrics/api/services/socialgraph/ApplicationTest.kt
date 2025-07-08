@@ -1,4 +1,4 @@
-package com.tometrics.api.services.socialfeed
+package com.tometrics.api.services.socialgraph
 
 import io.ktor.client.request.*
 import io.ktor.http.*

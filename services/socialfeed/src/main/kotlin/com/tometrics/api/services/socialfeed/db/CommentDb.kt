@@ -1,6 +1,7 @@
 package com.tometrics.api.services.socialfeed.db
 
 import com.tometrics.api.common.domain.models.CommentId
+import com.tometrics.api.common.domain.models.PostId
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.socialfeed.db.models.CommentEntity
 import org.jdbi.v3.sqlobject.customizer.Bind
@@ -50,15 +51,15 @@ interface CommentDb {
         @Bind("userId") userId: UserId,
     )
 
-    // NOTE(aromano): at the moment the feed is going to be all comments from everyone, for simplicity and to drive engagement
     @Blocking
     @SqlQuery("""
         SELECT * FROM comments
-        WHERE created_at < :olderThan
+        WHERE post_id = :postId AND created_at < :olderThan
         ORDER BY created_at
         LIMIT :pageSize
     """)
-    fun getFeed(
+    fun getAllByPostId(
+        @Bind("postId") postId: PostId,
         @Bind("olderThan") olderThan: Instant,
         @Bind("pageSize") pageSize: Int,
     ): List<CommentEntity>
@@ -79,8 +80,8 @@ interface CommentDb {
     @Blocking
     @SqlQuery("""
         SELECT * FROM comments
-        WHERE id = :postId
+        WHERE id = :id
     """)
-    fun findById(@Bind("id") id: CommentId): List<CommentEntity>
+    fun findById(@Bind("id") id: CommentId): CommentEntity?
 
 }

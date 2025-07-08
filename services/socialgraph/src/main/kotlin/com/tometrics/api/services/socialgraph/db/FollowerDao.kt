@@ -1,7 +1,7 @@
-package com.tometrics.api.services.socialfeed.db
+package com.tometrics.api.services.socialgraph.db
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.services.socialfeed.db.models.FollowerEntity
+import com.tometrics.api.services.socialgraph.db.models.FollowerEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

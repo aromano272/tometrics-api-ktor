@@ -2,6 +2,7 @@ package com.tometrics.api.services.socialfeed.db
 
 import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.common.domain.models.UserId
+import com.tometrics.api.services.socialfeed.db.models.LocationInfoEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,6 +20,8 @@ interface LocationInfoDao {
         countryCode: String?,
     )
     suspend fun delete(locationId: LocationInfoId)
+    suspend fun findById(id: LocationInfoId): LocationInfoEntity?
+    suspend fun getAllByIds(ids: Set<LocationInfoId>): List<LocationInfoEntity>
 }
 
 class DefaultLocationInfoDao(
@@ -55,6 +58,14 @@ class DefaultLocationInfoDao(
         locationId: LocationInfoId,
     ) = withContext(Dispatchers.IO) {
         db.delete(locationId = locationId)
+    }
+
+    override suspend fun findById(id: LocationInfoId): LocationInfoEntity? = withContext(Dispatchers.IO) {
+        db.findById(id)
+    }
+
+    override suspend fun getAllByIds(ids: Set<LocationInfoId>): List<LocationInfoEntity> = withContext(Dispatchers.IO) {
+        db.getAllByIds(ids)
     }
 
 }

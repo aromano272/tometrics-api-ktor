@@ -1,13 +1,13 @@
-package com.tometrics.api.services.socialfeed
+package com.tometrics.api.services.socialgraph
 
 import com.tometrics.api.common.domain.models.ErrorResponse
 import com.tometrics.api.common.domain.models.ServiceInfo
 import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.services.commonservice.commonModule
-import com.tometrics.api.services.socialfeed.domain.models.ServiceError
-import com.tometrics.api.services.socialfeed.routes.socialGraphRoutes
-import com.tometrics.api.services.socialfeed.service.DefaultSocialGraphGrpcService
+import com.tometrics.api.services.socialgraph.domain.models.ServiceError
+import com.tometrics.api.services.socialgraph.routes.socialGraphRoutes
+import com.tometrics.api.services.socialgraph.service.DefaultSocialGraphGrpcService
 import io.grpc.ServerBuilder
 import io.ktor.http.*
 import io.ktor.server.application.*

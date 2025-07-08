@@ -19,7 +19,7 @@ interface CommentService {
     suspend fun createComment(
         requester: Requester,
         postId: PostId,
-        parent: CommentId?,
+        parentId: CommentId?,
         text: String,
         image: ImageUrl?,
     ): Comment
@@ -53,6 +53,52 @@ class DefaultCommentService(
 
 ) : CommentService {
 
+    override suspend fun getAllByPostId(
+        requester: Requester,
+        postId: PostId,
+        olderThan: Millis
+    ): List<Comment> {
+        TODO("Not yet implemented")
+    }
 
+    override suspend fun createComment(
+        requester: Requester,
+        postId: PostId,
+        parentId: CommentId?,
+        text: String,
+        image: ImageUrl?
+    ): Comment {
+        TODO("Not yet implemented")
+    }
 
+    override suspend fun updateComment(
+        requester: Requester,
+        commentId: CommentId,
+        text: String?,
+        image: ImageUrl?
+    ): Comment {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteComment(
+        requester: Requester,
+        commentId: CommentId
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createReaction(
+        requester: Requester,
+        commentId: CommentId,
+        reaction: Reaction
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteReaction(
+        requester: Requester,
+        commentId: CommentId
+    ) {
+        TODO("Not yet implemented")
+    }
 }

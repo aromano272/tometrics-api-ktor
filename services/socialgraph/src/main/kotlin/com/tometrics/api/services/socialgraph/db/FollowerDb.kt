@@ -1,7 +1,7 @@
-package com.tometrics.api.services.socialfeed.db
+package com.tometrics.api.services.socialgraph.db
 
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.services.socialfeed.db.models.FollowerEntity
+import com.tometrics.api.services.socialgraph.db.models.FollowerEntity
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys

@@ -5,6 +5,7 @@ import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.socialfeed.db.models.PostReactionEntity
 import com.tometrics.api.services.socialfeed.domain.models.Reaction
 import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -63,9 +64,33 @@ interface PostReactionDb {
     @Blocking
     @SqlQuery("""
         SELECT * FROM post_reactions
+        WHERE post_id IN (<postIds>)
+        AND user_id = :userId
+    """)
+    fun getAllByPostIdsAndUserId(
+        @BindList("postIds") postIds: Set<PostId>,
+        @Bind("userId") userId: UserId,
+    ): List<PostReactionEntity>
+
+    @Blocking
+    @SqlQuery("""
+        SELECT DISTINCT ON (reaction) * FROM post_reactions
+        WHERE post_id IN (<postIds>)
+        LIMIT 3
+    """)
+    fun getLatestDistinctByPostId(
+        @BindList("postIds") postIds: Set<PostId>,
+    ): List<PostReactionEntity>
+
+    @Blocking
+    @SqlQuery("""
+        SELECT * FROM post_reactions
         WHERE post_id = :postId
         AND user_id = :userId
     """)
-    fun findByPostIdAndUserId(postId: PostId, userId: UserId): List<PostReactionEntity>
+    fun findByPostIdAndUserId(
+        @Bind("postId") postId: PostId,
+        @Bind("userId") userId: UserId,
+    ): PostReactionEntity?
 
 }

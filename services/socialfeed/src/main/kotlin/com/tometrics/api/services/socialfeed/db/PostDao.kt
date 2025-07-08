@@ -1,6 +1,7 @@
 package com.tometrics.api.services.socialfeed.db
 
 import com.tometrics.api.common.domain.models.ImageUrl
+import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.common.domain.models.PostId
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.socialfeed.db.models.PostEntity
@@ -11,12 +12,14 @@ import java.time.Instant
 interface PostDao {
     suspend fun insert(
         userId: UserId,
+        locationId: LocationInfoId?,
         images: List<ImageUrl>,
         text: String?,
     ): PostId?
     suspend fun update(
         id: PostId,
         userId: UserId,
+        locationId: LocationInfoId?,
         newImages: List<ImageUrl>?,
         newText: String?,
     )
@@ -33,7 +36,9 @@ interface PostDao {
         olderThan: Instant,
         pageSize: Int = 20,
     ): List<PostEntity>
-    suspend fun findById(id: PostId): List<PostEntity>
+    suspend fun findById(id: PostId): PostEntity?
+    suspend fun increaseReactionCount(id: PostId)
+    suspend fun decreaseReactionCount(id: PostId)
 }
 
 class DefaultPostDao(
@@ -42,11 +47,13 @@ class DefaultPostDao(
 
     override suspend fun insert(
         userId: UserId,
+        locationId: LocationInfoId?,
         images: List<ImageUrl>,
         text: String?,
     ): PostId? = withContext(Dispatchers.IO) {
         db.insert(
             userId = userId,
+            locationId = locationId,
             images = images,
             text = text,
         )
@@ -54,12 +61,14 @@ class DefaultPostDao(
     override suspend fun update(
         id: PostId,
         userId: UserId,
+        locationId: LocationInfoId?,
         newImages: List<ImageUrl>?,
         newText: String?,
     ) = withContext(Dispatchers.IO) {
         db.update(
             id = id,
             userId = userId,
+            newLocationId = locationId,
             newImages = newImages,
             newText = newText,
         )
@@ -93,8 +102,14 @@ class DefaultPostDao(
             pageSize = pageSize,
         )
     }
-    override suspend fun findById(id: PostId): List<PostEntity> = withContext(Dispatchers.IO) {
+    override suspend fun findById(id: PostId): PostEntity? = withContext(Dispatchers.IO) {
         db.findById(id = id)
+    }
+    override suspend fun increaseReactionCount(id: PostId) = withContext(Dispatchers.IO) {
+        db.increaseReactionCount(id = id)
+    }
+    override suspend fun decreaseReactionCount(id: PostId) = withContext(Dispatchers.IO) {
+        db.decreaseReactionCount(id = id)
     }
 
 }

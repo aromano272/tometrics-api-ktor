@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS posts
 (
     id  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id INT NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
+    location_id INT REFERENCES location_info (location_id),
     images TEXT[] NOT NULL DEFAULT array[]::text[],
     text TEXT NOT NULL,
     reactions_count INT NOT NULL DEFAULT 0,
@@ -13,8 +14,7 @@ CREATE TABLE IF NOT EXISTS posts
 CREATE TABLE IF NOT EXISTS users
 (
     id INT PRIMARY KEY,
-    name TEXT,
-    location_id INT REFERENCES location_info (location_id),
+    name TEXT NOT NULL,
     climate_zone TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now()

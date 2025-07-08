@@ -3,8 +3,10 @@ package com.tometrics.api.services.socialfeed.db
 import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.services.socialfeed.db.models.LocationInfoEntity
 import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
+import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.jetbrains.annotations.Blocking
 
@@ -45,5 +47,13 @@ interface LocationInfoDb {
     fun delete(
         @Bind("locationId") locationId: LocationInfoId,
     )
+
+    @Blocking
+    @SqlQuery("SELECT * FROM location_info WHERE location_id = :id")
+    fun findById(@Bind("id") id: LocationInfoId): LocationInfoEntity?
+
+    @Blocking
+    @SqlQuery("SELECT * FROM location_info WHERE location_id IN (<ids>)")
+    fun getAllByIds(@BindList("ids") ids: Set<LocationInfoId>): List<LocationInfoEntity>
 
 }

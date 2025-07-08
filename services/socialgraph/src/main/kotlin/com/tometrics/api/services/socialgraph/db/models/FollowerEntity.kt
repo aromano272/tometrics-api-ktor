@@ -1,4 +1,4 @@
-package com.tometrics.api.services.socialfeed.db.models
+package com.tometrics.api.services.socialgraph.db.models
 
 import com.tometrics.api.common.domain.models.UserId
 import java.time.Instant

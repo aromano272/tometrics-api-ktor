@@ -1,6 +1,7 @@
 package com.tometrics.api.services.socialfeed.db
 
 import com.tometrics.api.common.domain.models.ImageUrl
+import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.common.domain.models.PostId
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.socialfeed.db.models.PostEntity
@@ -17,12 +18,13 @@ interface PostDb {
 
     @Blocking
     @SqlUpdate("""
-        INSERT INTO posts (user_id, images, text)
-        VALUES (:userId, :images, :text)
+        INSERT INTO posts (user_id, location_id, images, text)
+        VALUES (:userId, :locationId, :images, :text)
     """)
     @GetGeneratedKeys
     fun insert(
         @Bind("userId") userId: UserId,
+        @Bind("locationId") locationId: LocationInfoId?,
         @Bind("images") images: List<ImageUrl>,
         @Bind("text") text: String?,
     ): PostId?
@@ -30,13 +32,15 @@ interface PostDb {
     @Blocking
     @SqlUpdate("""
         UPDATE posts 
-        SET images = COALESCE(:newImages, images), 
+        SET location_id = COALESCE(:newLocationId, location_id), 
+        images = COALESCE(:newImages, images), 
         text = COALESCE(:newText, text),
         WHERE id = :id AND user_id = :userId
     """)
     fun update(
         @Bind("id") id: PostId,
         @Bind("userId") userId: UserId,
+        @Bind("newLocationId") newLocationId: LocationInfoId?,
         @Bind("newImages") newImages: List<ImageUrl>?,
         @Bind("newText") newText: String?,
     )
@@ -79,6 +83,14 @@ interface PostDb {
         SELECT * FROM posts
         WHERE id = :postId
     """)
-    fun findById(@Bind("id") id: PostId): List<PostEntity>
+    fun findById(@Bind("id") id: PostId): PostEntity?
+
+    @Blocking
+    @SqlUpdate("UPDATE posts SET reaction_count = reaction_count + 1 WHERE id = :id")
+    fun increaseReactionCount(@Bind("id") id: PostId)
+
+    @Blocking
+    @SqlUpdate("UPDATE posts SET reaction_count = reaction_count - 1 WHERE id = :id")
+    fun decreaseReactionCount(@Bind("id") id: PostId)
 
 }

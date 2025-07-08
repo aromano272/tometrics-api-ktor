@@ -1,4 +1,4 @@
-package com.tometrics.api.services.socialfeed.service
+package com.tometrics.api.services.socialgraph.service
 
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.UserId
@@ -6,8 +6,8 @@ import com.tometrics.api.services.commongrpc.models.socialgraph.GrpcSocialConnec
 import com.tometrics.api.services.commongrpc.models.user.GrpcValidateUsersResult
 import com.tometrics.api.services.commongrpc.services.SocialGraphGrpcService
 import com.tometrics.api.services.commongrpc.services.UserGrpcClient
-import com.tometrics.api.services.socialfeed.db.FollowerDao
-import com.tometrics.api.services.socialfeed.domain.models.SocialConnections
+import com.tometrics.api.services.socialgraph.db.FollowerDao
+import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
 import io.ktor.util.logging.*
 
 interface SocialGraphService : SocialGraphGrpcService {

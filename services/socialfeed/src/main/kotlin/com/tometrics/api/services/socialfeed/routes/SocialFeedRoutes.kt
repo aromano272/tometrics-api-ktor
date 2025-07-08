@@ -124,7 +124,7 @@ fun Route.socialFeedRoutes() {
                 val result = commentService.createComment(
                     requester = requester,
                     postId = postId,
-                    parent = request.parent,
+                    parentId = request.parent,
                     text = request.text,
                     image = request.image,
                 )
