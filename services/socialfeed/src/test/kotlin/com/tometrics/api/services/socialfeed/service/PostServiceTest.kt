@@ -2,6 +2,7 @@ package com.tometrics.api.services.socialfeed.service
 
 import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.common.domain.models.ClimateZone
+import com.tometrics.api.services.commongrpc.services.UserGrpcClient
 import com.tometrics.api.services.socialfeed.db.LocationInfoDao
 import com.tometrics.api.services.socialfeed.db.PostDao
 import com.tometrics.api.services.socialfeed.db.PostReactionDao
@@ -20,6 +21,7 @@ import kotlin.test.*
 class PostServiceTest {
     
     private val logger: Logger = mockk()
+    private val userGrpcClient: UserGrpcClient = mockk()
     private val postDao: PostDao = mockk()
     private val userDao: UserDao = mockk {
         coEvery { getAllByIds(emptySet()) }.returns(emptyList())
@@ -34,6 +36,7 @@ class PostServiceTest {
     
     private val postService: PostService = DefaultPostService(
         logger = logger,
+        userGrpcClient = userGrpcClient,
         postDao = postDao,
         userDao = userDao,
         locationInfoDao = locationInfoDao,

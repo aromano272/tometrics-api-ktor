@@ -23,7 +23,7 @@ interface UserDb {
     fun insert(
         @Bind("id") id: UserId,
         @Bind("name") name: String,
-        @Bind("climateZone") climateZone: ClimateZone,
+        @Bind("climateZone") climateZone: ClimateZone?,
     ): UserId?
 
     @Blocking
@@ -47,7 +47,11 @@ interface UserDb {
     )
 
     @Blocking
-    @SqlQuery("SELECT * FROM users WHERE id in (<ids>)")
-    fun getAllByIds(@BindList("ids") ids: Set<UserId>): List<UserEntity>
+    @SqlQuery("SELECT * FROM users WHERE id = :id")
+    fun findById(@Bind("id") id: UserId): UserEntity?
+
+    @Blocking
+    @SqlQuery("SELECT * FROM users WHERE id = ANY(:ids)")
+    fun getAllByIds(@Bind("ids") ids: Set<UserId>): List<UserEntity>
 
 }

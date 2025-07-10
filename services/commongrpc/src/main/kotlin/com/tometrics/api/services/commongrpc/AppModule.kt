@@ -2,10 +2,7 @@ package com.tometrics.api.services.commongrpc
 
 import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.services.commongrpc.services.*
-import com.tometrics.api.services.protos.GardenGrpcServiceGrpcKt
-import com.tometrics.api.services.protos.ServiceDiscoveryGrpcServiceGrpcKt
-import com.tometrics.api.services.protos.SocialGraphGrpcServiceGrpcKt
-import com.tometrics.api.services.protos.UserGrpcServiceGrpcKt
+import com.tometrics.api.services.protos.*
 import io.grpc.ManagedChannelBuilder
 import org.koin.dsl.module
 
@@ -42,6 +39,18 @@ val commonServicesGrpcModule = module {
                     SocialGraphGrpcServiceGrpcKt.SocialGraphGrpcServiceCoroutineStub(it)
                 },
                 type = ServiceType.SOCIALGRAPH,
+                serviceDiscovery = get(),
+            )
+        )
+    }
+
+    single<MediaGrpcClient> {
+        DefaultMediaGrpcClient(
+            client = GrpcLazyClient(
+                stubConstructor = {
+                    MediaGrpcServiceGrpcKt.MediaGrpcServiceCoroutineStub(it)
+                },
+                type = ServiceType.MEDIA,
                 serviceDiscovery = get(),
             )
         )

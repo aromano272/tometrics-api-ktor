@@ -5,7 +5,7 @@ import com.tometrics.api.common.domain.models.ServiceInfo
 import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.db.di.jdbiModule
 import com.tometrics.api.services.commonservice.commonModule
-import com.tometrics.api.services.socialfeed.domain.models.ServiceError
+import com.tometrics.api.services.socialfeed.domain.models.*
 import com.tometrics.api.services.socialfeed.routes.socialFeedRoutes
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -61,7 +61,11 @@ val configureStatusPages: StatusPagesConfig.() -> Unit
     get() = {
         exception<ServiceError> { call, cause ->
             val (status, message) = when (cause) {
-                else -> HttpStatusCode.InternalServerError to "Internal server error"
+                InvalidMediaUrls -> HttpStatusCode.BadRequest to "Invalid image urls"
+                CreatePostFailed,
+                is LocationNotFound,
+                is PostNotFound,
+                is UserNotFound -> HttpStatusCode.InternalServerError to "Internal server error"
             }
 
             call.application.environment.log.warn("Handled error", cause)

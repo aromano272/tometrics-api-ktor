@@ -6,17 +6,14 @@ import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.commongrpc.models.user.GrpcLocationInfo
 import com.tometrics.api.services.commongrpc.models.user.GrpcUser
 import com.tometrics.api.services.commongrpc.models.user.GrpcValidateUsersResult
-import com.tometrics.api.services.protos.GetAllByIdsRequest
-import com.tometrics.api.services.protos.UserGrpcServiceGrpcKt
-import com.tometrics.api.services.protos.validateUserIdsRequest
+import com.tometrics.api.services.protos.*
 
-interface UserGrpcService {
+interface UserGrpcClient {
     suspend fun validateUserIds(userIds: Set<UserId>): GrpcValidateUsersResult
-    suspend fun getAllByIds(userIds: Set<UserId>): List<GrpcUser>
+    suspend fun findUserById(id: UserId): GrpcUser?
+    suspend fun getAllUsersByIds(userIds: Set<UserId>): List<GrpcUser>
     suspend fun findLocationById(id: LocationInfoId): GrpcLocationInfo?
 }
-
-interface UserGrpcClient : UserGrpcService
 
 class DefaultUserGrpcClient(
     private val client: GrpcLazyClient<UserGrpcServiceGrpcKt.UserGrpcServiceCoroutineStub>,
@@ -29,18 +26,24 @@ class DefaultUserGrpcClient(
         return GrpcValidateUsersResult.fromNetwork(response)
     }
 
-    override suspend fun getAllByIds(userIds: Set<UserId>): List<GrpcUser> {
-        val request = GetAllByIdsRequest.newBuilder()
+    override suspend fun findUserById(id: UserId): GrpcUser? {
+        val request = Int32Value.of(id)
+        val response = client.await().findUserById(request)
+        return response.userOrNull?.let { GrpcUser.fromNetwork(it) }
+    }
+
+    override suspend fun getAllUsersByIds(userIds: Set<UserId>): List<GrpcUser> {
+        val request = GetAllUsersByIdsRequest.newBuilder()
             .addAllUserIds(userIds)
             .build()
-        val response = client.await().getAllByIds(request)
+        val response = client.await().getAllUsersByIds(request)
         return response.usersList.map { GrpcUser.fromNetwork(it) }
     }
 
     override suspend fun findLocationById(id: LocationInfoId): GrpcLocationInfo? {
         val request = Int32Value.of(id)
         val response = client.await().findLocationById(request)
-        return GrpcLocationInfo.fromNetwork(response)
+        return response.locationOrNull?.let { GrpcLocationInfo.fromNetwork(it) }
     }
 
 }

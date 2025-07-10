@@ -14,7 +14,7 @@ data class GrpcLocationInfo(
         fun fromNetwork(network: LocationInfo): GrpcLocationInfo = GrpcLocationInfo(
             id = network.id,
             city = network.city,
-            country = network.city,
+            country = network.country,
             countryCode = network.countryCode,
         )
     }

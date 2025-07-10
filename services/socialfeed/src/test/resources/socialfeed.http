@@ -1,27 +1,116 @@
 ### SocialFeed API Endpoints
-nocheckin
 
-### Status endpoint (no authentication required)
-GET https://localhost/api/v1/socialfeed/status
+### SocialFeed status endpoint (no authentication required)
+GET http://localhost:8088/api/v1/socialfeed/status
 Accept: application/json
 
-### Get connections for authenticated user
-GET http://localhost:8081/api/v1/socialfeed/connections
-Accept: application/json
-Authorization: Bearer {{access}}
-
-### Get connections for a specific user
-GET https://localhost/api/v1/socialfeed/connections/123
+### Get feed for authenticated user
+GET http://localhost:8088/api/v1/feed
 Accept: application/json
 Authorization: Bearer {{access}}
 
-### Follow a user
-POST http://localhost:8081/api/v1/socialfeed/follow/1
+### Get posts for a specific user
+GET http://localhost:8088/api/v1/posts/1
 Accept: application/json
 Authorization: Bearer {{access}}
 
-### Unfollow a user
-DELETE https://localhost/api/v1/socialfeed/follow/123
+### Create a new post
+POST http://localhost:8088/api/v1/post
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+{
+  "locationInfoId": 1,
+  "images": ["image1.jpg", "image2.jpg"],
+  "text": "This is a new post"
+}
+
+### Get a specific post
+GET http://localhost:8088/api/v1/post/2
 Accept: application/json
 Authorization: Bearer {{access}}
 
+### Delete a post
+DELETE http://localhost:8088/api/v1/post/2
+Accept: application/json
+Authorization: Bearer {{access}}
+
+### Update a post
+PUT http://localhost:8088/api/v1/post/5
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+{
+  "locationInfoId": 3039154,
+  "images": ["updated_image1.jpg", "updated_image2.jpg"],
+  "text": "This is an updated post"
+}
+
+### Get all reactions from a post
+GET http://localhost:8088/api/v1/post/5/reaction/all
+Accept: application/json
+Authorization: Bearer {{access}}
+
+### Create a reaction to a post
+POST http://localhost:8088/api/v1/post/5/reaction
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+{
+  "reaction": "THUMBS_UP"
+}
+
+### Delete a reaction from a post
+DELETE http://localhost:8088/api/v1/post/1/reaction
+Accept: application/json
+Authorization: Bearer {{access}}
+
+### Get comments for a post
+GET http://localhost:8088/api/v1/post/1/comments
+Accept: application/json
+Authorization: Bearer {{access}}
+
+### Create a comment on a post
+POST http://localhost:8088/api/v1/post/1/comment
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+{
+  "text": "This is a comment",
+  "image": "comment_image.jpg"
+}
+
+### Update a comment
+PUT http://localhost:8088/api/v1/comment/1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+{
+  "text": "This is an updated comment",
+  "image": "updated_comment_image.jpg"
+}
+
+### Delete a comment
+DELETE http://localhost:8088/api/v1/comment/1
+Accept: application/json
+Authorization: Bearer {{access}}
+
+### Create a reaction to a comment
+POST http://localhost:8088/api/v1/comment/1/reaction
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+{
+  "reaction": "THUMBS_UP"
+}
+
+### Delete a reaction from a comment
+DELETE http://localhost:8088/api/v1/comment/1/reaction
+Accept: application/json
+Authorization: Bearer {{access}}

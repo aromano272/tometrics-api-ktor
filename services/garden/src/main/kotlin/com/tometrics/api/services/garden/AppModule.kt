@@ -1,11 +1,9 @@
 package com.tometrics.api.services.garden
 
 
-import com.tometrics.api.services.commongrpc.services.GardenGrpcService
 import com.tometrics.api.services.garden.db.*
 import com.tometrics.api.services.garden.services.*
 import org.jdbi.v3.core.Jdbi
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val serviceModule = module {
@@ -27,7 +25,7 @@ val serviceModule = module {
             gardenDao = get(),
             plantService = get(),
         )
-    }.bind(GardenGrpcService::class)
+    }
 
     single<DesignerService> {
         DefaultDesignerService(

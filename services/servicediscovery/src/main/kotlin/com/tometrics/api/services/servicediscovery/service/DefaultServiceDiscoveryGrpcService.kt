@@ -3,11 +3,10 @@ package com.tometrics.api.services.servicediscovery.service
 import com.google.protobuf.empty
 import com.tometrics.api.services.commongrpc.models.servicediscovery.fromNetwork
 import com.tometrics.api.services.commongrpc.models.servicediscovery.toNetwork
-import com.tometrics.api.services.commongrpc.services.ServiceDiscoveryGrpcService
 import com.tometrics.api.services.protos.*
 
 class DefaultServiceDiscoveryGrpcService(
-    private val service: ServiceDiscoveryGrpcService,
+    private val service: ServiceDiscoveryService,
 ) : ServiceDiscoveryGrpcServiceGrpcKt.ServiceDiscoveryGrpcServiceCoroutineImplBase() {
 
     override suspend fun register(request: ServiceInfo): com.google.protobuf.Empty {

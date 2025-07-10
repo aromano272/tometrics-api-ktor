@@ -1,5 +1,6 @@
 package com.tometrics.api.services.user.services.geolocation
 
+import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.services.user.db.GeoNameCity500Dao
 import com.tometrics.api.services.user.db.models.toLocationInfo
 import com.tometrics.api.services.user.domain.models.LocationInfo
@@ -8,6 +9,9 @@ import io.ktor.server.plugins.*
 class GeoNamesAutocompleteService(
     private val geoNameCity500Dao: GeoNameCity500Dao
 ) : GeolocationAutocompleteService {
+
+    override suspend fun findLocationById(id: LocationInfoId): LocationInfo? =
+        geoNameCity500Dao.getById(id)?.toLocationInfo()
 
     override suspend fun search(query: String): List<LocationInfo> {
         if (query.length < 3) throw BadRequestException("search query should be at least 3 characters long")

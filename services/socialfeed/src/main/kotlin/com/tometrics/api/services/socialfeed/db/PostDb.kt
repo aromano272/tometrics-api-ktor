@@ -34,7 +34,7 @@ interface PostDb {
         UPDATE posts 
         SET location_id = COALESCE(:newLocationId, location_id), 
         images = COALESCE(:newImages, images), 
-        text = COALESCE(:newText, text),
+        text = COALESCE(:newText, text)
         WHERE id = :id AND user_id = :userId
     """)
     fun update(
@@ -81,16 +81,16 @@ interface PostDb {
     @Blocking
     @SqlQuery("""
         SELECT * FROM posts
-        WHERE id = :postId
+        WHERE id = :id
     """)
     fun findById(@Bind("id") id: PostId): PostEntity?
 
     @Blocking
-    @SqlUpdate("UPDATE posts SET reaction_count = reaction_count + 1 WHERE id = :id")
+    @SqlUpdate("UPDATE posts SET reactions_count = reactions_count + 1 WHERE id = :id")
     fun increaseReactionCount(@Bind("id") id: PostId)
 
     @Blocking
-    @SqlUpdate("UPDATE posts SET reaction_count = reaction_count - 1 WHERE id = :id")
+    @SqlUpdate("UPDATE posts SET reactions_count = reactions_count - 1 WHERE id = :id")
     fun decreaseReactionCount(@Bind("id") id: PostId)
 
 }

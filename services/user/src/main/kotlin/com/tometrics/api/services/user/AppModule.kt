@@ -4,7 +4,6 @@ package com.tometrics.api.services.user
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.v2.ApacheHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import com.tometrics.api.services.commongrpc.services.UserGrpcService
 import com.tometrics.api.services.user.db.*
 import com.tometrics.api.services.user.nominatim.DefaultNominatimClient
 import com.tometrics.api.services.user.nominatim.NominatimClient
@@ -14,7 +13,6 @@ import io.github.cdimascio.dotenv.Dotenv
 import io.ktor.util.logging.*
 import org.jdbi.v3.core.Jdbi
 import org.koin.core.qualifier.qualifier
-import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.slf4j.LoggerFactory
 
@@ -37,11 +35,12 @@ val serviceModule = module {
             city500Dao = get(),
             socialGraphGrpcClient = get(),
         )
-    }.bind(UserGrpcService::class)
+    }
 
     single<DefaultUserGrpcService> {
         DefaultUserGrpcService(
-            service = get(),
+            geolocationService = get(),
+            userService = get(),
         )
     }
 

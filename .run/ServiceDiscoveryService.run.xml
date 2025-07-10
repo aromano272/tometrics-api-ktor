@@ -2,6 +2,7 @@
   <configuration default="false" name="ServiceDiscoveryService" type="KtorApplicationConfigurationType" factoryName="Ktor">
     <option name="envFilePaths">
       <option value="$PROJECT_DIR$/.env" />
+      <option value="$PROJECT_DIR$/.env.development" />
     </option>
     <option name="MAIN_CLASS_NAME" value="com.tometrics.api.services.servicediscovery.ServiceDiscoveryServiceAppKt" />
     <module name="tometrics.services.servicediscovery.main" />

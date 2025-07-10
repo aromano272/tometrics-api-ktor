@@ -64,22 +64,22 @@ interface PostReactionDb {
     @Blocking
     @SqlQuery("""
         SELECT * FROM post_reactions
-        WHERE post_id IN (<postIds>)
+        WHERE post_id = ANY(:postIds)
         AND user_id = :userId
     """)
     fun getAllByPostIdsAndUserId(
-        @BindList("postIds") postIds: Set<PostId>,
+        @Bind("postIds") postIds: Set<PostId>,
         @Bind("userId") userId: UserId,
     ): List<PostReactionEntity>
 
     @Blocking
     @SqlQuery("""
         SELECT DISTINCT ON (reaction) * FROM post_reactions
-        WHERE post_id IN (<postIds>)
+        WHERE post_id = ANY(:postIds)
         LIMIT 3
     """)
     fun getLatestDistinctByPostId(
-        @BindList("postIds") postIds: Set<PostId>,
+        @Bind("postIds") postIds: Set<PostId>,
     ): List<PostReactionEntity>
 
     @Blocking

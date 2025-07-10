@@ -1,27 +1,23 @@
 package com.tometrics.api.services.user.services
 
 import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.common.domain.models.ClimateZone
 import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.services.commongrpc.models.user.GrpcClimateZone
-import com.tometrics.api.services.commongrpc.models.user.GrpcLocationInfo
-import com.tometrics.api.services.commongrpc.models.user.GrpcUser
-import com.tometrics.api.services.commongrpc.models.user.GrpcValidateUsersResult
 import com.tometrics.api.services.commongrpc.services.SocialGraphGrpcClient
-import com.tometrics.api.services.commongrpc.services.UserGrpcService
 import com.tometrics.api.services.user.db.GeoNameCity500Dao
 import com.tometrics.api.services.user.db.UserDao
-import com.tometrics.api.services.user.db.models.GeoNameCity500Entity
-import com.tometrics.api.services.user.db.models.UserEntity
 import com.tometrics.api.services.user.db.models.toDomain
 import com.tometrics.api.services.user.db.models.toLocationInfo
-import com.tometrics.api.common.domain.models.ClimateZone
 import com.tometrics.api.services.user.domain.models.User
 import com.tometrics.api.services.user.domain.models.UserWithSocialConnections
 import io.ktor.util.logging.*
-import java.util.*
 
-interface UserService : UserGrpcService {
+interface UserService {
+
+    suspend fun findById(id: UserId): User?
+    suspend fun validateUserIds(userIds: Set<UserId>): ValidateUsersResult
+    suspend fun getAllByIds(userIds: Set<UserId>): List<User>
 
     suspend fun get(requester: Requester): UserWithSocialConnections
     suspend fun get(userId: UserId): UserWithSocialConnections
@@ -42,25 +38,31 @@ class DefaultUserService(
     private val city500Dao: GeoNameCity500Dao,
 ) : UserService {
 
-    override suspend fun validateUserIds(userIds: Set<UserId>): GrpcValidateUsersResult {
+    override suspend fun findById(id: UserId): User? {
+        val entity = userDao.findById(id)
+        val location = entity?.locationId?.let { city500Dao.getById(it) }
+        return entity?.toDomain(location?.toLocationInfo())
+    }
+
+    override suspend fun validateUserIds(userIds: Set<UserId>): ValidateUsersResult {
         logger.info("validateUserIds(userIds: {})", userIds)
         val all = userDao.getAllByIds(userIds)
         val foundIds = all.map { it.id }.toSet()
         val missingIds = userIds - foundIds
-        if (missingIds.isNotEmpty()) return GrpcValidateUsersResult.UserIdsNotFound(missingIds)
-        return GrpcValidateUsersResult.Success
+        if (missingIds.isNotEmpty()) return ValidateUsersResult.UserIdsNotFound(missingIds)
+        return ValidateUsersResult.Success
     }
 
-    override suspend fun getAllByIds(userIds: Set<UserId>): List<GrpcUser> {
-        val users = userDao.getAllByIds(userIds)
-        val locationsMap = city500Dao.getAllByIds(users.mapNotNull { it.locationId }.toSet())
+    override suspend fun getAllByIds(userIds: Set<UserId>): List<User> {
+        val userEntities = userDao.getAllByIds(userIds)
+        val locationsMap = city500Dao.getAllByIds(userEntities.mapNotNull { it.locationId }.toSet())
             .associateBy { it.geonameid }
 
-        val grpcUsers = users.map { user ->
+        val users = userEntities.map { user ->
             val location = locationsMap[user.locationId]
-            user.toGrpc(location)
+            user.toDomain(location?.toLocationInfo(null))
         }
-        return grpcUsers
+        return users
     }
 
 
@@ -110,27 +112,4 @@ class DefaultUserService(
 sealed interface ValidateUsersResult {
     data object Success : ValidateUsersResult
     data class UserIdsNotFound(val missingUserIds: Set<UserId>) : ValidateUsersResult
-}
-
-private fun UserEntity.toGrpc(location: GeoNameCity500Entity?): GrpcUser = GrpcUser(
-    id = id,
-    name = name,
-    location = location?.toGrpc(),
-    climateZone = climateZone?.toGrpc(),
-    updatedAt = updatedAt.toEpochMilli(),
-)
-
-private fun GeoNameCity500Entity.toGrpc(requesterLocaleIso2: String? = null): GrpcLocationInfo = GrpcLocationInfo(
-    id = geonameid!!,
-    city = name,
-    country = Locale(requesterLocaleIso2.orEmpty(), countryCode).displayCountry,
-    countryCode = countryCode,
-)
-
-private fun ClimateZone.toGrpc(): GrpcClimateZone = when (this) {
-    ClimateZone.TEMPERATE -> GrpcClimateZone.TEMPERATE
-    ClimateZone.MEDITERRANEAN -> GrpcClimateZone.MEDITERRANEAN
-    ClimateZone.CONTINENTAL -> GrpcClimateZone.CONTINENTAL
-    ClimateZone.TROPICAL -> GrpcClimateZone.TROPICAL
-    ClimateZone.ARID -> GrpcClimateZone.ARID
 }

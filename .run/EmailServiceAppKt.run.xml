@@ -5,6 +5,7 @@
     </envs>
     <option name="envFilePaths">
       <option value="$PROJECT_DIR$/.env" />
+      <option value="$PROJECT_DIR$/.env.development" />
     </option>
     <option name="MAIN_CLASS_NAME" value="com.tometrics.api.services.email.EmailServiceAppKt" />
     <module name="tometrics.services.email.main" />

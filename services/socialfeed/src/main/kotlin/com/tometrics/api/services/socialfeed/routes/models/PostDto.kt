@@ -2,6 +2,7 @@ package com.tometrics.api.services.socialfeed.routes.models
 
 import com.tometrics.api.common.domain.models.ImageUrl
 import com.tometrics.api.common.domain.models.Millis
+import com.tometrics.api.common.domain.models.PostId
 import com.tometrics.api.common.route.models.LocationInfoDto
 import com.tometrics.api.common.route.models.UserDto
 import com.tometrics.api.services.socialfeed.db.models.PostEntity
@@ -10,6 +11,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostDto(
+    val id: PostId,
     val user: UserDto,
     val locationInfoDto: LocationInfoDto?,
 
@@ -31,6 +33,7 @@ fun PostEntity.toDto(
     myReaction: Reaction?,
     topReactions: List<Reaction>,
 ): PostDto = PostDto(
+    id = id,
     user = user,
     locationInfoDto = locationInfo,
     images = images,

@@ -11,6 +11,26 @@ message ValidateMediaUrlRequest {
   string url = 2;
 }
 
+message ValidateMediaUrlsRequest {
+  int32 requesterId = 1;
+  repeated string url = 2;
+}
+
+message ValidateMediaUrlsSuccess {
+}
+
+message ValidateMediaUrlsNotFound {
+  repeated string missing_media_urls = 1;
+}
+
+message ValidateMediaUrlsResponse {
+  oneof result {
+    ValidateMediaUrlsSuccess success = 1;
+    ValidateMediaUrlsNotFound not_found = 2;
+  }
+}
+
 service MediaGrpcService {
   rpc validateMediaUrl(ValidateMediaUrlRequest) returns (google.protobuf.BoolValue);
+  rpc validateMediaUrls(ValidateMediaUrlsRequest) returns (ValidateMediaUrlsResponse);
 }

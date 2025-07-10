@@ -53,7 +53,7 @@ interface LocationInfoDb {
     fun findById(@Bind("id") id: LocationInfoId): LocationInfoEntity?
 
     @Blocking
-    @SqlQuery("SELECT * FROM location_info WHERE location_id IN (<ids>)")
-    fun getAllByIds(@BindList("ids") ids: Set<LocationInfoId>): List<LocationInfoEntity>
+    @SqlQuery("SELECT * FROM location_info WHERE location_id = ANY(:ids)")
+    fun getAllByIds(@Bind("ids") ids: Set<LocationInfoId>): List<LocationInfoEntity>
 
 }

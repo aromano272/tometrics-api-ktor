@@ -1,20 +1,20 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="GardenService" type="KtorApplicationConfigurationType" factoryName="Ktor">
+  <configuration default="false" name="SocialFeed" type="KtorApplicationConfigurationType" factoryName="Ktor">
     <envs>
-      <env name="POSTGRES_URL" value="jdbc:postgresql://localhost:5432/garden" />
-      <env name="RUNNING_LOCALLY" value="1" />
+      <env name="POSTGRES_URL" value="jdbc:postgresql://localhost:5432/socialfeed" />
+      <env name="RUNNING_LOCALLY" value="true" />
     </envs>
     <option name="envFilePaths">
+      <option value="$PROJECT_DIR$/services/socialfeed/.env" />
       <option value="$PROJECT_DIR$/.env" />
       <option value="$PROJECT_DIR$/.env.development" />
-      <option value="$PROJECT_DIR$/services/garden/.env" />
     </option>
-    <option name="MAIN_CLASS_NAME" value="com.tometrics.api.services.garden.GardenServiceAppKt" />
-    <module name="tometrics.services.garden.main" />
+    <option name="MAIN_CLASS_NAME" value="com.tometrics.api.services.socialfeed.SocialFeedServiceAppKt" />
+    <module name="tometrics.services.socialfeed.main" />
     <option name="alternativeJrePath" />
     <option name="alternativeJrePathEnabled" value="false" />
     <option name="includeProvidedScope" value="false" />
-    <option name="mainClass" value="com.tometrics.api.services.garden.GardenServiceAppKt" />
+    <option name="mainClass" value="com.tometrics.api.services.socialfeed.SocialFeedServiceAppKt" />
     <option name="passParentEnvs" value="true" />
     <option name="programParameters" value="" />
     <option name="shortenCommandLine" />

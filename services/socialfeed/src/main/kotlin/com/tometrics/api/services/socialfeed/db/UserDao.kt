@@ -10,7 +10,7 @@ interface UserDao {
     suspend fun insert(
         id: UserId,
         name: String,
-        climateZone: ClimateZone,
+        climateZone: ClimateZone?,
     ): UserId?
     suspend fun update(
         id: UserId,
@@ -20,6 +20,9 @@ interface UserDao {
     suspend fun delete(
         id: UserId,
     )
+    suspend fun findById(
+        id: UserId,
+    ): UserEntity?
     suspend fun getAllByIds(
         ids: Set<UserId>,
     ): List<UserEntity>
@@ -32,7 +35,7 @@ class DefaultUserDao(
     override suspend fun insert(
         id: UserId,
         name: String,
-        climateZone: ClimateZone,
+        climateZone: ClimateZone?,
     ): UserId? = withContext(Dispatchers.IO) {
         db.insert(
             id = id,
@@ -55,6 +58,12 @@ class DefaultUserDao(
         id: UserId,
     ) = withContext(Dispatchers.IO) {
         db.delete(id = id)
+    }
+
+    override suspend fun findById(
+        id: UserId,
+    ): UserEntity? = withContext(Dispatchers.IO) {
+        db.findById(id = id)
     }
     override suspend fun getAllByIds(ids: Set<UserId>) = withContext(Dispatchers.IO) {
         db.getAllByIds(ids)

@@ -1,6 +1,7 @@
 package com.tometrics.api.services.commongrpc.models.user
 
 import com.tometrics.api.services.protos.ClimateZone
+import com.tometrics.api.common.domain.models.ClimateZone as DomainClimateZone
 
 // TODO(aromano): unify this and garden's ClimateZones
 enum class GrpcClimateZone {
@@ -28,4 +29,12 @@ fun GrpcClimateZone.toNetwork(): ClimateZone = when (this) {
     GrpcClimateZone.CONTINENTAL -> ClimateZone.CLIMATE_ZONE_CONTINENTAL
     GrpcClimateZone.TROPICAL -> ClimateZone.CLIMATE_ZONE_TROPICAL
     GrpcClimateZone.ARID -> ClimateZone.CLIMATE_ZONE_ARID
+}
+
+fun GrpcClimateZone.toDomain(): DomainClimateZone = when (this) {
+    GrpcClimateZone.TEMPERATE -> DomainClimateZone.TEMPERATE
+    GrpcClimateZone.MEDITERRANEAN -> DomainClimateZone.MEDITERRANEAN
+    GrpcClimateZone.CONTINENTAL -> DomainClimateZone.CONTINENTAL
+    GrpcClimateZone.TROPICAL -> DomainClimateZone.TROPICAL
+    GrpcClimateZone.ARID -> DomainClimateZone.ARID
 }

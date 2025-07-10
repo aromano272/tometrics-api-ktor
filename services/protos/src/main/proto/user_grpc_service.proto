@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
 
 option java_package = "com.tometrics.api.services.protos";
 option java_multiple_files = true;
@@ -13,11 +14,23 @@ enum ClimateZone {
   CLIMATE_ZONE_ARID = 4;
 }
 
+message FindLocationByIdResponse {
+  optional LocationInfo location = 1;
+//  oneof result {
+//    LocationInfo location = 1;
+//    google.protobuf.NullValue null_value = 2;
+//  }
+}
+
+message FindUserByIdResponse {
+  optional User user = 1;
+}
+
 message LocationInfo {
   int32 id = 1;
-  optional string city = 2;
-  optional string country = 3;
-  optional string country_code = 4;
+  string city = 2;
+  string country = 3;
+  string country_code = 4;
 }
 
 message User {
@@ -28,11 +41,11 @@ message User {
   int64 updated_at = 5;
 }
 
-message GetAllByIdsRequest {
+message GetAllUsersByIdsRequest {
   repeated int32 user_ids = 1;
 }
 
-message GetAllByIdsResponse {
+message GetAllUsersByIdsResponse {
   repeated User users = 1;
 }
 
@@ -56,6 +69,7 @@ message ValidateUserIdsResponse {
 
 service UserGrpcService {
   rpc validateUserIds(ValidateUserIdsRequest) returns (ValidateUserIdsResponse);
-  rpc getAllByIds(GetAllByIdsRequest) returns (GetAllByIdsResponse);
-  rpc findLocationById(google.protobuf.Int32Value) returns (LocationInfo);
+  rpc getAllUsersByIds(GetAllUsersByIdsRequest) returns (GetAllUsersByIdsResponse);
+  rpc findLocationById(google.protobuf.Int32Value) returns (FindLocationByIdResponse);
+  rpc findUserById(google.protobuf.Int32Value) returns (FindUserByIdResponse);
 }

@@ -2,16 +2,20 @@ package com.tometrics.api.services.socialfeed.service
 
 import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.common.domain.models.*
-import com.tometrics.api.services.commongrpc.services.UserGrpcService
+import com.tometrics.api.services.commongrpc.models.user.GrpcValidateMediaUrlsResult
+import com.tometrics.api.services.commongrpc.models.user.toDomain
+import com.tometrics.api.services.commongrpc.services.MediaGrpcClient
+import com.tometrics.api.services.commongrpc.services.UserGrpcClient
 import com.tometrics.api.services.socialfeed.db.LocationInfoDao
 import com.tometrics.api.services.socialfeed.db.PostDao
 import com.tometrics.api.services.socialfeed.db.PostReactionDao
 import com.tometrics.api.services.socialfeed.db.UserDao
+import com.tometrics.api.services.socialfeed.db.models.LocationInfoEntity
 import com.tometrics.api.services.socialfeed.db.models.PostEntity
-import com.tometrics.api.services.socialfeed.domain.models.CreatePostFailed
-import com.tometrics.api.services.socialfeed.domain.models.PostNotFound
-import com.tometrics.api.services.socialfeed.domain.models.Reaction
+import com.tometrics.api.services.socialfeed.db.models.UserEntity
+import com.tometrics.api.services.socialfeed.domain.models.*
 import com.tometrics.api.services.socialfeed.routes.models.PostDto
+import com.tometrics.api.services.socialfeed.routes.models.UserReactionDto
 import com.tometrics.api.services.socialfeed.routes.models.toDto
 import io.ktor.util.logging.*
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +50,11 @@ interface PostService {
         images: List<ImageUrl>?,
         text: String?,
     ): PostDto
+    suspend fun getPostReactions(
+        requester: Requester,
+        postId: PostId,
+        olderThan: Millis,
+    ): List<UserReactionDto>
     suspend fun createReaction(
         requester: Requester,
         postId: PostId,
@@ -60,7 +69,8 @@ interface PostService {
 
 class DefaultPostService(
     private val logger: Logger,
-    private val userGrpcService: UserGrpcService,
+    private val userGrpcClient: UserGrpcClient,
+    private val mediaGrpcClient: MediaGrpcClient,
     private val postDao: PostDao,
     private val userDao: UserDao,
     private val locationInfoDao: LocationInfoDao,
@@ -126,6 +136,20 @@ class DefaultPostService(
         return dtos
     }
 
+    private suspend fun getLocationOrFetchAndSaveOrFail(locationId: LocationInfoId): LocationInfoEntity =
+        locationInfoDao.findById(locationId)
+            ?: userGrpcClient.findLocationById(locationId)
+                ?.let {
+                    val id = locationInfoDao.insert(
+                        locationId = it.id,
+                        city = it.city,
+                        country = it.country,
+                        countryCode = it.countryCode,
+                    )
+                    id?.let { locationInfoDao.findById(it) }
+                }
+            ?: throw LocationNotFound(locationId)
+
     // TODO(aromano): refactor most of the service code to do db stuff inside a transaction, because
     // something may fail and we'd be left in an invalid state
     override suspend fun createPost(
@@ -134,22 +158,18 @@ class DefaultPostService(
         images: List<ImageUrl>,
         text: String,
     ): PostDto {
-        val locationInfo = locationInfoId?.let {
-            locationInfoDao.findById(it)?.toDto()
-                ?: userGrpcService.findLocationById(it)
-                    ?.also {
-                        locationInfoDao.insert(
-                            locationId = it.id,
-                            city = it.city,
-                            country = it.country,
-                            countryCode = it.countryCode,
-                        )
-                    }
-                    ?.toDto()
+        val user = getOrFetchAndSaveUserOrFail(requester.userId)
+
+        val locationInfo = locationInfoId?.let { getLocationOrFetchAndSaveOrFail(it) }
+
+        val validateMediaUrlResult = mediaGrpcClient.validateMediaUrls(requester.userId, images.toSet())
+        if (validateMediaUrlResult !is GrpcValidateMediaUrlsResult.Success) {
+            throw InvalidMediaUrls
         }
+
         val postId = postDao.insert(
-            userId = requester.userId,
-            locationId = locationInfo?.id,
+            userId = user.id,
+            locationId = locationInfo?.locationId,
             images = images,
             text = text,
         ) ?: throw CreatePostFailed
@@ -164,6 +184,7 @@ class DefaultPostService(
     }
 
     override suspend fun deletePost(requester: Requester, postId: PostId) {
+        val post = postDao.findById(postId) ?: throw PostNotFound(postId)
         postDao.delete(postId, requester.userId)
     }
 
@@ -174,10 +195,19 @@ class DefaultPostService(
         images: List<ImageUrl>?,
         text: String?,
     ): PostDto {
+        val locationInfo = locationInfoId?.let { getLocationOrFetchAndSaveOrFail(it) }
+
+        if (images != null) {
+            val validateMediaUrlResult = mediaGrpcClient.validateMediaUrls(requester.userId, images.toSet())
+            if (validateMediaUrlResult !is GrpcValidateMediaUrlsResult.Success) {
+                throw InvalidMediaUrls
+            }
+        }
+
         postDao.update(
             id = postId,
             userId = requester.userId,
-            locationId = locationInfoId,
+            locationId = locationInfo?.locationId,
             newImages = images,
             newText = text,
         )
@@ -186,15 +216,39 @@ class DefaultPostService(
         return dto
     }
 
+    override suspend fun getPostReactions(
+        requester: Requester,
+        postId: PostId,
+        olderThan: Millis
+    ): List<UserReactionDto> {
+        val post = postDao.findById(postId) ?: throw PostNotFound(postId)
+        val reactions = postReactionDao.getAllByPostId(postId, Instant.ofEpochMilli(olderThan), 20)
+        val usersMap = reactions.map { it.userId }.toSet()
+            .let { userDao.getAllByIds(it) }
+            .associateBy { it.id }
+        return reactions.mapNotNull { userReaction ->
+            val user = usersMap[userReaction.userId]
+            if (user == null) {
+                logger.error("User ${userReaction.userId} not found in users table for PostReaction ${userReaction.postId}")
+                return@mapNotNull null
+            }
+            UserReactionDto(
+                user = user.toDto(location = null),
+                reaction = userReaction.reaction,
+            )
+        }
+    }
+
     override suspend fun createReaction(
         requester: Requester,
         postId: PostId,
         reaction: Reaction,
     ) {
+        val user = getOrFetchAndSaveUserOrFail(requester.userId)
         postDao.increaseReactionCount(postId)
         postReactionDao.insert(
             postId = postId,
-            userId = requester.userId,
+            userId = user.id,
             reaction = reaction,
         )
     }
@@ -210,5 +264,16 @@ class DefaultPostService(
         )
     }
 
-}
+    private suspend fun getOrFetchAndSaveUserOrFail(id: UserId): UserEntity =
+        userDao.findById(id)
+            ?: userGrpcClient.findUserById(id)?.let { user ->
+                val id = userDao.insert(
+                    id = user.id,
+                    name = user.name,
+                    climateZone = user.climateZone?.toDomain(),
+                )
+                id?.let { userDao.findById(it) }
+            }
+            ?: throw UserNotFound(id)
 
+}

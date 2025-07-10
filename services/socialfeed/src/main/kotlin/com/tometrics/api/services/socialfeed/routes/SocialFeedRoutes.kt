@@ -16,21 +16,20 @@ fun Route.socialFeedRoutes() {
     val postService: PostService by inject()
     val commentService: CommentService by inject()
 
-    get("/status") {
+    get("/socialfeed/status") {
         call.respond(HttpStatusCode.OK)
     }
 
     authenticate {
 
-        // TODO(aromano): paged
         get("/feed") {
             val requester = call.requireRequester()
             val olderThan = call.queryParameters["olderThan"]?.toLongOrNull()
                 ?: System.currentTimeMillis()
             val result = postService.getFeed(requester, olderThan)
+            call.respond(result)
         }
 
-        // TODO(aromano): paged
         get("/posts/{userId}") {
             val requester = call.requireRequester()
             val olderThan = call.queryParameters["olderThan"]?.toLongOrNull()
@@ -38,6 +37,7 @@ fun Route.socialFeedRoutes() {
             val userId = call.queryParameters["userId"]?.toIntOrNull()
                 ?: requester.userId
             val result = postService.getAllPostsByUserId(requester, userId, olderThan)
+            call.respond(result)
         }
 
         post("/post") {
@@ -50,6 +50,7 @@ fun Route.socialFeedRoutes() {
                 images = request.images,
                 text = request.text,
             )
+            call.respond(result)
         }
 
         route("/post/{postId}") {
@@ -60,6 +61,7 @@ fun Route.socialFeedRoutes() {
                     "`postId` is required"
                 ))
                 val result = postService.getPost(requester, postId)
+                call.respond(result)
             }
 
             delete {
@@ -84,23 +86,41 @@ fun Route.socialFeedRoutes() {
                     images = request.images,
                     text = request.text,
                 )
+                call.respond(result)
             }
 
-            post("/reaction") {
-                val requester = call.requireRequester()
-                val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
-                    "`postId` is required"
-                ))
-                val request = call.receive<CreateReactionRequest>()
-                postService.createReaction(requester, postId, request.reaction)
-            }
+            route("/reaction") {
 
-            delete("/reaction") {
-                val requester = call.requireRequester()
-                val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
-                    "`postId` is required"
-                ))
-                postService.deleteReaction(requester, postId)
+                get("/all") {
+                    val requester = call.requireRequester()
+                    val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                        "`postId` is required"
+                    ))
+                    val olderThan = call.queryParameters["olderThan"]?.toLongOrNull()
+                        ?: System.currentTimeMillis()
+                    val result = postService.getPostReactions(requester, postId, olderThan)
+                    call.respond(result)
+                }
+
+                post {
+                    val requester = call.requireRequester()
+                    val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                        "`postId` is required"
+                    ))
+                    val request = call.receive<CreateReactionRequest>()
+                    postService.createReaction(requester, postId, request.reaction)
+                    call.respond(HttpStatusCode.OK)
+                }
+
+                delete {
+                    val requester = call.requireRequester()
+                    val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                        "`postId` is required"
+                    ))
+                    postService.deleteReaction(requester, postId)
+                    call.respond(HttpStatusCode.OK)
+                }
+
             }
 
             // TODO(aromano): paged
@@ -113,6 +133,7 @@ fun Route.socialFeedRoutes() {
                     ?: System.currentTimeMillis()
 
                 val result = commentService.getAllByPostId(requester, postId, olderThan)
+                call.respond(result)
             }
 
             post("/comment") {
@@ -128,6 +149,7 @@ fun Route.socialFeedRoutes() {
                     text = request.text,
                     image = request.image,
                 )
+                call.respond(result)
             }
 
         }
@@ -146,6 +168,7 @@ fun Route.socialFeedRoutes() {
                     text = request.text,
                     image = request.image,
                 )
+                call.respond(result)
             }
 
             delete {
@@ -154,6 +177,7 @@ fun Route.socialFeedRoutes() {
                     "`commentId` is required"
                 ))
                 commentService.deleteComment(requester, commentId)
+                call.respond(HttpStatusCode.OK)
             }
 
             post("/reaction") {
@@ -163,6 +187,7 @@ fun Route.socialFeedRoutes() {
                 ))
                 val request = call.receive<CreateReactionRequest>()
                 commentService.createReaction(requester, commentId, request.reaction)
+                call.respond(HttpStatusCode.OK)
             }
 
             delete("/reaction") {
@@ -171,6 +196,7 @@ fun Route.socialFeedRoutes() {
                     "`commentId` is required"
                 ))
                 commentService.deleteReaction(requester, commentId)
+                call.respond(HttpStatusCode.OK)
             }
 
         }
