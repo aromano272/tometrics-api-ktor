@@ -51,7 +51,7 @@ dependencies {
 //    implementation(libs.openapi.generator)
 //    implementation(libs.swagger.ui)
 //    implementation(libs.schema.kenerator.swagger)
-//
+
     implementation(libs.koin.test)
     implementation(libs.koin.test.junit)
     implementation(libs.ktor.server.test.host)
@@ -60,4 +60,8 @@ dependencies {
     implementation(libs.testcontainers.core)
     implementation(libs.testcontainers.postgres)
     implementation(libs.mockk)
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

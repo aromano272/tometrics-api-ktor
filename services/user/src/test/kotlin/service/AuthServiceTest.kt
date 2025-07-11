@@ -2,14 +2,14 @@ package service
 
 import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.auth.domain.models.Tokens
+import com.tometrics.api.common.domain.models.BadRequestError
+import com.tometrics.api.common.domain.models.ConflictError
+import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.services.user.db.RefreshTokenDao
 import com.tometrics.api.services.user.db.UserDao
 import com.tometrics.api.services.user.db.models.RefreshTokenEntity
 import com.tometrics.api.services.user.db.models.UserEntity
-import com.tometrics.api.services.user.domain.models.BadRequestException
-import com.tometrics.api.services.user.domain.models.ConflictException
 import com.tometrics.api.services.user.domain.models.IdProviderPayload
-import com.tometrics.api.services.user.domain.models.UnauthorizedException
 import com.tometrics.api.services.user.services.DefaultAuthService
 import com.tometrics.api.services.user.services.GoogleAuthService
 import com.tometrics.api.services.user.services.JwtService
@@ -87,7 +87,7 @@ class AuthServiceTest {
     }
 
     @Test
-    fun `loginWithGoogle with non-anonymous requester that already has an idpGoogleEmail and different from the payload should throw ConflictException`() =
+    fun `loginWithGoogle with non-anonymous requester that already has an idpGoogleEmail and different from the payload should throw ConflictError`() =
         runTest {
             val idToken = "valid_token"
             val payload = IdProviderPayload.Google(email = "different@gmail.com", name = "Different User")
@@ -98,7 +98,7 @@ class AuthServiceTest {
             coEvery { userDao.findById(requester.userId) } returns existingUser
             coEvery { userDao.findByGoogleEmail("different@gmail.com") } returns null
 
-            assertFailsWith<ConflictException> {
+            assertFailsWith<ConflictError> {
                 authService.loginWithGoogle(requester, idToken)
             }
         }
@@ -123,7 +123,7 @@ class AuthServiceTest {
         }
 
     @Test
-    fun `loginWithGoogle with non-anonymous requester and google user already exists and is different than the requester then throw ConflictException`() =
+    fun `loginWithGoogle with non-anonymous requester and google user already exists and is different than the requester then throw ConflictError`() =
         runTest {
             val idToken = "valid_token"
             val payload = IdProviderPayload.Google(email = "different@gmail.com", name = "Different User")
@@ -149,13 +149,13 @@ class AuthServiceTest {
             coEvery { jwtService.create(differentUser.id, false) } returns tokens.access
             coEvery { refreshTokenDao.insert(differentUser.id, any(), any()) } returns Unit
 
-            assertFailsWith<ConflictException> {
+            assertFailsWith<ConflictError> {
                 authService.loginWithGoogle(requester, idToken)
             }
         }
 
     @Test
-    fun `loginWithGoogle with anonymous requester and existing Google user should throw BadRequestException`() =
+    fun `loginWithGoogle with anonymous requester and existing Google user should throw BadRequestError`() =
         runTest {
             val idToken = "valid_token"
             val payload = IdProviderPayload.Google(email = "existing@gmail.com", name = "Existing User")
@@ -167,7 +167,7 @@ class AuthServiceTest {
             coEvery { userDao.findById(requester.userId) } returns anonUser
             coEvery { userDao.findByGoogleEmail(payload.email) } returns existingGoogleUser
 
-            assertFailsWith<BadRequestException> {
+            assertFailsWith<BadRequestError> {
                 authService.loginWithGoogle(requester, idToken)
             }
         }
@@ -261,7 +261,7 @@ class AuthServiceTest {
     }
 
     @Test
-    fun `loginWithFacebook with non-anonymous requester that already has an idpFacebookId and different from the payload should throw ConflictException`() =
+    fun `loginWithFacebook with non-anonymous requester that already has an idpFacebookId and different from the payload should throw ConflictError`() =
         runTest {
             val payload = IdProviderPayload.Facebook(
                 id = "differentid",
@@ -274,7 +274,7 @@ class AuthServiceTest {
             coEvery { userDao.findById(requester.userId) } returns existingUser
             coEvery { userDao.findByFacebookId("differentid") } returns null
 
-            assertFailsWith<ConflictException> {
+            assertFailsWith<ConflictError> {
                 authService.loginWithFacebook(requester, payload)
             }
         }
@@ -297,7 +297,7 @@ class AuthServiceTest {
         }
 
     @Test
-    fun `loginWithFacebook with non-anonymous requester and facebook user already exists and is different than the requester then throw ConflictException`() =
+    fun `loginWithFacebook with non-anonymous requester and facebook user already exists and is different than the requester then throw ConflictError`() =
         runTest {
             val payload = IdProviderPayload.Facebook(
                 id = "differentid",
@@ -322,13 +322,13 @@ class AuthServiceTest {
             coEvery { userDao.findById(requester.userId) } returns existingUser
             coEvery { userDao.findByFacebookId("differentid") } returns differentUser
 
-            assertFailsWith<ConflictException> {
+            assertFailsWith<ConflictError> {
                 authService.loginWithFacebook(requester, payload)
             }
         }
 
     @Test
-    fun `loginWithFacebook with anonymous requester and existing Facebook user should throw BadRequestException`() =
+    fun `loginWithFacebook with anonymous requester and existing Facebook user should throw BadRequestError`() =
         runTest {
             val payload =
                 IdProviderPayload.Facebook(id = "existingid", name = "Existing User", email = "existing@facebook.com")
@@ -339,7 +339,7 @@ class AuthServiceTest {
             coEvery { userDao.findById(requester.userId) } returns anonUser
             coEvery { userDao.findByFacebookId(payload.id) } returns existingFacebookUser
 
-            assertFailsWith<BadRequestException> {
+            assertFailsWith<BadRequestError> {
                 authService.loginWithFacebook(requester, payload)
             }
         }
@@ -380,18 +380,18 @@ class AuthServiceTest {
         }
 
     @Test
-    fun `refreshToken should throw UnauthorizedException when token not found`() = runTest {
+    fun `refreshToken should throw UnauthorizedError when token not found`() = runTest {
         val refreshToken = "invalid_token"
 
         coEvery { refreshTokenDao.findByToken(refreshToken) } returns null
 
-        assertFailsWith<UnauthorizedException> {
+        assertFailsWith<UnauthorizedError> {
             authService.refreshToken(refreshToken)
         }
     }
 
     @Test
-    fun `refreshToken should throw UnauthorizedException when token is expired`() = runTest {
+    fun `refreshToken should throw UnauthorizedError when token is expired`() = runTest {
         val refreshToken = "expired_token"
         val expiredToken = RefreshTokenEntity(
             id = 1,
@@ -404,7 +404,7 @@ class AuthServiceTest {
         coEvery { refreshTokenDao.findByToken(refreshToken) } returns expiredToken
         coEvery { userDao.findById(expiredToken.userId) } returns TEST_USER_ENTITY
 
-        assertFailsWith<UnauthorizedException> {
+        assertFailsWith<UnauthorizedError> {
             authService.refreshToken(refreshToken)
         }
     }
@@ -436,13 +436,13 @@ class AuthServiceTest {
     }
 
     @Test
-    fun `logout should throw UnauthorizedException when token not found`() = runTest {
+    fun `logout should throw UnauthorizedError when token not found`() = runTest {
         val requester = Requester(TEST_USER_ENTITY.id)
         val refreshToken = "invalid_token"
 
         coEvery { refreshTokenDao.findByToken(refreshToken) } returns null
 
-        assertFailsWith<UnauthorizedException> {
+        assertFailsWith<UnauthorizedError> {
             authService.logout(requester, refreshToken)
         }
     }

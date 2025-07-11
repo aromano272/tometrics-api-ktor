@@ -24,6 +24,7 @@ grpc-java-version = "1.71.0"
 grpc-kotlin-version = "1.4.3"
 protobuf-version = "4.30.2"
 aws-kotlin-version = "1.4.117"
+kotlin-test-junit = "2.2.0"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
@@ -49,7 +50,7 @@ ktor-server-mustache = { module = "io.ktor:ktor-server-mustache", version.ref = 
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
 ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor-version" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin-test-junit" }
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-postgres = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
 hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }

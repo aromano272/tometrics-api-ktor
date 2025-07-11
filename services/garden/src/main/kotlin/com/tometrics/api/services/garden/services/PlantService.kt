@@ -1,10 +1,10 @@
 package com.tometrics.api.services.garden.services
 
+import com.tometrics.api.common.domain.models.NotFoundError
 import com.tometrics.api.services.garden.db.PlantDao
 import com.tometrics.api.services.garden.db.models.toDomain
 import com.tometrics.api.services.garden.domain.models.Plant
 import com.tometrics.api.services.garden.domain.models.PlantId
-import io.ktor.server.plugins.*
 
 interface PlantService {
     suspend fun getAll(): List<Plant>
@@ -21,6 +21,6 @@ class DefaultPlantService(
         plantDao.getAllByIds(ids).map { it.toDomain() }
 
     override suspend fun getById(id: PlantId): Plant =
-        plantDao.getById(id)?.toDomain() ?: throw NotFoundException("Plant #$id not found")
+        plantDao.getById(id)?.toDomain() ?: throw NotFoundError("Plant #$id not found")
 }
 

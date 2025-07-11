@@ -1,7 +1,10 @@
 package functional
 
+import com.tometrics.api.common.domain.models.ServiceInfo
+import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.services.commonservicetest.functional.BaseE2ETest
 import com.tometrics.api.services.garden.domain.models.Planting
+import com.tometrics.api.services.garden.module
 import com.tometrics.api.services.garden.routes.models.AddPlantingRequest
 import com.tometrics.api.services.garden.routes.models.GetAllPlantingsResponse
 import com.tometrics.api.services.garden.routes.models.PatchPlantingRequest
@@ -13,7 +16,19 @@ import kotlin.test.assertEquals
 //* it should run tests
 //* maybe run lint?
 //* block on nocheckin found in code
-class PlantingE2ETest : BaseE2ETest() {
+class PlantingE2ETest : BaseE2ETest(
+    serviceInfo = SERVICE_INFO,
+    module = { module(SERVICE_INFO) }
+) {
+
+    companion object {
+        private val SERVICE_INFO = ServiceInfo(
+            prefix = "/garden",
+            host = "localhost",
+            port = 8086,
+            type = ServiceType.GARDEN,
+        )
+    }
 
     @Test
     fun `complete planting CRUD flow`() = runApp {
