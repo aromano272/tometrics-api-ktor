@@ -18,6 +18,65 @@ services:
     networks:
       - tometrics-network
 
+  cronjob:
+    build:
+      context: .
+      dockerfile: services/cronjob/Dockerfile
+      no_cache: true
+    container_name: tometrics-cronjob
+    env_file:
+      - .env
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
+  email:
+    build:
+      context: .
+      dockerfile: services/email/Dockerfile
+      no_cache: true
+    container_name: tometrics-email
+    env_file:
+      - .env
+      - ./services/email/.env
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
+  garden:
+    build:
+      context: .
+      dockerfile: services/garden/Dockerfile
+      no_cache: true
+    container_name: tometrics-garden
+    env_file:
+      - .env
+      - ./services/garden/.env
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
+  media:
+    build:
+      context: .
+      dockerfile: services/media/Dockerfile
+      no_cache: true
+    container_name: tometrics-media
+    env_file:
+      - .env
+      - ./services/media/.env
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
   servicediscovery:
     build:
       context: .
@@ -28,15 +87,15 @@ services:
     networks:
       - tometrics-network
 
-  user:
+  socialfeed:
     build:
       context: .
-      dockerfile: services/user/Dockerfile
+      dockerfile: services/socialfeed/Dockerfile
       no_cache: true
-    container_name: tometrics-user
+    container_name: tometrics-socialfeed
     env_file:
       - .env
-      - ./services/user/.env
+      - ./services/socialfeed/.env
     networks:
       - tometrics-network
     depends_on:
@@ -58,6 +117,21 @@ services:
       - db
       - servicediscovery
 
+  user:
+    build:
+      context: .
+      dockerfile: services/user/Dockerfile
+      no_cache: true
+    container_name: tometrics-user
+    env_file:
+      - .env
+      - ./services/user/.env
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
   nginx:
     image: nginx:latest
     container_name: tometrics-nginx
@@ -70,6 +144,12 @@ services:
     networks:
       - tometrics-network
     depends_on:
+      - cronjob
+      - email
+      - garden
+      - media
+      - servicediscovery
+      - socialfeed
       - socialgraph
       - user
 
