@@ -10,6 +10,14 @@ services:
     networks:
       - tometrics-network
 
+  rabbitmq:
+    image: rabbitmq:4.1.2-management-alpine
+    ports:
+      - "5672:5672"    # AMQP port
+      - "15672:15672"  # Management UI
+    networks:
+      - tometrics-network
+
   servicediscovery:
     build:
       context: .
@@ -62,7 +70,6 @@ services:
     networks:
       - tometrics-network
     depends_on:
-      - main
       - socialgraph
       - user
 
