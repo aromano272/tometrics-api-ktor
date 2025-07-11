@@ -124,79 +124,102 @@ fun Route.socialFeedRoutes() {
             }
 
             // TODO(aromano): paged
-            get("/comments") {
-                val requester = call.requireRequester()
-                val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
-                    "`postId` is required"
-                ))
-                val olderThan = call.queryParameters["olderThan"]?.toLongOrNull()
-                    ?: System.currentTimeMillis()
+            route("/comment") {
 
-                val result = commentService.getAllByPostId(requester, postId, olderThan)
-                call.respond(result)
-            }
+                get("/all") {
+                    val requester = call.requireRequester()
+                    val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                        "`postId` is required"
+                    ))
+                    val olderThan = call.queryParameters["olderThan"]?.toLongOrNull()
+                        ?: System.currentTimeMillis()
 
-            post("/comment") {
-                val requester = call.requireRequester()
-                val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
-                    "`postId` is required"
-                ))
-                val request = call.receive<CreateCommentRequest>()
-                val result = commentService.createComment(
-                    requester = requester,
-                    postId = postId,
-                    parentId = request.parent,
-                    text = request.text,
-                    image = request.image,
-                )
-                call.respond(result)
-            }
+                    val result = commentService.getAllByPostId(requester, postId, olderThan)
+                    call.respond(result)
+                }
 
-        }
+                post {
+                    val requester = call.requireRequester()
+                    val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                        "`postId` is required"
+                    ))
+                    val request = call.receive<CreateCommentRequest>()
+                    val result = commentService.createComment(
+                        requester = requester,
+                        postId = postId,
+                        parentId = request.parent,
+                        text = request.text,
+                        image = request.image,
+                    )
+                    call.respond(result)
+                }
 
-        route("/comment/{commentId}") {
+                route("/{commentId}") {
 
-            put {
-                val requester = call.requireRequester()
-                val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
-                    "`commentId` is required"
-                ))
-                val request = call.receive<PutCommentRequest>()
-                val result = commentService.updateComment(
-                    requester = requester,
-                    commentId = commentId,
-                    text = request.text,
-                    image = request.image,
-                )
-                call.respond(result)
-            }
+                    put {
+                        val requester = call.requireRequester()
+                        val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                            "`commentId` is required"
+                        ))
+                        val request = call.receive<PutCommentRequest>()
+                        val result = commentService.updateComment(
+                            requester = requester,
+                            commentId = commentId,
+                            text = request.text,
+                            image = request.image,
+                        )
+                        call.respond(result)
+                    }
 
-            delete {
-                val requester = call.requireRequester()
-                val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
-                    "`commentId` is required"
-                ))
-                commentService.deleteComment(requester, commentId)
-                call.respond(HttpStatusCode.OK)
-            }
+                    delete {
+                        val requester = call.requireRequester()
+                        val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                            "`commentId` is required"
+                        ))
+                        commentService.deleteComment(requester, commentId)
+                        call.respond(HttpStatusCode.OK)
+                    }
 
-            post("/reaction") {
-                val requester = call.requireRequester()
-                val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
-                    "`commentId` is required"
-                ))
-                val request = call.receive<CreateReactionRequest>()
-                commentService.createReaction(requester, commentId, request.reaction)
-                call.respond(HttpStatusCode.OK)
-            }
+                    route("/reaction") {
 
-            delete("/reaction") {
-                val requester = call.requireRequester()
-                val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
-                    "`commentId` is required"
-                ))
-                commentService.deleteReaction(requester, commentId)
-                call.respond(HttpStatusCode.OK)
+                        get("/all") {
+                            val requester = call.requireRequester()
+                            val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                                "`commentId` is required"
+                            ))
+                            val olderThan = call.queryParameters["olderThan"]?.toLongOrNull()
+                                ?: System.currentTimeMillis()
+                            val result = commentService.getCommentReactions(
+                                requester = requester,
+                                commentId = commentId,
+                                olderThan = olderThan,
+                            )
+                            call.respond(result)
+                        }
+
+                        post {
+                            val requester = call.requireRequester()
+                            val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                                "`commentId` is required"
+                            ))
+                            val request = call.receive<CreateReactionRequest>()
+                            commentService.createReaction(requester, commentId, request.reaction)
+                            call.respond(HttpStatusCode.OK)
+                        }
+
+                        delete {
+                            val requester = call.requireRequester()
+                            val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
+                                "`commentId` is required"
+                            ))
+                            commentService.deleteReaction(requester, commentId)
+                            call.respond(HttpStatusCode.OK)
+                        }
+
+                    }
+
+                }
+
             }
 
         }

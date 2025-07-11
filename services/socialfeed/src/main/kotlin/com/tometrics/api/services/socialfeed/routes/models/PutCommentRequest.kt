@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PutCommentRequest(
     val parent: CommentId?,
-    val text: String?,
+    val text: String,
     val image: ImageUrl?,
 )

@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PutPostRequest(
     val locationInfoId: LocationInfoId?,
-    val images: List<ImageUrl>?,
-    val text: String?,
+    val images: List<ImageUrl>,
+    val text: String,
 )

@@ -14,14 +14,14 @@ interface PostDao {
         userId: UserId,
         locationId: LocationInfoId?,
         images: List<ImageUrl>,
-        text: String?,
+        text: String,
     ): PostId?
     suspend fun update(
         id: PostId,
         userId: UserId,
         locationId: LocationInfoId?,
-        newImages: List<ImageUrl>?,
-        newText: String?,
+        newImages: List<ImageUrl>,
+        newText: String,
     )
     suspend fun delete(
         id: PostId,
@@ -49,7 +49,7 @@ class DefaultPostDao(
         userId: UserId,
         locationId: LocationInfoId?,
         images: List<ImageUrl>,
-        text: String?,
+        text: String,
     ): PostId? = withContext(Dispatchers.IO) {
         db.insert(
             userId = userId,
@@ -62,8 +62,8 @@ class DefaultPostDao(
         id: PostId,
         userId: UserId,
         locationId: LocationInfoId?,
-        newImages: List<ImageUrl>?,
-        newText: String?,
+        newImages: List<ImageUrl>,
+        newText: String,
     ) = withContext(Dispatchers.IO) {
         db.update(
             id = id,

@@ -18,7 +18,7 @@ interface CommentDao {
     suspend fun update(
         id: CommentId,
         userId: UserId,
-        newText: String?,
+        newText: String,
         newImage: String?,
     )
     suspend fun delete(
@@ -36,6 +36,8 @@ interface CommentDao {
         pageSize: Int,
     ): List<CommentEntity>
     suspend fun findById(id: CommentId): CommentEntity?
+    suspend fun increaseReactionCount(id: PostId)
+    suspend fun decreaseReactionCount(id: PostId)
 }
 
 class DefaultCommentDao(
@@ -57,7 +59,7 @@ class DefaultCommentDao(
     override suspend fun update(
         id: CommentId,
         userId: UserId,
-        newText: String?,
+        newText: String,
         newImage: String?,
     ) = withContext(Dispatchers.IO) {
         db.update(
@@ -100,6 +102,12 @@ class DefaultCommentDao(
     }
     override suspend fun findById(id: CommentId): CommentEntity? = withContext(Dispatchers.IO) {
         db.findById(id = id)
+    }
+    override suspend fun increaseReactionCount(id: PostId) = withContext(Dispatchers.IO) {
+        db.increaseReactionCount(id = id)
+    }
+    override suspend fun decreaseReactionCount(id: PostId) = withContext(Dispatchers.IO) {
+        db.decreaseReactionCount(id = id)
     }
 
 }

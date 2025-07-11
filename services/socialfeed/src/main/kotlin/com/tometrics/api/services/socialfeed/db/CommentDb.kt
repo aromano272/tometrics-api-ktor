@@ -32,7 +32,7 @@ interface CommentDb {
     @Blocking
     @SqlUpdate("""
         UPDATE comments 
-        SET text = COALESCE(:newText, text), 
+        SET text = :newText,
         image = :newImage,
         updated_at = NOW()
         WHERE id = :id AND user_id = :userId
@@ -40,7 +40,7 @@ interface CommentDb {
     fun update(
         @Bind("id") id: CommentId,
         @Bind("userId") userId: UserId,
-        @Bind("newText") newText: String?,
+        @Bind("newText") newText: String,
         @Bind("newImage") newImage: String?,
     )
 
@@ -83,5 +83,13 @@ interface CommentDb {
         WHERE id = :id
     """)
     fun findById(@Bind("id") id: CommentId): CommentEntity?
+
+    @Blocking
+    @SqlUpdate("UPDATE comments SET reactions_count = reactions_count + 1 WHERE id = :id")
+    fun increaseReactionCount(@Bind("id") id: CommentId)
+
+    @Blocking
+    @SqlUpdate("UPDATE comments SET reactions_count = reactions_count - 1 WHERE id = :id")
+    fun decreaseReactionCount(@Bind("id") id: CommentId)
 
 }

@@ -26,7 +26,7 @@ interface PostDb {
         @Bind("userId") userId: UserId,
         @Bind("locationId") locationId: LocationInfoId?,
         @Bind("images") images: List<ImageUrl>,
-        @Bind("text") text: String?,
+        @Bind("text") text: String,
     ): PostId?
 
     @Blocking
@@ -41,8 +41,8 @@ interface PostDb {
         @Bind("id") id: PostId,
         @Bind("userId") userId: UserId,
         @Bind("newLocationId") newLocationId: LocationInfoId?,
-        @Bind("newImages") newImages: List<ImageUrl>?,
-        @Bind("newText") newText: String?,
+        @Bind("newImages") newImages: List<ImageUrl>,
+        @Bind("newText") newText: String,
     )
 
     @Blocking

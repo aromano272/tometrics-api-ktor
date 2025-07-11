@@ -47,8 +47,8 @@ interface PostService {
         requester: Requester,
         postId: PostId,
         locationInfoId: LocationInfoId?,
-        images: List<ImageUrl>?,
-        text: String?,
+        images: List<ImageUrl>,
+        text: String,
     ): PostDto
     suspend fun getPostReactions(
         requester: Requester,
@@ -192,16 +192,14 @@ class DefaultPostService(
         requester: Requester,
         postId: PostId,
         locationInfoId: LocationInfoId?,
-        images: List<ImageUrl>?,
-        text: String?,
+        images: List<ImageUrl>,
+        text: String,
     ): PostDto {
         val locationInfo = locationInfoId?.let { getLocationOrFetchAndSaveOrFail(it) }
 
-        if (images != null) {
-            val validateMediaUrlResult = mediaGrpcClient.validateMediaUrls(requester.userId, images.toSet())
-            if (validateMediaUrlResult !is GrpcValidateMediaUrlsResult.Success) {
-                throw InvalidMediaUrls
-            }
+        val validateMediaUrlResult = mediaGrpcClient.validateMediaUrls(requester.userId, images.toSet())
+        if (validateMediaUrlResult !is GrpcValidateMediaUrlsResult.Success) {
+            throw InvalidMediaUrls
         }
 
         postDao.update(
@@ -245,23 +243,23 @@ class DefaultPostService(
         reaction: Reaction,
     ) {
         val user = getOrFetchAndSaveUserOrFail(requester.userId)
-        postDao.increaseReactionCount(postId)
         postReactionDao.insert(
             postId = postId,
             userId = user.id,
             reaction = reaction,
         )
+        postDao.increaseReactionCount(postId)
     }
 
     override suspend fun deleteReaction(
         requester: Requester,
         postId: PostId,
     ) {
-        postDao.decreaseReactionCount(postId)
         postReactionDao.delete(
             postId = postId,
             userId = requester.userId,
         )
+        postDao.decreaseReactionCount(postId)
     }
 
     private suspend fun getOrFetchAndSaveUserOrFail(id: UserId): UserEntity =

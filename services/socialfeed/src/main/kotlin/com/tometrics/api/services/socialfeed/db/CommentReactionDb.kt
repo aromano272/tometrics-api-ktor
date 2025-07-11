@@ -1,8 +1,10 @@
 package com.tometrics.api.services.socialfeed.db
 
 import com.tometrics.api.common.domain.models.CommentId
+import com.tometrics.api.common.domain.models.PostId
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.socialfeed.db.models.CommentReactionEntity
+import com.tometrics.api.services.socialfeed.db.models.PostReactionEntity
 import com.tometrics.api.services.socialfeed.domain.models.Reaction
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
@@ -58,6 +60,28 @@ interface CommentReactionDb {
         @Bind("commentId") commentId: CommentId,
         @Bind("olderThan") olderThan: Instant,
         @Bind("pageSize") pageSize: Int,
+    ): List<CommentReactionEntity>
+
+
+    @Blocking
+    @SqlQuery("""
+        SELECT * FROM comment_reactions
+        WHERE comment_id = ANY(:commentIds)
+        AND user_id = :userId
+    """)
+    fun getAllByCommentIdsAndUserId(
+        @Bind("commentIds") commentIds: Set<CommentId>,
+        @Bind("userId") userId: UserId,
+    ): List<CommentReactionEntity>
+
+    @Blocking
+    @SqlQuery("""
+        SELECT DISTINCT ON (reaction) * FROM comment_reactions
+        WHERE comment_id = ANY(:commentIds)
+        LIMIT 3
+    """)
+    fun getLatestDistinctByCommentId(
+        @Bind("commentIds") commentIds: Set<CommentId>,
     ): List<CommentReactionEntity>
 
     @Blocking
