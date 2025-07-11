@@ -5,11 +5,9 @@ import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.commongrpc.models.socialgraph.GrpcSocialConnections
 import com.tometrics.api.services.protos.SocialGraphGrpcServiceGrpcKt
 
-interface SocialGraphGrpcService {
+interface SocialGraphGrpcClient {
     suspend fun grpcGetConnectionsByUserId(userId: UserId): GrpcSocialConnections
 }
-
-interface SocialGraphGrpcClient : SocialGraphGrpcService
 
 class DefaultSocialGraphGrpcClient(
     private val client: GrpcLazyClient<SocialGraphGrpcServiceGrpcKt.SocialGraphGrpcServiceCoroutineStub>,

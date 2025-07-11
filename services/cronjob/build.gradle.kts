@@ -9,7 +9,7 @@ group = "com.tometrics.api"
 version = "0.0.1"
 
 application {
-    mainClass = "com.tometrics.api.services.cronjob.CronJobServiceAppKt"
+    mainClass = "com.tometrics.api.services.cronjob.CronjobServiceAppKt"
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")

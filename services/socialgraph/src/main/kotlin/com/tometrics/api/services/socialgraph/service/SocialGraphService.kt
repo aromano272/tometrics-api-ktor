@@ -2,15 +2,13 @@ package com.tometrics.api.services.socialgraph.service
 
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.UserId
-import com.tometrics.api.services.commongrpc.models.socialgraph.GrpcSocialConnections
 import com.tometrics.api.services.commongrpc.models.user.GrpcValidateUsersResult
-import com.tometrics.api.services.commongrpc.services.SocialGraphGrpcService
 import com.tometrics.api.services.commongrpc.services.UserGrpcClient
 import com.tometrics.api.services.socialgraph.db.FollowerDao
 import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
 import io.ktor.util.logging.*
 
-interface SocialGraphService : SocialGraphGrpcService {
+interface SocialGraphService {
 
     suspend fun getConnectionsByUserId(userId: UserId): SocialConnections
     suspend fun follow(requesterId: UserId, userId: UserId)
@@ -23,9 +21,6 @@ class DefaultSocialGraphService(
     private val userGrpcClient: UserGrpcClient,
     private val dao: FollowerDao,
 ) : SocialGraphService {
-
-    override suspend fun grpcGetConnectionsByUserId(userId: UserId): GrpcSocialConnections =
-        getConnectionsByUserId(userId).toGrpc()
 
     override suspend fun getConnectionsByUserId(userId: UserId): SocialConnections {
         val following = dao.getAllFollowedByUserId(userId)
@@ -52,10 +47,4 @@ class DefaultSocialGraphService(
     }
 
 }
-
-private fun SocialConnections.toGrpc(): GrpcSocialConnections =
-    GrpcSocialConnections(
-        followers = followers,
-        following = following,
-    )
 

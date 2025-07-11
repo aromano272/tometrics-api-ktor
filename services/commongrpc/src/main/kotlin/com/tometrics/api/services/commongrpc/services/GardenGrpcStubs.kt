@@ -5,11 +5,9 @@ import com.tometrics.api.services.commongrpc.models.garden.GrpcPlanting
 import com.tometrics.api.services.protos.GardenGrpcServiceGrpcKt
 import com.tometrics.api.services.protos.empty
 
-interface GardenGrpcService {
+interface GardenGrpcClient {
     suspend fun getAllReadyForHarvestToday(): Map<UserId, List<GrpcPlanting>>
 }
-
-interface GardenGrpcClient : GardenGrpcService
 
 class DefaultGardenGrpcClient(
     private val client: GrpcLazyClient<GardenGrpcServiceGrpcKt.GardenGrpcServiceCoroutineStub>,

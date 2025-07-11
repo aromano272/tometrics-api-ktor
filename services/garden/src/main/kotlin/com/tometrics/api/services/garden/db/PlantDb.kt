@@ -14,8 +14,8 @@ interface PlantDb {
     @SqlQuery("SELECT * FROM plants ORDER BY name")
     fun getAll(): List<PlantEntity>
 
-    @SqlQuery("SELECT * FROM plants WHERE id IN (<ids>)")
-    fun getAllByIds(@BindList("ids") ids: Set<PlantId>): List<PlantEntity>
+    @SqlQuery("SELECT * FROM plants WHERE id = ANY(:ids)")
+    fun getAllByIds(@Bind("ids") ids: Set<PlantId>): List<PlantEntity>
 
     @SqlQuery(
         """

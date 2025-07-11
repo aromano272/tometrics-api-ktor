@@ -26,6 +26,7 @@ fun ServiceType.fromNetwork() = when (this) {
     ServiceType.CRONJOB -> DomainServiceType.CRONJOB
     ServiceType.EMAIL -> DomainServiceType.EMAIL
     ServiceType.GARDEN -> DomainServiceType.GARDEN
+    ServiceType.SOCIALFEED -> DomainServiceType.SOCIALFEED
     ServiceType.SOCIALGRAPH -> DomainServiceType.SOCIALGRAPH
     ServiceType.USER -> DomainServiceType.USER
     ServiceType.MEDIA -> DomainServiceType.MEDIA
@@ -37,6 +38,7 @@ fun DomainServiceType.toNetwork() = when (this) {
     DomainServiceType.CRONJOB -> ServiceType.CRONJOB
     DomainServiceType.EMAIL -> ServiceType.EMAIL
     DomainServiceType.GARDEN -> ServiceType.GARDEN
+    DomainServiceType.SOCIALFEED -> ServiceType.SOCIALFEED
     DomainServiceType.SOCIALGRAPH -> ServiceType.SOCIALGRAPH
     DomainServiceType.USER -> ServiceType.USER
     DomainServiceType.MEDIA -> ServiceType.MEDIA

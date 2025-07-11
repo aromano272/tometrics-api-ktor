@@ -1,10 +1,9 @@
 package com.tometrics.api.services.user.domain.models
 
 import com.tometrics.api.common.domain.models.LocationInfoId
-import kotlinx.serialization.Serializable
+import com.tometrics.api.common.route.models.LocationInfoDto
 
 // TODO: align better with cities500
-@Serializable
 data class LocationInfo(
     val id: LocationInfoId,
     val lat: Double,
@@ -22,4 +21,11 @@ data class LocationInfo(
     val village: String? = null,
     val cityDistrict: String? = null,
     val district: String? = null,
+)
+
+fun LocationInfo.toDto() = LocationInfoDto(
+    id = id,
+    city = city,
+    country = country,
+    countryCode = countryCode,
 )

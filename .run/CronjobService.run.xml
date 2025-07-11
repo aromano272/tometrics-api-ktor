@@ -1,0 +1,25 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CronjobService" type="KtorApplicationConfigurationType" factoryName="Ktor">
+    <envs>
+      <env name="RUNNING_LOCALLY" value="1" />
+    </envs>
+    <option name="envFilePaths">
+      <option value="$PROJECT_DIR$/.env" />
+      <option value="$PROJECT_DIR$/.env.development" />
+    </option>
+    <option name="MAIN_CLASS_NAME" value="com.tometrics.api.services.cronjob.CronjobServiceAppKt" />
+    <module name="tometrics.services.cronjob.main" />
+    <option name="alternativeJrePath" />
+    <option name="alternativeJrePathEnabled" value="false" />
+    <option name="includeProvidedScope" value="false" />
+    <option name="mainClass" value="com.tometrics.api.services.cronjob.CronjobServiceAppKt" />
+    <option name="passParentEnvs" value="true" />
+    <option name="programParameters" value="" />
+    <option name="shortenCommandLine" />
+    <option name="vmParameters" />
+    <option name="workingDirectory" value="$PROJECT_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

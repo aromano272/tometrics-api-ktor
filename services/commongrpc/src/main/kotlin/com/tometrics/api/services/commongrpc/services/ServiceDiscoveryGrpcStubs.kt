@@ -8,12 +8,10 @@ import com.tometrics.api.services.protos.ServiceDiscoveryGrpcServiceGrpcKt
 import com.tometrics.api.services.protos.getServiceInfoRequest
 import com.tometrics.api.services.protos.serviceInfoOrNull
 
-interface ServiceDiscoveryGrpcService {
+interface ServiceDiscoveryGrpcClient {
     suspend fun register(info: ServiceInfo)
     suspend fun get(type: ServiceType): ServiceInfo?
 }
-
-interface ServiceDiscoveryGrpcClient : ServiceDiscoveryGrpcService
 
 class DefaultServiceDiscoveryGrpcClient(
     private val client: ServiceDiscoveryGrpcServiceGrpcKt.ServiceDiscoveryGrpcServiceCoroutineStub,

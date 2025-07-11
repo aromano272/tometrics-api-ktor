@@ -6,6 +6,7 @@
     </envs>
     <option name="envFilePaths">
       <option value="$PROJECT_DIR$/.env" />
+      <option value="$PROJECT_DIR$/.env.development" />
       <option value="$PROJECT_DIR$/services/socialgraph/.env" />
     </option>
     <option name="MAIN_CLASS_NAME" value="com.tometrics.api.services.socialgraph.SocialGraphServiceAppKt" />

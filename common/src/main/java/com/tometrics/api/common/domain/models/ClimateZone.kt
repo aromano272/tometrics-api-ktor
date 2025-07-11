@@ -1,4 +1,4 @@
-package com.tometrics.api.services.user.domain.models
+package com.tometrics.api.common.domain.models
 
 enum class ClimateZone {
     TEMPERATE,
