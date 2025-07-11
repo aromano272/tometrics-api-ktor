@@ -1,10 +1,11 @@
 package com.tometrics.api.services.socialfeed.routes
 
 import com.tometrics.api.auth.domain.models.requireRequester
-import com.tometrics.api.common.domain.models.ValidationError
+import com.tometrics.api.common.domain.models.*
 import com.tometrics.api.services.socialfeed.routes.models.*
 import com.tometrics.api.services.socialfeed.service.CommentService
 import com.tometrics.api.services.socialfeed.service.PostService
+import io.github.smiley4.ktoropenapi.*
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -16,31 +17,88 @@ fun Route.socialFeedRoutes() {
     val postService: PostService by inject()
     val commentService: CommentService by inject()
 
-    get("/socialfeed/status") {
+    get("/socialfeed/status", {
+        description = "Check if the social feed service is up and running."
+        response {
+            HttpStatusCode.OK to {
+                description = "Service is up and running."
+            }
+        }
+    }) {
         call.respond(HttpStatusCode.OK)
     }
 
     authenticate {
-
-        get("/feed") {
-            val requester = call.requireRequester()
-            val olderThan = call.queryParameters["olderThan"]?.toLongOrNull()
-                ?: System.currentTimeMillis()
-            val result = postService.getFeed(requester, olderThan)
-            call.respond(result)
+        route("/feed", {
+            tags = listOf("Social Feed")
+        }) {
+            get({
+                description = "Get the user's social feed."
+                request {
+                    queryParameter<Millis>("olderThan") {
+                        description = "Timestamp to get posts older than this time (in milliseconds)."
+                        required = false
+                    }
+                }
+                response {
+                    HttpStatusCode.OK to {
+                        description = "A list of posts in the user's feed."
+                        body<List<PostDto>>()
+                    }
+                }
+            }) {
+                val requester = call.requireRequester()
+                val olderThan = call.queryParameters["olderThan"]?.toLongOrNull()
+                    ?: System.currentTimeMillis()
+                val result = postService.getFeed(requester, olderThan)
+                call.respond(result)
+            }
         }
 
-        get("/posts/{userId}") {
+        get("/posts/{userId}", {
+            tags = listOf("Social Feed")
+            description = "Get posts by user ID."
+            request {
+                pathParameter<UserId>("userId") {
+                    description = "The ID of the user whose posts to retrieve."
+                    required = true
+                }
+                queryParameter<Millis>("olderThan") {
+                    description = "Timestamp to get posts older than this time (in milliseconds)."
+                    required = false
+                }
+            }
+            response {
+                HttpStatusCode.OK to {
+                    description = "A list of posts by the specified user."
+                    body<List<PostDto>>()
+                }
+            }
+        }) {
             val requester = call.requireRequester()
             val olderThan = call.queryParameters["olderThan"]?.toLongOrNull()
                 ?: System.currentTimeMillis()
-            val userId = call.queryParameters["userId"]?.toIntOrNull()
+            val userId = call.pathParameters["userId"]?.toIntOrNull()
                 ?: requester.userId
             val result = postService.getAllPostsByUserId(requester, userId, olderThan)
             call.respond(result)
         }
 
-        post("/post") {
+        post("/post", {
+            tags = listOf("Social Feed")
+            description = "Create a new post."
+            request {
+                body<CreatePostRequest> {
+                    description = "The post details."
+                }
+            }
+            response {
+                HttpStatusCode.OK to {
+                    description = "The created post."
+                    body<PostDto>()
+                }
+            }
+        }) {
             val requester = call.requireRequester()
             val request = call.receive<CreatePostRequest>()
 
@@ -53,9 +111,26 @@ fun Route.socialFeedRoutes() {
             call.respond(result)
         }
 
-        route("/post/{postId}") {
+        route("/post/{postId}", {
+            tags = listOf("Social Feed")
+            description = "Operations on a specific post."
+            request {
+                pathParameter<PostId>("postId") {
+                    description = "The ID of the post to operate on."
+                    required = true
+                }
+            }
+        }) {
 
-            get {
+            get({
+                description = "Get a specific post by ID."
+                response {
+                    HttpStatusCode.OK to {
+                        description = "The requested post."
+                        body<PostDto>()
+                    }
+                }
+            }) {
                 val requester = call.requireRequester()
                 val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                     "`postId` is required"
@@ -64,7 +139,14 @@ fun Route.socialFeedRoutes() {
                 call.respond(result)
             }
 
-            delete {
+            delete({
+                description = "Delete a specific post."
+                response {
+                    HttpStatusCode.OK to {
+                        description = "Post successfully deleted."
+                    }
+                }
+            }) {
                 val requester = call.requireRequester()
                 val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                     "`postId` is required"
@@ -73,7 +155,20 @@ fun Route.socialFeedRoutes() {
                 call.respond(HttpStatusCode.OK)
             }
 
-            put {
+            put({
+                description = "Update a specific post."
+                request {
+                    body<PutPostRequest> {
+                        description = "The updated post details."
+                    }
+                }
+                response {
+                    HttpStatusCode.OK to {
+                        description = "The updated post."
+                        body<PostDto>()
+                    }
+                }
+            }) {
                 val requester = call.requireRequester()
                 val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                     "`postId` is required"
@@ -89,9 +184,26 @@ fun Route.socialFeedRoutes() {
                 call.respond(result)
             }
 
-            route("/reaction") {
+            route("/reaction", {
+                tags = listOf("Social Feed")
+                description = "Operations on post reactions."
+            }) {
 
-                get("/all") {
+                get("/all", {
+                    description = "Get all reactions for a specific post."
+                    request {
+                        queryParameter<Millis>("olderThan") {
+                            description = "Timestamp to get posts older than this time (in milliseconds)."
+                            required = false
+                        }
+                    }
+                    response {
+                        HttpStatusCode.OK to {
+                            description = "A list of user reactions for the post."
+                            body<List<UserReactionDto>>()
+                        }
+                    }
+                }) {
                     val requester = call.requireRequester()
                     val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                         "`postId` is required"
@@ -102,7 +214,19 @@ fun Route.socialFeedRoutes() {
                     call.respond(result)
                 }
 
-                post {
+                post({
+                    description = "Create a reaction for a specific post."
+                    request {
+                        body<CreateReactionRequest> {
+                            description = "The reaction details."
+                        }
+                    }
+                    response {
+                        HttpStatusCode.OK to {
+                            description = "Reaction successfully created."
+                        }
+                    }
+                }) {
                     val requester = call.requireRequester()
                     val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                         "`postId` is required"
@@ -112,7 +236,14 @@ fun Route.socialFeedRoutes() {
                     call.respond(HttpStatusCode.OK)
                 }
 
-                delete {
+                delete({
+                    description = "Delete a reaction for a specific post."
+                    response {
+                        HttpStatusCode.OK to {
+                            description = "Reaction successfully deleted."
+                        }
+                    }
+                }) {
                     val requester = call.requireRequester()
                     val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                         "`postId` is required"
@@ -123,10 +254,26 @@ fun Route.socialFeedRoutes() {
 
             }
 
-            // TODO(aromano): paged
-            route("/comment") {
+            route("/comment", {
+                tags = listOf("Social Feed")
+                description = "Operations on post comments."
+            }) {
 
-                get("/all") {
+                get("/all", {
+                    description = "Get all comments for a specific post."
+                    request {
+                        queryParameter<Millis>("olderThan") {
+                            description = "Timestamp to get posts older than this time (in milliseconds)."
+                            required = false
+                        }
+                    }
+                    response {
+                        HttpStatusCode.OK to {
+                            description = "A list of comments for the post."
+                            body<List<CommentDto>>()
+                        }
+                    }
+                }) {
                     val requester = call.requireRequester()
                     val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                         "`postId` is required"
@@ -138,7 +285,20 @@ fun Route.socialFeedRoutes() {
                     call.respond(result)
                 }
 
-                post {
+                post({
+                    description = "Create a comment for a specific post."
+                    request {
+                        body<CreateCommentRequest> {
+                            description = "The comment details."
+                        }
+                    }
+                    response {
+                        HttpStatusCode.OK to {
+                            description = "The created comment."
+                            body<CommentDto>()
+                        }
+                    }
+                }) {
                     val requester = call.requireRequester()
                     val postId = call.pathParameters["postId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                         "`postId` is required"
@@ -154,9 +314,31 @@ fun Route.socialFeedRoutes() {
                     call.respond(result)
                 }
 
-                route("/{commentId}") {
+                route("/{commentId}", {
+                    tags = listOf("Social Feed")
+                    description = "Operations on a specific comment."
+                    request {
+                        pathParameter<CommentId>("commentId") {
+                            description = "The ID of the comment to operate on."
+                            required = true
+                        }
+                    }
+                }) {
 
-                    put {
+                    put({
+                        description = "Update a specific comment."
+                        request {
+                            body<PutCommentRequest> {
+                                description = "The updated comment details."
+                            }
+                        }
+                        response {
+                            HttpStatusCode.OK to {
+                                description = "The updated comment."
+                                body<CommentDto>()
+                            }
+                        }
+                    }) {
                         val requester = call.requireRequester()
                         val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                             "`commentId` is required"
@@ -171,7 +353,14 @@ fun Route.socialFeedRoutes() {
                         call.respond(result)
                     }
 
-                    delete {
+                    delete({
+                        description = "Delete a specific comment."
+                        response {
+                            HttpStatusCode.OK to {
+                                description = "Comment successfully deleted."
+                            }
+                        }
+                    }) {
                         val requester = call.requireRequester()
                         val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                             "`commentId` is required"
@@ -180,9 +369,26 @@ fun Route.socialFeedRoutes() {
                         call.respond(HttpStatusCode.OK)
                     }
 
-                    route("/reaction") {
+                    route("/reaction", {
+                        tags = listOf("Social Feed")
+                        description = "Operations on comment reactions."
+                    }) {
 
-                        get("/all") {
+                        get("/all", {
+                            description = "Get all reactions for a specific comment."
+                            request {
+                                queryParameter<Millis>("olderThan") {
+                                    description = "Timestamp to get posts older than this time (in milliseconds)."
+                                    required = false
+                                }
+                            }
+                            response {
+                                HttpStatusCode.OK to {
+                                    description = "A list of user reactions for the comment."
+                                    body<List<UserReactionDto>>()
+                                }
+                            }
+                        }) {
                             val requester = call.requireRequester()
                             val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                                 "`commentId` is required"
@@ -197,7 +403,19 @@ fun Route.socialFeedRoutes() {
                             call.respond(result)
                         }
 
-                        post {
+                        post({
+                            description = "Create a reaction for a specific comment."
+                            request {
+                                body<CreateReactionRequest> {
+                                    description = "The reaction details."
+                                }
+                            }
+                            response {
+                                HttpStatusCode.OK to {
+                                    description = "Reaction successfully created."
+                                }
+                            }
+                        }) {
                             val requester = call.requireRequester()
                             val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                                 "`commentId` is required"
@@ -207,7 +425,14 @@ fun Route.socialFeedRoutes() {
                             call.respond(HttpStatusCode.OK)
                         }
 
-                        delete {
+                        delete({
+                            description = "Delete a reaction for a specific comment."
+                            response {
+                                HttpStatusCode.OK to {
+                                    description = "Reaction successfully deleted."
+                                }
+                            }
+                        }) {
                             val requester = call.requireRequester()
                             val commentId = call.pathParameters["commentId"]?.toIntOrNull() ?: throw ValidationError(listOf(
                                 "`commentId` is required"
