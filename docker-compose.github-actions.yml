@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:15
+    container_name: tometrics-ktor-db
+    ports:
+      - "5432:5432"
+    env_file: .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - tometrics-network
+
+  servicediscovery:
+    build:
+      context: .
+      dockerfile: services/servicediscovery/Dockerfile
+      no_cache: true
+    container_name: tometrics-servicediscovery
+    env_file: .env
+    networks:
+      - tometrics-network
+
+  user:
+    build:
+      context: .
+      dockerfile: services/user/Dockerfile
+      no_cache: true
+    container_name: tometrics-user
+    env_file:
+      - .env
+      - ./services/user/.env
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
+  nginx:
+    image: nginx:latest
+    container_name: tometrics-nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/nginx/certs:/etc/nginx/certs:ro
+    networks:
+      - tometrics-network
+    depends_on:
+      - servicediscovery
+      - user
+
+volumes:
+  pgdata:
+
+networks:
+  tometrics-network:
+    driver: bridge

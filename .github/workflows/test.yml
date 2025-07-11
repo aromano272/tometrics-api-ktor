@@ -13,14 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'  # or 21, depending on your project
+      - name: Set up Docker Compose
+        run: docker-compose -f docker-compose.github-actions.yml up -d --build
 
-      - name: Set up Gradle
-        uses: gradle/gradle-build-action@v3
+      - name: Wait for app to be healthy
+        run: |
+          echo "Waiting for app healthcheck..."
+          for i in {1..15}; do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' $(docker-compose ps -q app))
+            echo "App health: $STATUS"
+            if [ "$STATUS" == "healthy" ]; then
+              break
+            fi
+            sleep 2
+          done
 
       - name: Run tests
         run: ./gradlew test --continue
