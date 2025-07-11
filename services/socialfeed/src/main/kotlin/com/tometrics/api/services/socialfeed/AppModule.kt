@@ -24,7 +24,13 @@ val serviceModule = module {
 
     factory<CommentService> {
         DefaultCommentService(
-
+            logger = get(),
+            userGrpcClient = get(),
+            mediaGrpcClient = get(),
+            userDao = get(),
+            postDao = get(),
+            commentDao = get(),
+            commentReactionDao = get(),
         )
     }
 

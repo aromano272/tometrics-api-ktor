@@ -63,8 +63,10 @@ val configureStatusPages: StatusPagesConfig.() -> Unit
             val (status, message) = when (cause) {
                 InvalidMediaUrls -> HttpStatusCode.BadRequest to "Invalid image urls"
                 CreatePostFailed,
+                CreateCommentFailed,
                 is LocationNotFound,
                 is PostNotFound,
+                is CommentNotFound,
                 is UserNotFound -> HttpStatusCode.InternalServerError to "Internal server error"
             }
 
