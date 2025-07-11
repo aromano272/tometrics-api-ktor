@@ -1,8 +1,9 @@
 package com.tometrics.api.services.user.routes
 
 import com.tometrics.api.auth.domain.models.requireRequester
-import com.tometrics.api.services.user.domain.models.BadRequestException
-import com.tometrics.api.services.user.domain.models.LocationInfo
+import com.tometrics.api.common.domain.models.BadRequestError
+import com.tometrics.api.common.domain.models.NotFoundError
+import com.tometrics.api.common.route.models.LocationInfoDto
 import com.tometrics.api.services.user.domain.models.toDto
 import com.tometrics.api.services.user.routes.models.GetGeolocationAutocompleteResponse
 import com.tometrics.api.services.user.services.geolocation.GeolocationService
@@ -10,7 +11,6 @@ import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.route
 import io.ktor.http.*
 import io.ktor.server.auth.*
-import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -61,7 +61,7 @@ fun Route.geolocationRoutes() {
                 response {
                     HttpStatusCode.OK to {
                         description = "The location details for the given coordinates."
-                        body<LocationInfo>()
+                        body<LocationInfoDto>()
                     }
                     HttpStatusCode.BadRequest to {
                         description = "Invalid or missing query parameters."
@@ -73,13 +73,13 @@ fun Route.geolocationRoutes() {
             }) {
                 val requester = call.requireRequester()
                 val lat = call.request.queryParameters["lat"]?.toDoubleOrNull()
-                    ?: throw BadRequestException("lat query param missing or invalid")
+                    ?: throw BadRequestError("lat query param missing or invalid")
                 val lon = call.request.queryParameters["lon"]?.toDoubleOrNull()
-                    ?: throw BadRequestException("lon query param missing or invalid")
+                    ?: throw BadRequestError("lon query param missing or invalid")
 
                 val location = geolocationService.reverseGeocode(lat, lon)
-                    ?: throw NotFoundException("location with lat: $lat lon: $lon not found")
-                call.respond(location)
+                    ?: throw NotFoundError("location with lat: $lat lon: $lon not found")
+                call.respond(location.toDto())
             }
 
         }

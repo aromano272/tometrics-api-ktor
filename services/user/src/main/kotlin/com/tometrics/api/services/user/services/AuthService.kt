@@ -2,13 +2,15 @@ package com.tometrics.api.services.user.services
 
 import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.auth.domain.models.Tokens
+import com.tometrics.api.common.domain.models.BadRequestError
+import com.tometrics.api.common.domain.models.ConflictError
+import com.tometrics.api.common.domain.models.NotFoundError
+import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.services.user.db.RefreshTokenDao
 import com.tometrics.api.services.user.db.UserDao
 import com.tometrics.api.services.user.db.models.toDomain
-import com.tometrics.api.services.user.domain.models.ConflictException
 import com.tometrics.api.services.user.domain.models.IdProviderPayload
-import com.tometrics.api.services.user.domain.models.*
-import io.ktor.server.plugins.NotFoundException
+import com.tometrics.api.services.user.domain.models.User
 import java.time.Instant
 import java.util.*
 
@@ -52,7 +54,7 @@ class DefaultAuthService(
     override suspend fun loginWithGoogle(requester: Requester?, idToken: String): Tokens {
         val payload = googleAuthService.verify(idToken)
         val requesterUser = requester?.userId?.let {
-            userDao.findById(it) ?: throw NotFoundException("User id not found")
+            userDao.findById(it) ?: throw NotFoundError("User id not found")
         }?.toDomain()
 
         val googleUser = userDao.findByGoogleEmail(payload.email)?.toDomain()
@@ -92,7 +94,7 @@ class DefaultAuthService(
                     if (requesterUser == googleUser) {
                         login(googleUser)
                     } else {
-                        throw ConflictException("There's already another account registered with this google email")
+                        throw ConflictError("There's already another account registered with this google email")
                     }
                 } else {
                     // Explanation: If requester user is not anonymous that means it already has a provider registered
@@ -100,7 +102,7 @@ class DefaultAuthService(
                     // gmail one, if it has another provider we should add the google provider to it, if it already has a
                     // google provider but the emails dont match, than we should just throw
                     if (requesterUser.idpGoogleEmail != null) {
-                        throw ConflictException("You already have a different google email assigned")
+                        throw ConflictError("You already have a different google email assigned")
                     } else {
                         throw IllegalStateException(
                             "There are currently no other idp's so it's impossible for the user " +
@@ -114,7 +116,7 @@ class DefaultAuthService(
                 if (googleUser != null) {
                     //      - TODO merge accs? Or fail? Or have confirmation endpoint?
                     //      - login
-                    throw BadRequestException("Not supported yet")
+                    throw BadRequestError("Not supported yet")
                 } else {
                     userDao.update(
                         id = requesterUser.id,
@@ -133,7 +135,7 @@ class DefaultAuthService(
         payload: IdProviderPayload.Facebook
     ): Tokens {
         val requesterUser = requester?.userId?.let {
-            userDao.findById(it) ?: throw NotFoundException("User id not found")
+            userDao.findById(it) ?: throw NotFoundError("User id not found")
         }?.toDomain()
 
         val facebookUser = userDao.findByFacebookId(payload.id)?.toDomain()
@@ -172,7 +174,7 @@ class DefaultAuthService(
                     if (requesterUser == facebookUser) {
                         login(facebookUser)
                     } else {
-                        throw ConflictException("There's already another account registered with this facebook email")
+                        throw ConflictError("There's already another account registered with this facebook email")
                     }
                 } else {
                     // Explanation: If requester user is not anonymous that means it already has a provider registered
@@ -180,7 +182,7 @@ class DefaultAuthService(
                     // gmail one, if it has another provider we should add the facebook provider to it, if it already has a
                     // facebook provider but the emails dont match, than we should just throw
                     if (requesterUser.idpFacebookId != null) {
-                        throw ConflictException("You already have a different facebook email assigned")
+                        throw ConflictError("You already have a different facebook email assigned")
                     } else {
                         throw IllegalStateException(
                             "There are currently no other idp's so it's impossible for the user " +
@@ -194,7 +196,7 @@ class DefaultAuthService(
                 if (facebookUser != null) {
                     //      - TODO merge accs? Or fail? Or have confirmation endpoint?
                     //      - login
-                    throw BadRequestException("Not supported yet")
+                    throw BadRequestError("Not supported yet")
                 } else {
                     userDao.update(
                         id = requesterUser.id,
@@ -230,12 +232,12 @@ class DefaultAuthService(
 
     override suspend fun refreshToken(refreshToken: String): Tokens {
         val stored = refreshTokenDao.findByToken(refreshToken)
-            ?: throw UnauthorizedException("couldn't find refresh token")
+            ?: throw UnauthorizedError("couldn't find refresh token")
         val user = userDao.findById(stored.userId)?.toDomain()
-            ?: throw NotFoundException("couldn't find user")
+            ?: throw NotFoundError("couldn't find user")
 
         if (stored.expiresAt.isBefore(Instant.now()))
-            throw UnauthorizedException("refresh token has expired")
+            throw UnauthorizedError("refresh token has expired")
 
         refreshTokenDao.delete(refreshToken)
 
@@ -244,7 +246,7 @@ class DefaultAuthService(
 
     override suspend fun logout(requester: Requester, refreshToken: String) {
         val stored = refreshTokenDao.findByToken(refreshToken)
-            ?: throw UnauthorizedException("couldn't find refresh token")
+            ?: throw UnauthorizedError("couldn't find refresh token")
 
         refreshTokenDao.delete(refreshToken)
     }

@@ -32,3 +32,7 @@ dependencies {
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.mockk)
 }
+
+tasks.test {
+    useJUnitPlatform()
+}

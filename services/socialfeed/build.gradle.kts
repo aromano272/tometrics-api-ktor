@@ -72,3 +72,7 @@ dependencies {
     testImplementation(libs.testcontainers.postgres)
     testImplementation(libs.mockk)
 }
+
+tasks.test {
+    useJUnitPlatform()
+}

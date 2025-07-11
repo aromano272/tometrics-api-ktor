@@ -1,13 +1,28 @@
 package com.tometrics.api.services.socialgraph.functional
 
+import com.tometrics.api.common.domain.models.ServiceInfo
+import com.tometrics.api.common.domain.models.ServiceType
 import com.tometrics.api.services.commonservicetest.functional.BaseE2ETest
 import com.tometrics.api.services.socialgraph.domain.models.SocialConnections
+import com.tometrics.api.services.socialgraph.module
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SocialGraphE2ETest : BaseE2ETest() {
+class SocialGraphE2ETest : BaseE2ETest(
+    serviceInfo = SERVICE_INFO,
+    module = { module(SERVICE_INFO) },
+) {
+
+    companion object {
+        val SERVICE_INFO = ServiceInfo(
+            prefix = "/socialgraph",
+            host = "localhost",
+            port = 8081,
+            type = ServiceType.SOCIALGRAPH,
+        )
+    }
 
     @Test
     fun testGetConnectionsForSpecificUser() = runApp {

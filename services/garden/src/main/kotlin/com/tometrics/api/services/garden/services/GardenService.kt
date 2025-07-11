@@ -1,13 +1,14 @@
 package com.tometrics.api.services.garden.services
 
 import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.common.domain.models.BadRequestError
+import com.tometrics.api.common.domain.models.NotFoundError
 import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.services.garden.db.GardenDao
 import com.tometrics.api.services.garden.db.models.toDomain
 import com.tometrics.api.services.garden.domain.models.PlantId
 import com.tometrics.api.services.garden.domain.models.Planting
 import com.tometrics.api.services.garden.domain.models.PlantingId
-import io.ktor.server.plugins.*
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -42,22 +43,22 @@ class DefaultGardenService(
     }
 
     override suspend fun getById(requester: Requester, id: PlantingId): Planting {
-        val planting = gardenDao.find(id) ?: throw NotFoundException("Planting not found")
-        if (planting.userId != requester.userId) throw BadRequestException("Planting doesn't belong to this user")
+        val planting = gardenDao.find(id) ?: throw NotFoundError("Planting not found")
+        if (planting.userId != requester.userId) throw BadRequestError("Planting doesn't belong to this user")
         val plant = plantService.getById(planting.plantId)
 
         return planting.toDomain(plant)
     }
 
     override suspend fun delete(requester: Requester, id: PlantingId) {
-        val planting = gardenDao.find(id) ?: throw NotFoundException("Planting not found")
-        if (planting.userId != requester.userId) throw BadRequestException("Planting doesn't belong to this user")
+        val planting = gardenDao.find(id) ?: throw NotFoundError("Planting not found")
+        if (planting.userId != requester.userId) throw BadRequestError("Planting doesn't belong to this user")
         gardenDao.delete(id)
     }
 
     override suspend fun update(requester: Requester, id: PlantingId, newQuantity: Int?, newName: String?, newDiary: String?, newHarvested: Boolean?): Planting {
-        val planting = gardenDao.find(id) ?: throw NotFoundException("Planting not found")
-        if (planting.userId != requester.userId) throw BadRequestException("Planting doesn't belong to this user")
+        val planting = gardenDao.find(id) ?: throw NotFoundError("Planting not found")
+        if (planting.userId != requester.userId) throw BadRequestError("Planting doesn't belong to this user")
         gardenDao.update(id, newQuantity, newName, newDiary, newHarvested)
 
         return getById(requester, id)

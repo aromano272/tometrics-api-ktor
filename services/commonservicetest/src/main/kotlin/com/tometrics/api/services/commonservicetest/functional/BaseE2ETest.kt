@@ -2,6 +2,7 @@ package com.tometrics.api.services.commonservicetest.functional
 
 import com.auth0.jwt.JWT
 import com.tometrics.api.auth.domain.models.Tokens
+import com.tometrics.api.common.domain.models.ServiceInfo
 import com.tometrics.api.common.domain.models.UserId
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -15,10 +16,11 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.config.*
+import io.ktor.server.application.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.json.Json
 import org.flywaydb.core.Flyway
+import org.junit.jupiter.api.BeforeEach
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 import org.koin.test.KoinTest
@@ -31,7 +33,6 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import javax.sql.DataSource
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
-import kotlin.test.BeforeTest
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -41,7 +42,10 @@ interface TestUtilMethods {
 }
 
 @OptIn(ExperimentalAtomicApi::class)
-abstract class BaseE2ETest : KoinTest, TestUtilMethods {
+abstract class BaseE2ETest(
+    private val serviceInfo: ServiceInfo,
+    private val module: Application.(ServiceInfo) -> Unit,
+) : KoinTest, TestUtilMethods {
 
     private val dataSource: HikariDataSource = run {
         val config = HikariConfig().apply {
@@ -90,11 +94,8 @@ abstract class BaseE2ETest : KoinTest, TestUtilMethods {
 
 
     fun runApp(block: suspend ApplicationTestBuilder.() -> Unit) = testApplication {
-        environment {
-            config = ApplicationConfig("application.yaml")
-        }
-
         application {
+            module(serviceInfo)
             loadKoinModules(testDbModule)
         }
 
@@ -108,14 +109,14 @@ abstract class BaseE2ETest : KoinTest, TestUtilMethods {
     }
 
     override suspend fun registerAnon(): Pair<UserId, Tokens> {
-        val response = realClient.post("https://localhost/api/v1/auth/anon/register")
+        val response = realClient.post("http://localhost:8082/api/v1/auth/anon/register")
         assertEquals(HttpStatusCode.OK, response.status)
         val tokens = response.body<Tokens>()
         val userId = JWT.decode(tokens.access).getClaim("userId").asInt()
         return userId to tokens
     }
 
-    @BeforeTest
+    @BeforeEach
     fun setup() {
         // Migrate DB (reset schema if needed)
         Flyway.configure()
@@ -123,7 +124,7 @@ abstract class BaseE2ETest : KoinTest, TestUtilMethods {
             .cleanDisabled(false)
             .locations(
                 "classpath:db/migration",
-                "classpath:com/tometrics/api/db/migration",
+                "classpath:com/tometrics/api/services/${serviceInfo.prefix}/db/migration",
             )
             .load()
             .run {

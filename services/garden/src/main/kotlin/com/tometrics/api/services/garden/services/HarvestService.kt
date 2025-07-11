@@ -3,10 +3,10 @@ package com.tometrics.api.services.garden.services
 import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.common.domain.models.ConflictError
 import com.tometrics.api.common.domain.models.Millis
+import com.tometrics.api.common.domain.models.NotFoundError
 import com.tometrics.api.services.garden.db.HarvestDao
 import com.tometrics.api.services.garden.db.models.toDomain
 import com.tometrics.api.services.garden.domain.models.*
-import io.ktor.server.plugins.*
 import java.time.Instant
 
 interface HarvestService {
@@ -77,7 +77,7 @@ class DefaultHarvestService(
         requester: Requester,
         id: HarvestId,
     ) {
-        val harvest = harvestDao.findById(id) ?: throw NotFoundException("Harvest not found")
+        val harvest = harvestDao.findById(id) ?: throw NotFoundError("Harvest not found")
         val planting = gardenService.getById(requester, harvest.plantingId)
 
         harvestDao.delete(id)
