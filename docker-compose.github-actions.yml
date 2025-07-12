@@ -4,7 +4,6 @@ services:
     container_name: tometrics-ktor-db
     ports:
       - "5432:5432"
-    env_file: .env
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -16,7 +15,6 @@ services:
       dockerfile: services/servicediscovery/Dockerfile
       no_cache: true
     container_name: tometrics-servicediscovery
-    env_file: .env
     networks:
       - tometrics-network
 
@@ -26,9 +24,8 @@ services:
       dockerfile: services/user/Dockerfile
       no_cache: true
     container_name: tometrics-user
-    env_file:
-      - .env
-      - ./services/user/.env
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://db:5432/user
     networks:
       - tometrics-network
     depends_on:
