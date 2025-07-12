@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Docker Compose
-        run: docker compose -f docker-compose.github-actions.yml up -d --build
+        run: docker compose --env-file /dev/null -f docker-compose.github-actions.yml up -d --build
 
       - name: Wait for user service to be healthy
         run: |
