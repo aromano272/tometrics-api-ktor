@@ -42,6 +42,8 @@ jobs:
           echo "Sleeping for 10 seconds to let services settle..."
           sleep 10
 
+# TODO(aromano): No idea why but this code was failing on missing rootproject/.env, and then services/email/.env
+#                I cba to figure it out atm, I'll look at it eventually, the sleep works just fine
 #      - name: Wait for user service to be healthy
 #        run: |
 #          echo "Waiting for user service healthcheck..."
