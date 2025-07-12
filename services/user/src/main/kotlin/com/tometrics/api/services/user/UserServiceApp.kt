@@ -104,6 +104,10 @@ val configureStatusPages: StatusPagesConfig.() -> Unit
 
 fun Application.configureRouting() {
     routing {
+        // TODO(aromano): check how to properly do health checks on services
+        get("/user/health") {
+            call.respond(HttpStatusCode.OK)
+        }
         route("/api/v1") {
             authRoutes()
             geolocationRoutes()

@@ -27,13 +27,14 @@ jobs:
       - name: Set up Docker Compose
         run: docker compose -f docker-compose.github-actions.yml up -d --build
 
-      - name: Wait for app to be healthy
+      - name: Wait for user service to be healthy
         run: |
-          echo "Waiting for app healthcheck..."
+          echo "Waiting for user service healthcheck..."
           for i in {1..15}; do
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' $(docker compose ps -q app))
-            echo "App health: $STATUS"
-            if [ "$STATUS" == "healthy" ]; then
+            CID=$(docker compose ps -q user)
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' $CID)
+            echo "User service health: $STATUS"
+            if [ "$STATUS" = "healthy" ]; then
               break
             fi
             sleep 2
