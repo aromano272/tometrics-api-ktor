@@ -1,7 +1,10 @@
 package functional
 
+import com.auth0.jwt.JWT
+import com.tometrics.api.auth.domain.models.Tokens
 import com.tometrics.api.common.domain.models.ServiceInfo
 import com.tometrics.api.common.domain.models.ServiceType
+import com.tometrics.api.common.domain.models.UserId
 import com.tometrics.api.common.route.models.LocationInfoDto
 import com.tometrics.api.services.commonservicetest.functional.BaseE2ETest
 import com.tometrics.api.services.user.module
@@ -28,19 +31,24 @@ class GeolocationE2ETest : BaseE2ETest(
         )
     }
 
+    override suspend fun registerAnon(): Pair<UserId, Tokens> {
+        val response = testClient.post("/api/v1/auth/anon/register")
+        assertEquals(HttpStatusCode.OK, response.status)
+        val tokens = response.body<Tokens>()
+        val userId = JWT.decode(tokens.access).getClaim("userId").asInt()
+        return userId to tokens
+
+    }
+
     @Test
     fun `test geolocation autocomplete endpoint`() = runApp {
         val (accessToken, _) = registerAnon().second
 
-        val response = testClient.get("/api/v1/geolocation/autocomplete?searchQuery=london") {
-            bearerAuth(accessToken)
-        }
+        val response = getAndAssert<GetGeolocationAutocompleteResponse>("/api/v1/geolocation/autocomplete?searchQuery=london", accessToken)
 
-        assertEquals(HttpStatusCode.OK, response.status)
-        val autocompleteResponse = response.body<GetGeolocationAutocompleteResponse>()
-        assertNotEquals(0, autocompleteResponse.locations.size)
+        assertNotEquals(0, response.locations.size)
 
-        val first = assertNotNull(autocompleteResponse.locations.firstOrNull())
+        val first = assertNotNull(response.locations.firstOrNull())
         assertEquals("London", first.city)
         assertEquals("United Kingdom", first.country)
     }
@@ -49,12 +57,8 @@ class GeolocationE2ETest : BaseE2ETest(
     fun `test geolocation reverse-geocoding endpoint`() = runApp {
         val (accessToken, _) = registerAnon().second
 
-        val response = testClient.get("/api/v1/geolocation/reverse-geocoding?lat=51.5074&lon=-0.1278") {
-            bearerAuth(accessToken)
-        }
+        val first = getAndAssert<LocationInfoDto>("/api/v1/geolocation/reverse-geocoding?lat=51.5074&lon=-0.1278", accessToken)
 
-        assertEquals(HttpStatusCode.OK, response.status)
-        val first = response.body<LocationInfoDto>()
         assertEquals("City of Westminster", first.city)
         assertEquals("United Kingdom", first.country)
 

@@ -1,0 +1,61 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches:
+      - main  # or 'master' or your default branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:24.0.7  # GitHub runner already has Docker, this is just for clarity
+    env:
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_MAX_POOL_SIZE: ${{ secrets.POSTGRES_MAX_POOL_SIZE }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_DOMAIN: ${{ secrets.JWT_DOMAIN }}
+      JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
+      JWT_REALM: ${{ secrets.JWT_REALM }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Write .env file
+        run: |
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_MAX_POOL_SIZE=${{ secrets.POSTGRES_MAX_POOL_SIZE }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "JWT_DOMAIN=${{ secrets.JWT_DOMAIN }}" >> .env
+          echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> .env
+          echo "JWT_REALM=${{ secrets.JWT_REALM }}" >> .env
+
+      - name: Set up Docker Compose
+        run: docker compose -f docker-compose.github-actions.yml up -d --build
+
+      - name: Wait for services to settle
+        run: |
+          echo "Sleeping for 10 seconds to let services settle..."
+          sleep 10
+
+# TODO(aromano): No idea why but this code was failing on missing rootproject/.env, and then services/email/.env
+#                I cba to figure it out atm, I'll look at it eventually, the sleep works just fine
+#      - name: Wait for user service to be healthy
+#        run: |
+#          echo "Waiting for user service healthcheck..."
+#          for i in {1..15}; do
+#            CID=$(docker compose ps -q user)
+#            STATUS=$(docker inspect --format='{{.State.Health.Status}}' $CID)
+#            echo "User service health: $STATUS"
+#            if [ "$STATUS" = "healthy" ]; then
+#              break
+#            fi
+#            sleep 2
+#          done
+
+      - name: Run tests
+        run: ./gradlew test --continue

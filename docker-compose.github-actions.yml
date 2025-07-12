@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:15
+    container_name: tometrics-ktor-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - tometrics-network
+
+  servicediscovery:
+    build:
+      context: .
+      dockerfile: services/servicediscovery/Dockerfile
+      no_cache: true
+    container_name: tometrics-servicediscovery
+    networks:
+      - tometrics-network
+
+  user:
+    build:
+      context: .
+      dockerfile: services/user/Dockerfile
+      no_cache: true
+    container_name: tometrics-user
+#    environment:
+#      - POSTGRES_URL=jdbc:postgresql://db:5432/user
+#      - POSTGRES_USER=${POSTGRES_USER}
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#      - JWT_SECRET=${JWT_SECRET}
+#      - JWT_DOMAIN=${JWT_DOMAIN}
+#      - JWT_AUDIENCE=${JWT_AUDIENCE}
+#      - JWT_REALM=${JWT_REALM}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/user/health" ]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+    networks:
+      - tometrics-network
+    depends_on:
+      - db
+      - servicediscovery
+
+  nginx:
+    image: nginx:latest
+    container_name: tometrics-nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/nginx/certs:/etc/nginx/certs:ro
+    networks:
+      - tometrics-network
+    depends_on:
+      - servicediscovery
+      - user
+
+volumes:
+  pgdata:
+
+networks:
+  tometrics-network:
+    driver: bridge
