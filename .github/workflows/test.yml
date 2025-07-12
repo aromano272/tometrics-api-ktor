@@ -40,14 +40,15 @@ jobs:
       - name: Wait for user service to be healthy
         run: |
           echo "Waiting for user service healthcheck..."
-          for i in {1..15}; do
-            CID=$(docker compose ps -q user)
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' $CID)
-            echo "User service health: $STATUS"
-            if [ "$STATUS" = "healthy" ]; then
-              break
-            fi
-            sleep 2
+#          for i in {1..15}; do
+#            CID=$(docker compose ps -q user)
+#            STATUS=$(docker inspect --format='{{.State.Health.Status}}' $CID)
+#            echo "User service health: $STATUS"
+#            if [ "$STATUS" = "healthy" ]; then
+#              break
+#            fi
+#            sleep 2
+          sleep 10
           done
 
       - name: Run tests
