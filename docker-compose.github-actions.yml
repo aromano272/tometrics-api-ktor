@@ -24,14 +24,14 @@ services:
       dockerfile: services/user/Dockerfile
       no_cache: true
     container_name: tometrics-user
-    environment:
-      - POSTGRES_URL=jdbc:postgresql://db:5432/user
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_DOMAIN=${JWT_DOMAIN}
-      - JWT_AUDIENCE=${JWT_AUDIENCE}
-      - JWT_REALM=${JWT_REALM}
+#    environment:
+#      - POSTGRES_URL=jdbc:postgresql://db:5432/user
+#      - POSTGRES_USER=${POSTGRES_USER}
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#      - JWT_SECRET=${JWT_SECRET}
+#      - JWT_DOMAIN=${JWT_DOMAIN}
+#      - JWT_AUDIENCE=${JWT_AUDIENCE}
+#      - JWT_REALM=${JWT_REALM}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8082/user/health" ]
       interval: 5s

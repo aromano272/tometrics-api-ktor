@@ -24,8 +24,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Write .env file
+        run: |
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_MAX_POOL_SIZE=${{ secrets.POSTGRES_MAX_POOL_SIZE }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "JWT_DOMAIN=${{ secrets.JWT_DOMAIN }}" >> .env
+          echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> .env
+          echo "JWT_REALM=${{ secrets.JWT_REALM }}" >> .env
+
       - name: Set up Docker Compose
-        run: docker compose --env-file /dev/null -f docker-compose.github-actions.yml up -d --build
+        run: docker compose -f docker-compose.github-actions.yml up -d --build
 
       - name: Wait for user service to be healthy
         run: |
