@@ -37,9 +37,14 @@ jobs:
       - name: Set up Docker Compose
         run: docker compose -f docker-compose.github-actions.yml up -d --build
 
-      - name: Wait for user service to be healthy
+      - name: Wait for services to settle
         run: |
-          echo "Waiting for user service healthcheck..."
+          echo "Sleeping for 10 seconds to let services settle..."
+          sleep 10
+
+#      - name: Wait for user service to be healthy
+#        run: |
+#          echo "Waiting for user service healthcheck..."
 #          for i in {1..15}; do
 #            CID=$(docker compose ps -q user)
 #            STATUS=$(docker inspect --format='{{.State.Health.Status}}' $CID)
@@ -48,8 +53,7 @@ jobs:
 #              break
 #            fi
 #            sleep 2
-          sleep 10
-          done
+#          done
 
       - name: Run tests
         run: ./gradlew test --continue
