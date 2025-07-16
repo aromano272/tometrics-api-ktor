@@ -6,6 +6,8 @@ import com.tometrics.api.services.commongrpc.models.user.GrpcValidateMediaUrlsRe
 import com.tometrics.api.services.commongrpc.models.user.toDomain
 import com.tometrics.api.services.commongrpc.services.MediaGrpcClient
 import com.tometrics.api.services.commongrpc.services.UserGrpcClient
+import com.tometrics.api.services.commonservice.EventProducer
+import com.tometrics.api.services.commonservice.Message
 import com.tometrics.api.services.socialfeed.db.LocationInfoDao
 import com.tometrics.api.services.socialfeed.db.PostDao
 import com.tometrics.api.services.socialfeed.db.PostReactionDao
@@ -69,6 +71,7 @@ interface PostService {
 
 class DefaultPostService(
     private val logger: Logger,
+    private val eventProducer: EventProducer,
     private val userGrpcClient: UserGrpcClient,
     private val mediaGrpcClient: MediaGrpcClient,
     private val postDao: PostDao,
@@ -174,7 +177,16 @@ class DefaultPostService(
             text = text,
         ) ?: throw CreatePostFailed
         val post = postDao.findById(postId) ?: throw CreatePostFailed
-        return getAuxiliaryPostDataAndMapToDto(requester, listOf(post)).first()
+        val dto = getAuxiliaryPostDataAndMapToDto(requester, listOf(post)).first()
+
+        val event = Message.PostCreated(
+            id = dto.id,
+            user = dto.user,
+            text = dto.text,
+        )
+        eventProducer.sendMessage(event)
+
+        return dto
     }
 
     override suspend fun getPost(requester: Requester, postId: PostId): PostDto {

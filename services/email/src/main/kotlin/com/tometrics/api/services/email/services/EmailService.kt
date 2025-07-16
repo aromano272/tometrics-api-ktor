@@ -1,5 +1,6 @@
 package com.tometrics.api.services.email.services
 
+import com.tometrics.api.services.commonservice.Message
 import com.tometrics.api.services.email.services.templates.Template
 import io.github.cdimascio.dotenv.Dotenv
 import io.ktor.client.*
@@ -8,8 +9,11 @@ import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.logging.*
+import kotlinx.coroutines.delay
 
 interface EmailService {
+    // TODO(aromano): debug
+    suspend fun handlemessage(message: Message)
     suspend fun sendEmail(to: String, subject: String, template: Template)
 }
 
@@ -23,6 +27,11 @@ class MailgunEmailService(
     private val apiKey = dotenv["MAILGUN_API_KEY"]
     private val domain = dotenv["MAILGUN_DOMAIN"]
     private val fromEmail = "Tometrics <noreply@tometrics.com>"
+
+    override suspend fun handlemessage(message: Message) {
+        delay(2_000)
+        logger.info("EmailService MQ message handled $message")
+    }
 
     override suspend fun sendEmail(to: String, subject: String, template: Template) {
         val url = "https://api.mailgun.net/v3/$domain/messages"

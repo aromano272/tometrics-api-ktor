@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.swagger.ui)
     implementation(libs.schema.kenerator.swagger)
     implementation(libs.google.api.client)
+    implementation(libs.rabbitmq)
 
     testImplementation(project(":services:commonservicetest"))
     testImplementation(libs.koin.test)

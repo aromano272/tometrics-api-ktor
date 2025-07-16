@@ -13,6 +13,7 @@ val serviceModule = module {
     factory<PostService> {
         DefaultPostService(
             logger = get(),
+            eventProducer = get(),
             userGrpcClient = get(),
             mediaGrpcClient = get(),
             postDao = get(),

@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CommentDto(
+    val id: CommentId,
     val user: UserDto,
     val parentId: CommentId?,
     val text: String,
@@ -26,6 +27,7 @@ fun CommentEntity.toDto(
     myReaction: Reaction?,
     topReactions: List<Reaction>,
 ): CommentDto = CommentDto(
+    id = id,
     user = user,
     parentId = parentId,
     text = text,

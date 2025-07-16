@@ -5,6 +5,8 @@ import com.tometrics.api.common.domain.models.*
 import com.tometrics.api.services.commongrpc.models.user.toDomain
 import com.tometrics.api.services.commongrpc.services.MediaGrpcClient
 import com.tometrics.api.services.commongrpc.services.UserGrpcClient
+import com.tometrics.api.services.commonservice.EventProducer
+import com.tometrics.api.services.commonservice.Message
 import com.tometrics.api.services.socialfeed.db.CommentDao
 import com.tometrics.api.services.socialfeed.db.CommentReactionDao
 import com.tometrics.api.services.socialfeed.db.PostDao
@@ -69,6 +71,7 @@ interface CommentService {
 
 class DefaultCommentService(
     private val logger: Logger,
+    private val eventProducer: EventProducer,
     private val userGrpcClient: UserGrpcClient,
     private val mediaGrpcClient: MediaGrpcClient,
     private val userDao: UserDao,
@@ -134,6 +137,7 @@ class DefaultCommentService(
                 throw InvalidMediaUrls
         }
 
+        val post = postDao.findById(postId) ?: throw PostNotFound(postId)
         val commentId = commentDao.insert(
             userId = user.id,
             parentId = parentId,
@@ -141,7 +145,18 @@ class DefaultCommentService(
             image = image,
         ) ?: throw CreateCommentFailed
         val comment = commentDao.findById(commentId) ?: throw CreateCommentFailed
-        return getAuxiliaryCommentDataAndMapToDto(requester, listOf(comment)).first()
+        val dto = getAuxiliaryCommentDataAndMapToDto(requester, listOf(comment)).first()
+
+        val event = Message.CommentCreated(
+            id = dto.id,
+            postId = postId,
+            postUserId = post.userId,
+            user = dto.user,
+            text = dto.text,
+        )
+        eventProducer.sendMessage(event)
+
+        return dto
     }
 
     override suspend fun updateComment(

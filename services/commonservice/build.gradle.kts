@@ -16,6 +16,7 @@ dependencies {
     implementation(project(":db"))
     implementation(project(":auth"))
     implementation(project(":common"))
+    implementation(project(":services:protos"))
     implementation(project(":services:commongrpc"))
 
     implementation(libs.ktor.server.core)
@@ -51,6 +52,7 @@ dependencies {
     implementation(libs.openapi.generator)
     implementation(libs.swagger.ui)
     implementation(libs.schema.kenerator.swagger)
+    implementation(libs.rabbitmq)
 
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit)

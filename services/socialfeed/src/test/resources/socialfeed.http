@@ -21,7 +21,7 @@ Content-Type: application/json
 Authorization: Bearer {{access}}
 
 {
-  "locationInfoId": 1,
+  "locationInfoId": 3040686,
   "images": ["image1.jpg", "image2.jpg"],
   "text": "This is a new post"
 }
