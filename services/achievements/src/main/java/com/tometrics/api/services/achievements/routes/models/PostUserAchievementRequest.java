@@ -1,4 +1,4 @@
-package com.tometrics.api.services.achievements.routes;
+package com.tometrics.api.services.achievements.routes.models;
 
 import com.tometrics.api.services.achievements.domain.models.AchievementType;
 

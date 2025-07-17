@@ -16,8 +16,8 @@ import java.util.List;
 public interface AchievementDao {
 
     @SqlUpdate("""
-        INSERT INTO achievements (user_id, type)
-        VALUES (:userId, :type)
+        INSERT INTO achievements (user_id, type, count)
+        VALUES (:userId, :type, 1)
         ON CONFLICT (user_id, type)
         DO UPDATE SET count = achievements.count + 1,
         updated_at = NOW();

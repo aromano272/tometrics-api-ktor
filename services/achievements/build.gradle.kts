@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.spring.boot.amqp)
     implementation(libs.spring.boot.jdbc)
     implementation(libs.spring.boot.security)
+    implementation(libs.spring.boot.security.oauth2.server)
     implementation(libs.auth0.jwt)
     implementation(libs.spring.boot.web)
     implementation(libs.grpc.java.services)

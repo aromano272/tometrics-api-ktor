@@ -89,6 +89,7 @@ rabbitmq = { group = "com.rabbitmq", name = "amqp-client", version.ref = "rabbit
 spring-boot-amqp = { group = "org.springframework.boot", name = "spring-boot-starter-amqp", version.ref = "spring-boot" }
 spring-boot-jdbc = { group = "org.springframework.boot", name = "spring-boot-starter-jdbc", version.ref = "spring-boot" }
 spring-boot-security = { group = "org.springframework.boot", name = "spring-boot-starter-security", version.ref = "spring-boot" }
+spring-boot-security-oauth2-server = { group = "org.springframework.boot", name = "spring-boot-starter-oauth2-resource-server", version.ref = "spring-boot" }
 spring-boot-web = { group = "org.springframework.boot", name = "spring-boot-starter-web", version.ref = "spring-boot" }
 # todo: may not be needed
 grpc-java-services = { group = "io.grpc", name = "grpc-services", version.ref = "grpc-java-version" }

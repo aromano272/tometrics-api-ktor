@@ -1,6 +1,7 @@
 package com.tometrics.api.services.achievements.routes;
 
 import com.tometrics.api.services.achievements.domain.models.UserAchievement;
+import com.tometrics.api.services.achievements.routes.models.PostUserAchievementRequest;
 import com.tometrics.api.services.achievements.services.AchievementService;
 import com.tometrics.api.services.commonservice.models.Requester;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ public class AchievementRoutes {
 
     @PostMapping
     public ResponseEntity<Void> postAchievement(
-        @RequestBody PostUserAchievementRequest request
+            @AuthenticationPrincipal Requester requester,
+            @RequestBody PostUserAchievementRequest request
     ) {
         achievementService.create(
                 request.userId(),
