@@ -43,6 +43,7 @@ public enum AchievementType {
     public record Step(
             int count,
             int points
-    ) {}
+    ) {
+    }
 
 }

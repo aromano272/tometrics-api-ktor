@@ -6,4 +6,5 @@ import com.tometrics.api.services.achievements.domain.models.AchievementType;
 public record PostUserAchievementRequest(
         int userId,
         AchievementType type
-) {}
+) {
+}
