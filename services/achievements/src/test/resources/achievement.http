@@ -1,0 +1,24 @@
+### Achievement API Endpoints
+
+### SocialFeed status endpoint (no authentication required)
+GET http://localhost:8089/achievement/health
+Accept: application/json
+
+### Get achievements for authenticated user
+GET http://localhost:8089/api/v1/achievement/all
+Accept: application/json
+Authorization: Bearer {{access}}
+
+### Get achievements for authenticated user DEBUG
+GET http://localhost:8089/api/v1/achievement/all
+Accept: application/json
+
+### Get achievements for authenticated user DEBUG 2
+GET http://localhost:8089/api/v1/achiealsjfjldkasvement/all
+Accept: application/json
+
+### Get achievements for a specific user
+GET http://localhost:8089/api/v1/achievement/1/all
+Accept: application/json
+Authorization: Bearer {{access}}
+
