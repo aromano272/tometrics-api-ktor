@@ -1,6 +1,6 @@
 package com.tometrics.api.services.socialfeed.service
 
-import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.common.domain.models.*
 import com.tometrics.api.services.commongrpc.models.user.toDomain
 import com.tometrics.api.services.commongrpc.services.MediaGrpcClient

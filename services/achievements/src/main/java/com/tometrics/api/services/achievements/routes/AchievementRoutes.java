@@ -1,23 +1,25 @@
 package com.tometrics.api.services.achievements.routes;
 
-import com.tometrics.api.services.achievements.domain.models.AchievementType;
 import com.tometrics.api.services.achievements.domain.models.UserAchievement;
 import com.tometrics.api.services.achievements.services.AchievementService;
+import com.tometrics.api.services.commonservice.models.Requester;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-public class AchievementsRoutes {
+@RequestMapping("/api/v1/achievement")
+public class AchievementRoutes {
 
     private final AchievementService achievementService;
 
-    public AchievementsRoutes(AchievementService achievementService) {
+    public AchievementRoutes(AchievementService achievementService) {
         this.achievementService = achievementService;
     }
 
-    @PostMapping("/api/v1/achievement")
+    @PostMapping
     public ResponseEntity<Void> postAchievement(
         @RequestBody PostUserAchievementRequest request
     ) {
@@ -28,8 +30,17 @@ public class AchievementsRoutes {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/api/v1/achievement/{userId}/all")
+    @GetMapping("/all")
+    public ResponseEntity<List<UserAchievement>> getAchievements(
+            @AuthenticationPrincipal Requester requester
+    ) {
+        var result = achievementService.getAllAchievementsByUserId(requester.getUserId());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{userId}/all")
     public ResponseEntity<List<UserAchievement>> getAchievementsByUserId(
+            @AuthenticationPrincipal Requester requester,
             @PathVariable int userId
     ) {
         var result = achievementService.getAllAchievementsByUserId(userId);

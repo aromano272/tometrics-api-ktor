@@ -1,4 +1,4 @@
-package com.tometrics.api.auth.domain.models
+package com.tometrics.api.services.commonservice.models
 
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import io.ktor.server.auth.*

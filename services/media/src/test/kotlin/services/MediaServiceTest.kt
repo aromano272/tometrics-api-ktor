@@ -4,7 +4,7 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.presigners.presignGetObject
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
-import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.services.commongrpc.models.user.GrpcValidateUsersResult
 import com.tometrics.api.services.commongrpc.services.UserGrpcClient

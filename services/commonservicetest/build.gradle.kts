@@ -16,6 +16,7 @@ dependencies {
     implementation(project(":db"))
     implementation(project(":auth"))
     implementation(project(":common"))
+    implementation(project(":services:commonservice"))
 
     // NOCHECKIN:
 //    implementation(libs.ktor.server.core)

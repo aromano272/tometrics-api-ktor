@@ -1,6 +1,6 @@
 package com.tometrics.api.services.garden.services
 
-import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.common.domain.models.BadRequestError
 import com.tometrics.api.common.domain.models.NotFoundError
 import com.tometrics.api.common.domain.models.UserId

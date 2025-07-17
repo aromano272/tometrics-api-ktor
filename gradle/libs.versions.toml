@@ -27,6 +27,7 @@ aws-kotlin-version = "1.4.117"
 kotlin-test-junit = "2.2.0"
 rabbitmq = "5.25.0"
 spring-boot = "3.5.3"
+auth0-jwt = "4.5.0"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
@@ -92,6 +93,7 @@ spring-boot-web = { group = "org.springframework.boot", name = "spring-boot-star
 # todo: may not be needed
 grpc-java-services = { group = "io.grpc", name = "grpc-services", version.ref = "grpc-java-version" }
 spring-boot-grpc = { group = "org.springframework.grpc", name = "spring-grpc-server-web-spring-boot-starter", version = "0.9.0" }
+auth0-jwt = { group = "com.auth0", name = "java-jwt", version.ref = "auth0-jwt" }
 
 spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "spring-boot" }
 spring-boot-testcontainers-test = { group = "org.springframework.boot", name = "spring-boot-testcontainers", version.ref = "spring-boot" }

@@ -1,6 +1,6 @@
 package com.tometrics.api.services.garden.routes
 
-import com.tometrics.api.auth.domain.models.requireRequester
+import com.tometrics.api.services.commonservice.models.requireRequester
 import com.tometrics.api.common.domain.models.BadRequestError
 import com.tometrics.api.services.garden.domain.models.Planting
 import com.tometrics.api.services.garden.routes.models.AddPlantingRequest

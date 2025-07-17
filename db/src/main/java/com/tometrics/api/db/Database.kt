@@ -18,7 +18,7 @@ fun createHikariDataSource(
         jdbcUrl = dotenv["POSTGRES_URL"]
         username = dotenv["POSTGRES_USER"]
         password = dotenv["POSTGRES_PASSWORD"]
-        maximumPoolSize = dotenv["POSTGRES_MAX_POOL_SIZE"].toIntOrNull() ?: 10
+        maximumPoolSize = dotenv["POSTGRES_MAX_POOL_SIZE"].toIntOrNull() ?: 20
         isAutoCommit = true
         transactionIsolation = "TRANSACTION_REPEATABLE_READ"
         validate()

@@ -63,4 +63,10 @@ fun appModule(application: Application) = module {
         )
     }
 
+    single<JwtService> {
+        DefaultJwtService(
+            dotenv = get(),
+        )
+    }
+
 }

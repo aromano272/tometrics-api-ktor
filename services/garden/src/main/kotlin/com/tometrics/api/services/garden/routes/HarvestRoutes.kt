@@ -1,6 +1,6 @@
 package com.tometrics.api.services.garden.routes
 
-import com.tometrics.api.auth.domain.models.requireRequester
+import com.tometrics.api.services.commonservice.models.requireRequester
 import com.tometrics.api.services.garden.domain.models.HarvestRecord
 import com.tometrics.api.services.garden.routes.models.AddHarvestRequest
 import com.tometrics.api.services.garden.services.HarvestService

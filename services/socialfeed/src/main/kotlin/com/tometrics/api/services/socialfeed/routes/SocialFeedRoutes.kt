@@ -1,6 +1,6 @@
 package com.tometrics.api.services.socialfeed.routes
 
-import com.tometrics.api.auth.domain.models.requireRequester
+import com.tometrics.api.services.commonservice.models.requireRequester
 import com.tometrics.api.common.domain.models.*
 import com.tometrics.api.services.socialfeed.routes.models.*
 import com.tometrics.api.services.socialfeed.service.CommentService

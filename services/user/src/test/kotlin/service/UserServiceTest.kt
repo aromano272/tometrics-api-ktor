@@ -1,6 +1,6 @@
 package service
 
-import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.services.commongrpc.models.socialgraph.GrpcSocialConnections
 import com.tometrics.api.services.commongrpc.services.SocialGraphGrpcClient
 import com.tometrics.api.services.user.db.GeoNameCity500Dao

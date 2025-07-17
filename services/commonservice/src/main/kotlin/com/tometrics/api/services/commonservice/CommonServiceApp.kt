@@ -1,6 +1,5 @@
 package com.tometrics.api.services.commonservice
 
-import com.tometrics.api.auth.configureSecurity
 import com.tometrics.api.common.domain.models.*
 import com.tometrics.api.services.commongrpc.commonServicesGrpcModule
 import com.tometrics.api.services.commongrpc.services.ServiceDiscoveryGrpcClient

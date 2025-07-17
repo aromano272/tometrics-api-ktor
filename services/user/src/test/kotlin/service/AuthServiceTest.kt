@@ -1,7 +1,7 @@
 package service
 
-import com.tometrics.api.auth.domain.models.Requester
-import com.tometrics.api.auth.domain.models.Tokens
+import com.tometrics.api.services.commonservice.models.Requester
+import com.tometrics.api.services.commonservice.models.Tokens
 import com.tometrics.api.common.domain.models.BadRequestError
 import com.tometrics.api.common.domain.models.ConflictError
 import com.tometrics.api.common.domain.models.UnauthorizedError
@@ -12,7 +12,7 @@ import com.tometrics.api.services.user.db.models.UserEntity
 import com.tometrics.api.services.user.domain.models.IdProviderPayload
 import com.tometrics.api.services.user.services.DefaultAuthService
 import com.tometrics.api.services.user.services.GoogleAuthService
-import com.tometrics.api.services.user.services.JwtService
+import com.tometrics.api.services.commonservice.JwtService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -44,7 +44,7 @@ class AuthServiceTest {
 
         coEvery { googleAuthService.verify(idToken) } returns payload
         coEvery { userDao.findByGoogleEmail(payload.email) } returns existingUser
-        coEvery { jwtService.create(existingUser.id, false) } returns tokens.access
+        coEvery { jwtService.createSignedJWT(existingUser.id, false) } returns tokens.access
         coEvery { refreshTokenDao.insert(existingUser.id, any(), any()) } returns Unit
 
         val result = authService.loginWithGoogle(null, idToken)
@@ -71,7 +71,7 @@ class AuthServiceTest {
             )
         } returns newUserId
         coEvery { userDao.findById(newUserId) } returns newUser
-        coEvery { jwtService.create(newUserId, false) } returns tokens.access
+        coEvery { jwtService.createSignedJWT(newUserId, false) } returns tokens.access
         coEvery { refreshTokenDao.insert(newUserId, any(), any()) } returns Unit
 
         val result = authService.loginWithGoogle(null, idToken)
@@ -115,7 +115,7 @@ class AuthServiceTest {
             coEvery { googleAuthService.verify(idToken) } returns payload
             coEvery { userDao.findById(requester.userId) } returns requesterUser
             coEvery { userDao.findByGoogleEmail("different@gmail.com") } returns requesterUser
-            coEvery { jwtService.create(requesterUser.id, false) } returns tokens.access
+            coEvery { jwtService.createSignedJWT(requesterUser.id, false) } returns tokens.access
             coEvery { refreshTokenDao.insert(requesterUser.id, any(), any()) } returns Unit
 
             val result = authService.loginWithGoogle(requester, idToken)
@@ -146,7 +146,7 @@ class AuthServiceTest {
             coEvery { googleAuthService.verify(idToken) } returns payload
             coEvery { userDao.findById(requester.userId) } returns existingUser
             coEvery { userDao.findByGoogleEmail("different@gmail.com") } returns differentUser
-            coEvery { jwtService.create(differentUser.id, false) } returns tokens.access
+            coEvery { jwtService.createSignedJWT(differentUser.id, false) } returns tokens.access
             coEvery { refreshTokenDao.insert(differentUser.id, any(), any()) } returns Unit
 
             assertFailsWith<ConflictError> {
@@ -192,7 +192,7 @@ class AuthServiceTest {
                     anon = false,
                 )
             } returns 1
-            coEvery { jwtService.create(updatedUser.id, false) } returns tokens.access
+            coEvery { jwtService.createSignedJWT(updatedUser.id, false) } returns tokens.access
             coEvery { refreshTokenDao.insert(updatedUser.id, any(), any()) } returns Unit
 
             val result = authService.loginWithGoogle(requester, idToken)
@@ -214,7 +214,7 @@ class AuthServiceTest {
         val tokens = MOCK_TOKENS
 
         coEvery { userDao.findByFacebookId(payload.id) } returns existingUser
-        coEvery { jwtService.create(existingUser.id, false) } returns tokens.access
+        coEvery { jwtService.createSignedJWT(existingUser.id, false) } returns tokens.access
         coEvery { refreshTokenDao.insert(existingUser.id, any(), any()) } returns Unit
 
         val result = authService.loginWithFacebook(null, payload)
@@ -244,7 +244,7 @@ class AuthServiceTest {
             )
         } returns newUserId
         coEvery { userDao.findById(newUserId) } returns newUser
-        coEvery { jwtService.create(newUserId, false) } returns tokens.access
+        coEvery { jwtService.createSignedJWT(newUserId, false) } returns tokens.access
         coEvery { refreshTokenDao.insert(newUserId, any(), any()) } returns Unit
 
         val result = authService.loginWithFacebook(null, payload)
@@ -289,7 +289,7 @@ class AuthServiceTest {
 
             coEvery { userDao.findById(requester.userId) } returns requesterUser
             coEvery { userDao.findByFacebookId("facebookid") } returns requesterUser
-            coEvery { jwtService.create(requesterUser.id, false) } returns tokens.access
+            coEvery { jwtService.createSignedJWT(requesterUser.id, false) } returns tokens.access
             coEvery { refreshTokenDao.insert(requesterUser.id, any(), any()) } returns Unit
 
             val result = authService.loginWithFacebook(requester, payload)
@@ -363,7 +363,7 @@ class AuthServiceTest {
                     anon = false,
                 )
             } returns 1
-            coEvery { jwtService.create(updatedUser.id, false) } returns tokens.access
+            coEvery { jwtService.createSignedJWT(updatedUser.id, false) } returns tokens.access
             coEvery { refreshTokenDao.insert(updatedUser.id, any(), any()) } returns Unit
 
             val result = authService.loginWithFacebook(requester, payload)
@@ -426,7 +426,7 @@ class AuthServiceTest {
         coEvery { userDao.findById(user.id) } returns user
         coEvery { refreshTokenDao.delete(refreshToken) } returns Unit
         coEvery { refreshTokenDao.insert(user.id, any(), any()) } returns Unit
-        coEvery { jwtService.create(user.id, false) } returns newAccessToken
+        coEvery { jwtService.createSignedJWT(user.id, false) } returns newAccessToken
 
         val tokens = authService.refreshToken(refreshToken)
 

@@ -46,7 +46,8 @@ dependencies {
 
     implementation(libs.spring.boot.amqp)
     implementation(libs.spring.boot.jdbc)
-//    implementation(libs.spring.boot.security)
+    implementation(libs.spring.boot.security)
+    implementation(libs.auth0.jwt)
     implementation(libs.spring.boot.web)
     implementation(libs.grpc.java.services)
     implementation(libs.spring.boot.grpc)
@@ -56,7 +57,7 @@ dependencies {
     testImplementation(libs.spring.boot.rabbit.test)
     testImplementation(libs.spring.boot.grpc.test)
     testImplementation(libs.spring.boot.restdocs.test)
-//    testImplementation(libs.spring.boot.security.test)
+    testImplementation(libs.spring.boot.security.test)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     testImplementation(project(":services:commonservicetest"))
