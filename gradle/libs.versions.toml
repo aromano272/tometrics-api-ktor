@@ -28,6 +28,8 @@ kotlin-test-junit = "2.2.0"
 rabbitmq = "5.25.0"
 spring-boot = "3.5.3"
 auth0-jwt = "4.5.0"
+spring-di = "1.1.7"
+asciidoctor = "3.3.2"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
@@ -109,3 +111,6 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
 google-protobuf = { id = "com.google.protobuf", version.ref = "google-protobuf-plugin-version" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-di = { id = "io.spring.dependency-management", version.ref = "spring-di" }
+asciidoctor = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }

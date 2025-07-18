@@ -22,4 +22,4 @@ pluginManagement {
     }
 }
 include("services:media")
-include("services:achievements")
+include("services:achievement")
