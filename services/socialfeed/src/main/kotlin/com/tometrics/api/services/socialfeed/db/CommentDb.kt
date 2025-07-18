@@ -18,12 +18,13 @@ interface CommentDb {
 
     @Blocking
     @SqlUpdate("""
-        INSERT INTO comments (user_id, parent_id, text, image)
-        VALUES (:userId, :parentId, text, image)
+        INSERT INTO comments (user_id, post_id, parent_id, text, image)
+        VALUES (:userId, :postId, :parentId, text, image)
     """)
     @GetGeneratedKeys
     fun insert(
         @Bind("userId") userId: UserId,
+        @Bind("postId") postId: PostId,
         @Bind("parentId") parentId: CommentId?,
         @Bind("text") text: String,
         @Bind("image") image: String?,

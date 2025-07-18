@@ -1,15 +1,18 @@
 package com.tometrics.api.services.socialfeed.service
 
-import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.common.domain.models.ClimateZone
 import com.tometrics.api.services.commongrpc.services.MediaGrpcClient
 import com.tometrics.api.services.commongrpc.services.UserGrpcClient
+import com.tometrics.api.services.commonservice.EventProducer
+import com.tometrics.api.services.commonservice.Message
+import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.services.socialfeed.db.CommentDao
 import com.tometrics.api.services.socialfeed.db.CommentReactionDao
 import com.tometrics.api.services.socialfeed.db.PostDao
 import com.tometrics.api.services.socialfeed.db.UserDao
 import com.tometrics.api.services.socialfeed.db.models.CommentEntity
 import com.tometrics.api.services.socialfeed.db.models.CommentReactionEntity
+import com.tometrics.api.services.socialfeed.db.models.PostEntity
 import com.tometrics.api.services.socialfeed.db.models.UserEntity
 import com.tometrics.api.services.socialfeed.domain.models.InvalidMediaUrls
 import com.tometrics.api.services.socialfeed.domain.models.Reaction
@@ -22,6 +25,7 @@ import kotlin.test.*
 class CommentServiceTest {
 
     private val logger: Logger = mockk()
+    private val eventProducer: EventProducer = mockk()
     private val userGrpcClient: UserGrpcClient = mockk()
     private val mediaGrpcClient: MediaGrpcClient = mockk()
     private val userDao: UserDao = mockk {
@@ -36,6 +40,7 @@ class CommentServiceTest {
 
     private val commentService: CommentService = DefaultCommentService(
         logger = logger,
+        eventProducer = eventProducer,
         userGrpcClient = userGrpcClient,
         mediaGrpcClient = mediaGrpcClient,
         userDao = userDao,
@@ -50,6 +55,7 @@ class CommentServiceTest {
         val userId1 = 1
         val userId2 = 2
         val postId1 = 1
+        val postId2 = 2
         val commentId1 = 1
         val commentId2 = 2
 
@@ -72,6 +78,7 @@ class CommentServiceTest {
         val comment1 = CommentEntity(
             id = commentId1,
             userId = userId1,
+            postId = postId1,
             parentId = null,
             text = "Comment 1 text",
             image = "image1.jpg",
@@ -83,6 +90,7 @@ class CommentServiceTest {
         val comment2 = CommentEntity(
             id = commentId2,
             userId = userId2,
+            postId = postId2,
             parentId = commentId1,
             text = "Comment 2 text",
             image = null,
@@ -169,6 +177,7 @@ class CommentServiceTest {
         val comment1 = CommentEntity(
             id = commentId1,
             userId = userId1,
+            postId = postId1,
             parentId = null,
             text = text,
             image = image,
@@ -177,9 +186,23 @@ class CommentServiceTest {
             updatedAt = now,
         )
 
+        val post1 = PostEntity(
+            id = commentId1,
+            userId = userId1,
+            locationId = null,
+            images = emptyList(),
+            text = text,
+            reactionsCount = 0,
+            commentsCount = 0,
+            createdAt = now,
+            updatedAt = now,
+        )
+
         coEvery { userDao.findById(userId1) } returns user1
+        coEvery { postDao.findById(postId1) } returns post1
+        coEvery { eventProducer.sendMessage(any()) } just Runs
         coEvery { mediaGrpcClient.validateMediaUrl(userId1, image) } returns true
-        coEvery { commentDao.insert(userId1, null, text, image) } returns commentId1
+        coEvery { commentDao.insert(userId1, postId1, null, text, image) } returns commentId1
         coEvery { commentDao.findById(commentId1) } returns comment1
         coEvery { userDao.getAllByIds(setOf(userId1)) } returns listOf(user1)
         coEvery { commentReactionDao.getAllByCommentIdsAndUserId(setOf(commentId1), userId1) } returns emptyList()
@@ -192,10 +215,19 @@ class CommentServiceTest {
         assertEquals(image, result.image)
         assertEquals(user1.name, result.user.name)
 
+        val event = Message.CommentCreated(
+            id = result.id,
+            postId = postId1,
+            postUserId = post1.userId,
+            user = result.user,
+            text = result.text,
+        )
+
         coVerify { userDao.findById(userId1) }
         coVerify { mediaGrpcClient.validateMediaUrl(userId1, image) }
-        coVerify { commentDao.insert(userId1, null, text, image) }
+        coVerify { commentDao.insert(userId1, postId1, null, text, image) }
         coVerify { commentDao.findById(commentId1) }
+        coVerify { eventProducer.sendMessage(event) }
     }
 
     @Test
@@ -223,7 +255,7 @@ class CommentServiceTest {
 
         coVerify { userDao.findById(userId1) }
         coVerify { mediaGrpcClient.validateMediaUrl(userId1, image) }
-        coVerify(exactly = 0) { commentDao.insert(any(), any(), any(), any()) }
+        coVerify(exactly = 0) { commentDao.insert(any(), any(), any(), any(), any()) }
     }
 
     @Test
@@ -231,6 +263,7 @@ class CommentServiceTest {
         val now = Instant.now()
         val userId1 = 1
         val commentId1 = 1
+        val postId1 = 1
         val text = "Updated comment"
         val image = "updated-image.jpg"
 
@@ -245,6 +278,7 @@ class CommentServiceTest {
         val updatedComment = CommentEntity(
             id = commentId1,
             userId = userId1,
+            postId = postId1,
             parentId = null,
             text = text,
             image = image,
@@ -295,10 +329,12 @@ class CommentServiceTest {
     fun `test deleteComment success`() = runTest {
         val userId1 = 1
         val commentId1 = 1
+        val postId1 = 1
 
         val comment = CommentEntity(
             id = commentId1,
             userId = userId1,
+            postId = postId1,
             parentId = null,
             text = "Comment to delete",
             image = null,
@@ -323,6 +359,7 @@ class CommentServiceTest {
         val userId1 = 1
         val userId2 = 2
         val commentId1 = 1
+        val postId2 = 2
 
         val user1 = UserEntity(
             id = userId1,
@@ -335,6 +372,7 @@ class CommentServiceTest {
         val comment = CommentEntity(
             id = commentId1,
             userId = userId2,
+            postId = postId2,
             parentId = null,
             text = "Comment text",
             image = null,

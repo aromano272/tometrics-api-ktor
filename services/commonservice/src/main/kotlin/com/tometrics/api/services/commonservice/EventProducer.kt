@@ -10,13 +10,17 @@ import io.ktor.util.logging.*
 import kotlinx.coroutines.withContext
 import kotlin.reflect.full.findAnnotation
 
-class EventProducer(
+interface EventProducer {
+    suspend fun <T : Message> sendMessage(message: T)
+}
+
+class DefaultEventProducer(
     val logger: Logger,
     val channelProvider: ChannelProvider,
-) {
+) : EventProducer {
 
-    suspend inline fun <reified T : Message> sendMessage(message: T) = withContext(channelProvider.dispatcher) {
-        val clazz = T::class
+    override suspend fun <T : Message> sendMessage(message: T) = withContext(channelProvider.dispatcher) {
+        val clazz = message::class
         val annotation = clazz.findAnnotation<RoutingKey>()
             ?: error("Missing @RoutingKey annotation on ${clazz.simpleName}")
         val routingKey = annotation.value

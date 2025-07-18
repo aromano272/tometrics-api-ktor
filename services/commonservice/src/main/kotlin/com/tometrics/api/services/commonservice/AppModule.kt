@@ -56,8 +56,8 @@ fun appModule(application: Application) = module {
         )
     }
 
-    single {
-        EventProducer(
+    single<EventProducer> {
+        DefaultEventProducer(
             logger = get(),
             channelProvider = get(),
         )

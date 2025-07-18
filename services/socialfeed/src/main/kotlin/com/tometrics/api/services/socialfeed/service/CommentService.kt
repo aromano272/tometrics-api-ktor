@@ -1,12 +1,12 @@
 package com.tometrics.api.services.socialfeed.service
 
-import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.common.domain.models.*
 import com.tometrics.api.services.commongrpc.models.user.toDomain
 import com.tometrics.api.services.commongrpc.services.MediaGrpcClient
 import com.tometrics.api.services.commongrpc.services.UserGrpcClient
 import com.tometrics.api.services.commonservice.EventProducer
 import com.tometrics.api.services.commonservice.Message
+import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.services.socialfeed.db.CommentDao
 import com.tometrics.api.services.socialfeed.db.CommentReactionDao
 import com.tometrics.api.services.socialfeed.db.PostDao
@@ -140,6 +140,7 @@ class DefaultCommentService(
         val post = postDao.findById(postId) ?: throw PostNotFound(postId)
         val commentId = commentDao.insert(
             userId = user.id,
+            postId = postId,
             parentId = parentId,
             text = text,
             image = image,
