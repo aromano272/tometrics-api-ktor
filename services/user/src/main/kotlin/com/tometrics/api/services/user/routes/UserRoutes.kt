@@ -1,6 +1,6 @@
 package com.tometrics.api.services.user.routes
 
-import com.tometrics.api.auth.domain.models.requireRequester
+import com.tometrics.api.services.commonservice.models.requireRequester
 import com.tometrics.api.common.domain.models.ValidationError
 import com.tometrics.api.common.route.models.UserDto
 import com.tometrics.api.services.user.domain.models.User

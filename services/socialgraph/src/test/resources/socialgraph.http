@@ -2,25 +2,25 @@
 
 ### Status endpoint (no authentication required)
 GET https://localhost/api/v1/socialgraph/status
-Accept: application/json
+Content-Type: application/json
 
 ### Get connections for authenticated user
 GET http://localhost:8081/api/v1/socialgraph/connections
-Accept: application/json
+Content-Type: application/json
 Authorization: Bearer {{access}}
 
 ### Get connections for a specific user
 GET https://localhost/api/v1/socialgraph/connections/123
-Accept: application/json
+Content-Type: application/json
 Authorization: Bearer {{access}}
 
 ### Follow a user
 POST http://localhost:8081/api/v1/socialgraph/follow/1
-Accept: application/json
+Content-Type: application/json
 Authorization: Bearer {{access}}
 
 ### Unfollow a user
 DELETE https://localhost/api/v1/socialgraph/follow/123
-Accept: application/json
+Content-Type: application/json
 Authorization: Bearer {{access}}
 

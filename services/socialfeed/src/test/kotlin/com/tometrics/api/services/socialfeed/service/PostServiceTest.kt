@@ -1,10 +1,12 @@
 package com.tometrics.api.services.socialfeed.service
 
-import com.tometrics.api.auth.domain.models.Requester
 import com.tometrics.api.common.domain.models.ClimateZone
 import com.tometrics.api.services.commongrpc.models.user.GrpcValidateMediaUrlsResult
 import com.tometrics.api.services.commongrpc.services.MediaGrpcClient
 import com.tometrics.api.services.commongrpc.services.UserGrpcClient
+import com.tometrics.api.services.commonservice.EventProducer
+import com.tometrics.api.services.commonservice.Message
+import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.services.socialfeed.db.LocationInfoDao
 import com.tometrics.api.services.socialfeed.db.PostDao
 import com.tometrics.api.services.socialfeed.db.PostReactionDao
@@ -23,6 +25,7 @@ import kotlin.test.*
 class PostServiceTest {
 
     private val logger: Logger = mockk()
+    private val eventProducer: EventProducer = mockk()
     private val userGrpcClient: UserGrpcClient = mockk()
     private val mediaGrpcClient: MediaGrpcClient = mockk()
     private val postDao: PostDao = mockk()
@@ -39,6 +42,7 @@ class PostServiceTest {
 
     private val postService: PostService = DefaultPostService(
         logger = logger,
+        eventProducer = eventProducer,
         userGrpcClient = userGrpcClient,
         mediaGrpcClient = mediaGrpcClient,
         postDao = postDao,
@@ -343,6 +347,7 @@ class PostServiceTest {
         )
 
         coEvery { userDao.findById(userId1) } returns user1
+        coEvery { eventProducer.sendMessage(any()) } just Runs
         coEvery { locationInfoDao.findById(locationId1) } returns location1
         coEvery { mediaGrpcClient.validateMediaUrls(userId1, images.toSet()) } returns GrpcValidateMediaUrlsResult.Success
         coEvery { postDao.insert(userId1, locationId1, images, text) } returns postId1
@@ -354,6 +359,13 @@ class PostServiceTest {
 
         val requester = Requester(userId1)
         val result = postService.createPost(requester, locationId1, images, text)
+
+        val event = Message.PostCreated(
+            id = result.id,
+            user = result.user,
+            text = result.text,
+        )
+        eventProducer.sendMessage(event)
 
         assertEquals(text, result.text)
         assertEquals(images, result.images)

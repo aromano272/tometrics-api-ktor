@@ -11,6 +11,7 @@ import java.time.Instant
 interface CommentDao {
     suspend fun insert(
         userId: UserId,
+        postId: PostId,
         parentId: CommentId?,
         text: String,
         image: String?,
@@ -45,12 +46,14 @@ class DefaultCommentDao(
 ) : CommentDao {
     override suspend fun insert(
         userId: UserId,
+        postId: PostId,
         parentId: CommentId?,
         text: String,
         image: String?,
     ): CommentId? = withContext(Dispatchers.IO) {
         db.insert(
             userId = userId,
+            postId = postId,
             parentId = parentId,
             text = text,
             image = image,

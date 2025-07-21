@@ -4,7 +4,7 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.model.HeadObjectRequest
 import aws.sdk.kotlin.services.s3.presigners.presignGetObject
-import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.common.domain.models.ImageUrl
 import com.tometrics.api.common.domain.models.UnauthorizedError
 import com.tometrics.api.common.domain.models.UserId

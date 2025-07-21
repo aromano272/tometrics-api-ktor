@@ -13,6 +13,7 @@ val serviceModule = module {
     factory<PostService> {
         DefaultPostService(
             logger = get(),
+            eventProducer = get(),
             userGrpcClient = get(),
             mediaGrpcClient = get(),
             postDao = get(),
@@ -25,6 +26,7 @@ val serviceModule = module {
     factory<CommentService> {
         DefaultCommentService(
             logger = get(),
+            eventProducer = get(),
             userGrpcClient = get(),
             mediaGrpcClient = get(),
             userDao = get(),

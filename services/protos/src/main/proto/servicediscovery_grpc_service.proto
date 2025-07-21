@@ -15,6 +15,7 @@ enum ServiceType {
   SOCIALGRAPH = 5;
   USER = 6;
   MEDIA = 7;
+  ACHIEVEMENT = 8;
 }
 
 message ServiceInfo {

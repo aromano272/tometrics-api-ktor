@@ -1,8 +1,8 @@
 package com.tometrics.api.services.user.routes
 
-import com.tometrics.api.auth.domain.models.Tokens
-import com.tometrics.api.auth.domain.models.requester
-import com.tometrics.api.auth.domain.models.requireRequester
+import com.tometrics.api.services.commonservice.models.Tokens
+import com.tometrics.api.services.commonservice.models.requester
+import com.tometrics.api.services.commonservice.models.requireRequester
 import com.tometrics.api.services.user.domain.models.IdProviderPayload
 import com.tometrics.api.services.user.routes.models.AuthFacebookLoginRequest
 import com.tometrics.api.services.user.routes.models.AuthGoogleLoginRequest

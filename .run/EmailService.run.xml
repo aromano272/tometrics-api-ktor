@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="EmailServiceAppKt" type="KtorApplicationConfigurationType" factoryName="Ktor" nameIsGenerated="true">
+  <configuration default="false" name="EmailService" type="KtorApplicationConfigurationType" factoryName="Ktor">
     <envs>
       <env name="RUNNING_LOCALLY" value="1" />
     </envs>

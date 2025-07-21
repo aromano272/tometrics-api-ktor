@@ -25,6 +25,12 @@ grpc-kotlin-version = "1.4.3"
 protobuf-version = "4.30.2"
 aws-kotlin-version = "1.4.117"
 kotlin-test-junit = "2.2.0"
+rabbitmq = "5.25.0"
+spring-boot = "3.5.3"
+auth0-jwt = "4.5.0"
+spring-di = "1.1.7"
+asciidoctor = "3.3.2"
+kotlinx-coroutines-jdk8 = "1.10.2"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
@@ -53,6 +59,7 @@ ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref 
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin-test-junit" }
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-postgres = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+testcontainers-rabbitmq = { module = "org.testcontainers:rabbitmq", version.ref = "testcontainers" }
 hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 koin-test-junit = { module = "io.insert-koin:koin-test-junit5", version.ref = "koin" }
@@ -81,6 +88,24 @@ protoc-gen-grpc-java = { module = "io.grpc:protoc-gen-grpc-java", version.ref = 
 protoc-gen-grpc-kotlin = { module = "io.grpc:protoc-gen-grpc-kotlin", version.ref = "grpc-kotlin-version" }
 aws-kotlin-core = { module = "aws.sdk.kotlin:aws-core", version.ref = "aws-kotlin-version" }
 aws-kotlin-s3 = { module = "aws.sdk.kotlin:s3", version.ref = "aws-kotlin-version" }
+rabbitmq = { group = "com.rabbitmq", name = "amqp-client", version.ref = "rabbitmq" }
+spring-boot-amqp = { group = "org.springframework.boot", name = "spring-boot-starter-amqp", version.ref = "spring-boot" }
+spring-boot-jdbc = { group = "org.springframework.boot", name = "spring-boot-starter-jdbc", version.ref = "spring-boot" }
+spring-boot-security = { group = "org.springframework.boot", name = "spring-boot-starter-security", version.ref = "spring-boot" }
+spring-boot-security-oauth2-server = { group = "org.springframework.boot", name = "spring-boot-starter-oauth2-resource-server", version.ref = "spring-boot" }
+spring-boot-web = { group = "org.springframework.boot", name = "spring-boot-starter-web", version.ref = "spring-boot" }
+# todo: may not be needed
+grpc-java-services = { group = "io.grpc", name = "grpc-services", version.ref = "grpc-java-version" }
+spring-boot-grpc = { group = "org.springframework.grpc", name = "spring-grpc-server-web-spring-boot-starter", version = "0.9.0" }
+auth0-jwt = { group = "com.auth0", name = "java-jwt", version.ref = "auth0-jwt" }
+
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "spring-boot" }
+spring-boot-testcontainers-test = { group = "org.springframework.boot", name = "spring-boot-testcontainers", version.ref = "spring-boot" }
+spring-boot-rabbit-test = { group = "org.springframework.amqp", name = "spring-rabbit-test", version = "3.2.5" }
+spring-boot-grpc-test = { group = "org.springframework.grpc", name = "spring-grpc-test", version = "0.9.0" }
+spring-boot-restdocs-test = { group = "org.springframework.restdocs", name = "spring-restdocs-mockmvc", version = "3.0.4" }
+spring-boot-security-test = { group = "org.springframework.security", name = "spring-security-test", version = "6.4.7" }
+kotlinx-coroutines-jdk8 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines-jdk8" }
 
 
 [plugins]
@@ -88,3 +113,6 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
 google-protobuf = { id = "com.google.protobuf", version.ref = "google-protobuf-plugin-version" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-di = { id = "io.spring.dependency-management", version.ref = "spring-di" }
+asciidoctor = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }

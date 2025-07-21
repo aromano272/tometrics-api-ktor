@@ -27,14 +27,19 @@ fun appModule(application: Application) = module {
     }
 
     single {
+        Json {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+        }
+    }
+
+    single {
+        val json: Json = get()
         HttpClient(CIO) {
             expectSuccess = true
             install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                })
+                json(json)
             }
             install(Logging) {
                 level = LogLevel.INFO
@@ -43,6 +48,25 @@ fun appModule(application: Application) = module {
                 contentType(ContentType.Application.Json)
             }
         }
+    }
+
+    single {
+        ChannelProvider(
+            logger = get(),
+        )
+    }
+
+    single<EventProducer> {
+        DefaultEventProducer(
+            logger = get(),
+            channelProvider = get(),
+        )
+    }
+
+    single<JwtService> {
+        DefaultJwtService(
+            dotenv = get(),
+        )
     }
 
 }

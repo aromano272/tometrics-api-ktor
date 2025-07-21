@@ -1,6 +1,6 @@
 package com.tometrics.api.services.media.routes
 
-import com.tometrics.api.auth.domain.models.requireRequester
+import com.tometrics.api.services.commonservice.models.requireRequester
 import com.tometrics.api.services.media.services.MediaService
 import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.route

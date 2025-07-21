@@ -1,0 +1,26 @@
+### Achievement API Endpoints
+
+### SocialFeed status endpoint (no authentication required)
+GET http://localhost:8089/achievement/health
+Content-Type: application/json
+
+### Insert achievement
+POST http://localhost:8089/api/v1/achievement
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+{
+  "userId": 1,
+  "type": "POST_CREATED"
+}
+
+### Get achievements for authenticated user
+GET http://localhost:8089/api/v1/achievement/all
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+### Get achievements for a specific user
+GET http://localhost:8089/api/v1/achievement/1/all
+Content-Type: application/json
+Authorization: Bearer {{access}}
+

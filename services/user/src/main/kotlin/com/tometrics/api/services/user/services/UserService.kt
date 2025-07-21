@@ -1,6 +1,6 @@
 package com.tometrics.api.services.user.services
 
-import com.tometrics.api.auth.domain.models.Requester
+import com.tometrics.api.services.commonservice.models.Requester
 import com.tometrics.api.common.domain.models.ClimateZone
 import com.tometrics.api.common.domain.models.LocationInfoId
 import com.tometrics.api.common.domain.models.UserId

@@ -1,9 +1,9 @@
 package com.tometrics.api.services.commonservicetest.functional
 
 import com.auth0.jwt.JWT
-import com.tometrics.api.auth.domain.models.Tokens
 import com.tometrics.api.common.domain.models.ServiceInfo
 import com.tometrics.api.common.domain.models.UserId
+import com.tometrics.api.services.commonservice.models.Tokens
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.client.*

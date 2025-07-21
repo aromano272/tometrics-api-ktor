@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option java_package = "com.tometrics.api.services.protos";
+option java_multiple_files = true;
+
+message Event {
+  oneof content {
+    PostCreated postCreated = 1;
+    CommentCreated commentCreated = 2;
+    AchievementEarned achievementEarned = 3;
+  }
+}
+
+message PostCreated {
+  int32 postId = 1;
+  EventUser user = 2;
+  string text = 3;
+}
+
+message CommentCreated {
+  int32 commentId = 1;
+  int32 postId = 2;
+  int32 postUserId = 3;
+  EventUser user = 4;
+  string text = 5;
+}
+
+enum AchievementType {
+    PLANTING_CREATED = 0;
+    HARVEST_CREATED = 1;
+    POST_CREATED = 2;
+    COMMENT_CREATED = 3;
+    REACTION_CREATED = 4;
+}
+
+message AchievementEarned {
+  AchievementType type = 1;
+  int32 userId = 2;
+  int32 count = 3;
+  int32 pointsEarned = 4;
+}
+
+message EventUser {
+  int32 id = 1;
+  string name = 2;
+}

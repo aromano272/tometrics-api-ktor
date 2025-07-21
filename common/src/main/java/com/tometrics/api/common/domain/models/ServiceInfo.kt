@@ -21,4 +21,5 @@ enum class ServiceType {
     SOCIALGRAPH,
     USER,
     MEDIA,
+    ACHIEVEMENT,
 }

@@ -1,11 +1,12 @@
 package com.tometrics.api.services.user.services
 
-import com.tometrics.api.auth.domain.models.Requester
-import com.tometrics.api.auth.domain.models.Tokens
+import com.tometrics.api.services.commonservice.models.Requester
+import com.tometrics.api.services.commonservice.models.Tokens
 import com.tometrics.api.common.domain.models.BadRequestError
 import com.tometrics.api.common.domain.models.ConflictError
 import com.tometrics.api.common.domain.models.NotFoundError
 import com.tometrics.api.common.domain.models.UnauthorizedError
+import com.tometrics.api.services.commonservice.JwtService
 import com.tometrics.api.services.user.db.RefreshTokenDao
 import com.tometrics.api.services.user.db.UserDao
 import com.tometrics.api.services.user.db.models.toDomain
@@ -42,7 +43,7 @@ class DefaultAuthService(
     }
 
     override suspend fun login(user: User): Tokens {
-        val access = jwtService.create(user.id, user.anon)
+        val access = jwtService.createSignedJWT(user.id, user.anon)
         val refresh = UUID.randomUUID().toString()
 
         val expiry = getNewRefreshTokenExpiry()

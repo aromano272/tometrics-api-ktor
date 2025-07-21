@@ -44,12 +44,6 @@ val serviceModule = module {
         )
     }
 
-    single<JwtService> {
-        DefaultJwtService(
-            dotenv = get(),
-        )
-    }
-
     single<AuthService> {
         DefaultAuthService(
             jwtService = get(),
