@@ -30,6 +30,7 @@ fun ServiceType.fromNetwork() = when (this) {
     ServiceType.SOCIALGRAPH -> DomainServiceType.SOCIALGRAPH
     ServiceType.USER -> DomainServiceType.USER
     ServiceType.MEDIA -> DomainServiceType.MEDIA
+    ServiceType.ACHIEVEMENT -> DomainServiceType.ACHIEVEMENT
     ServiceType.UNRECOGNIZED -> null
 }
 
@@ -42,4 +43,5 @@ fun DomainServiceType.toNetwork() = when (this) {
     DomainServiceType.SOCIALGRAPH -> ServiceType.SOCIALGRAPH
     DomainServiceType.USER -> ServiceType.USER
     DomainServiceType.MEDIA -> ServiceType.MEDIA
+    DomainServiceType.ACHIEVEMENT -> ServiceType.ACHIEVEMENT
 }

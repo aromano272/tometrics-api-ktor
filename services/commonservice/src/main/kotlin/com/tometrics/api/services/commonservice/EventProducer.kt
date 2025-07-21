@@ -2,13 +2,11 @@ package com.tometrics.api.services.commonservice
 
 import com.rabbitmq.client.AMQP
 import com.tometrics.api.common.route.models.UserDto
-import com.tometrics.api.services.protos.CommentCreated
-import com.tometrics.api.services.protos.Event
-import com.tometrics.api.services.protos.EventUser
-import com.tometrics.api.services.protos.PostCreated
+import com.tometrics.api.services.protos.*
 import io.ktor.util.logging.*
 import kotlinx.coroutines.withContext
 import kotlin.reflect.full.findAnnotation
+import com.tometrics.api.services.protos.AchievementType as ProtoAchievementType
 
 interface EventProducer {
     suspend fun <T : Message> sendMessage(message: T)
@@ -33,7 +31,6 @@ class DefaultEventProducer(
             /* mandatory = */ true,
             /* props = */
             AMQP.BasicProperties.Builder()
-                .contentType("application/json")
                 .deliveryMode(2)
                 .build(),
             /* body = */ message.toProto().toByteArray(),
@@ -69,9 +66,29 @@ fun Message.toProto(): Event = when (this) {
                 .build()
         }
 
+    is Message.AchievementEarned -> AchievementEarned.newBuilder()
+        .setType(type.toProto())
+        .setUserId(userId)
+        .setCount(count)
+        .setPointsEarned(pointsEarned)
+        .build()
+        .let {
+            Event.newBuilder()
+                .setAchievementEarned(it)
+                .build()
+        }
+
 }
 
 private fun UserDto.toProto() = EventUser.newBuilder()
     .setId(id)
     .setName(name)
     .build()
+
+private fun AchievementType.toProto() = when (this) {
+    AchievementType.PLANTING_CREATED -> ProtoAchievementType.PLANTING_CREATED
+    AchievementType.HARVEST_CREATED -> ProtoAchievementType.HARVEST_CREATED
+    AchievementType.POST_CREATED -> ProtoAchievementType.POST_CREATED
+    AchievementType.COMMENT_CREATED -> ProtoAchievementType.COMMENT_CREATED
+    AchievementType.REACTION_CREATED -> ProtoAchievementType.REACTION_CREATED
+}

@@ -29,4 +29,10 @@ public interface AchievementDao {
     @SqlQuery("SELECT * FROM achievements WHERE user_id = :userId")
     List<UserAchievementEntity> getAllAchievementsByUserId(@Bind("userId") int userId);
 
+    @SqlQuery("SELECT * FROM achievements WHERE user_id = :userId AND type = :type")
+    UserAchievementEntity findByUserIdAndType(
+            @Bind("userId") int userId,
+            @Bind("type") AchievementType type
+    );
+
 }

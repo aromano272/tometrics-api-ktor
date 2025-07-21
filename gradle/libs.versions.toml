@@ -30,6 +30,7 @@ spring-boot = "3.5.3"
 auth0-jwt = "4.5.0"
 spring-di = "1.1.7"
 asciidoctor = "3.3.2"
+kotlinx-coroutines-jdk8 = "1.10.2"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
@@ -104,6 +105,7 @@ spring-boot-rabbit-test = { group = "org.springframework.amqp", name = "spring-r
 spring-boot-grpc-test = { group = "org.springframework.grpc", name = "spring-grpc-test", version = "0.9.0" }
 spring-boot-restdocs-test = { group = "org.springframework.restdocs", name = "spring-restdocs-mockmvc", version = "3.0.4" }
 spring-boot-security-test = { group = "org.springframework.security", name = "spring-security-test", version = "6.4.7" }
+kotlinx-coroutines-jdk8 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines-jdk8" }
 
 
 [plugins]

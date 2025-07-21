@@ -36,13 +36,19 @@ fun Application.module() {
 fun Application.configureRabbitMQ() {
     val emailService: EmailService = get()
     launchRabbitMQConsumer("email.service.queue") {
-        registerEvent<Message.PostCreated> {
-            emailService.handlemessage(it)
-        }
 
         registerEvent<Message.PostCreated> {
             emailService.handlemessage(it)
         }
+
+        registerEvent<Message.CommentCreated> {
+            emailService.handlemessage(it)
+        }
+
+        registerEvent<Message.AchievementEarned> {
+            emailService.handlemessage(it)
+        }
+
     }
 }
 

@@ -27,4 +27,20 @@ sealed interface Message {
         val text: String,
     ) : Message
 
+    @RoutingKey("achievement.achievement_earned")
+    data class AchievementEarned(
+        val type: AchievementType,
+        val userId: UserId,
+        val count: Int,
+        val pointsEarned: Int,
+    ) : Message
+
+}
+
+enum class AchievementType {
+    PLANTING_CREATED,
+    HARVEST_CREATED,
+    POST_CREATED,
+    COMMENT_CREATED,
+    REACTION_CREATED,
 }

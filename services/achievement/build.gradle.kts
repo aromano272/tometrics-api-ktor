@@ -26,6 +26,7 @@ dependencies {
     implementation(project(":db"))
     implementation(project(":auth"))
     implementation(project(":common"))
+    implementation(project(":services:protos"))
     implementation(project(":services:commongrpc"))
     implementation(project(":services:commonservice"))
 
@@ -49,6 +50,7 @@ dependencies {
     implementation(libs.spring.boot.web)
     implementation(libs.grpc.java.services)
     implementation(libs.spring.boot.grpc)
+    implementation(libs.kotlinx.coroutines.jdk8)
     runtimeOnly(libs.postgresql)
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.boot.testcontainers.test)

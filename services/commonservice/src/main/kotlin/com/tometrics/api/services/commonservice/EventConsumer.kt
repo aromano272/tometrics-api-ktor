@@ -11,6 +11,7 @@ import io.ktor.util.logging.*
 import kotlinx.coroutines.launch
 import org.koin.ktor.ext.get
 import kotlin.reflect.full.findAnnotation
+import com.tometrics.api.services.protos.AchievementType as ProtoAchievementType
 
 class ConsumerBuilder {
     val handlers: MutableMap<String, suspend (Message) -> Unit> = mutableMapOf()
@@ -67,6 +68,8 @@ fun Application.launchRabbitMQConsumer(
                     properties: AMQP.BasicProperties,
                     body: ByteArray,
                 ) {
+                    // TODO(aromano): This early return may be an issue because i'm not ack/nack'ing the MQ, seeing that
+                    //  the message has been delivered even though we didn't handle it
                     val handler = handlers[envelope.routingKey] ?: return
                     try {
                         val message = Event.parseFrom(body)
@@ -94,7 +97,7 @@ fun Application.launchRabbitMQConsumer(
                     } catch (ex: Exception) {
                         ex.printStackTrace()
                         logger.error(ex)
-                        logger.error("RabbitMQ Consumer failed to decode json: ${String(body)}")
+                        logger.error("RabbitMQ Consumer failed to decode protobuf: ${String(body)}")
                         chan.basicNack(
                             /* deliveryTag = */ envelope.deliveryTag,
                             /* multiple = */ false,
@@ -123,6 +126,15 @@ fun Event.toMessage(): Message? = when {
         text = commentCreated.text,
     )
 
+    hasAchievementEarned() -> achievementEarned.type.toAchievementType()?.let { type ->
+        Message.AchievementEarned(
+            type = type,
+            userId = achievementEarned.userId,
+            count = achievementEarned.count,
+            pointsEarned = achievementEarned.pointsEarned,
+        )
+    }
+
     else -> null
 
 }
@@ -134,3 +146,12 @@ fun EventUser.toUserDto(): UserDto = UserDto(
     climateZone = null,
     updatedAt = -1,
 )
+
+fun ProtoAchievementType.toAchievementType(): AchievementType? = when (this) {
+    ProtoAchievementType.PLANTING_CREATED -> AchievementType.PLANTING_CREATED
+    ProtoAchievementType.HARVEST_CREATED -> AchievementType.HARVEST_CREATED
+    ProtoAchievementType.POST_CREATED -> AchievementType.POST_CREATED
+    ProtoAchievementType.COMMENT_CREATED -> AchievementType.COMMENT_CREATED
+    ProtoAchievementType.REACTION_CREATED -> AchievementType.REACTION_CREATED
+    ProtoAchievementType.UNRECOGNIZED -> null
+}
